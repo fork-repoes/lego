@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.spliter.service.support.merge;
+package com.geekhalo.lego.core.spliter.service.support.merger;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,7 +15,7 @@ import java.util.Objects;
  *  List 结果合并器
  */
 public class ListResultMerger
-        extends AbstractResultMerger<List> {
+        extends AbstractFixTypeResultMerger<List> {
     @Override
     protected List defaultValue() {
         return Collections.emptyList();

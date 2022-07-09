@@ -1,6 +1,5 @@
-package com.geekhalo.lego.core.spliter.service.support.merge;
+package com.geekhalo.lego.core.spliter.service.support.merger;
 
-import com.geekhalo.lego.core.spliter.service.ResultMerger;
 import com.geekhalo.lego.core.spliter.service.SmartResultMerger;
 import com.google.common.reflect.TypeToken;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,12 +11,14 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  *
- *
+ * 从泛型中获取类型，用于进行 support
  */
-abstract class AbstractResultMerger<R> implements SmartResultMerger<R> {
+abstract class AbstractFixTypeResultMerger<R>
+        extends AbstractResultMerger<R>
+        implements SmartResultMerger<R> {
     private final Class supportType;
 
-    public AbstractResultMerger() {
+    public AbstractFixTypeResultMerger() {
         TypeToken<R> typeToken = new TypeToken<R>(getClass()) {};
         this.supportType = (Class) typeToken.getRawType();
     }
@@ -28,20 +29,5 @@ abstract class AbstractResultMerger<R> implements SmartResultMerger<R> {
             return false;
         }
         return this.supportType.isAssignableFrom(resultType);
-    }
-
-    @Override
-    public final R merge(List<R> rs) {
-        if (CollectionUtils.isEmpty(rs)){
-            return defaultValue();
-        }
-
-        return doMerge(rs);
-    }
-
-    abstract R doMerge(List<R> rs);
-
-    protected R defaultValue(){
-        return null;
     }
 }
