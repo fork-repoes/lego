@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -36,6 +37,38 @@ class SplitTestServiceTest {
         List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
         List<Long> longs = this.splitTestService.splitByList(params, 10L);
         Assertions.assertEquals(8, longs.size());
+    }
+
+    @Test
+    @Timeout(3)
+    public void splitByListAsSet() {
+        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
+        Set<Long> longs = this.splitTestService.splitByListAsSet(params);
+        Assertions.assertEquals(8, longs.size());
+    }
+
+    @Test
+    @Timeout(3)
+    public void testSplitByListAsSet() {
+        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
+        Set<Long> longs = this.splitTestService.splitByListAsSet(params, 10L);
+        Assertions.assertEquals(8, longs.size());
+    }
+
+    @Test
+    @Timeout(3)
+    public void splitByListAsCount() {
+        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
+        Integer count = this.splitTestService.splitByListAsCount(params);
+        Assertions.assertEquals(8, count);
+    }
+
+    @Test
+    @Timeout(3)
+    public void testSplitByListAsCount() {
+        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
+        Integer count = this.splitTestService.splitByListAsCount(params, 10L);
+        Assertions.assertEquals(8, count);
     }
 
 //    @Test

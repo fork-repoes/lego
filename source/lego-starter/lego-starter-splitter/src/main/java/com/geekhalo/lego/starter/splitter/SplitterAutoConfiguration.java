@@ -3,7 +3,10 @@ package com.geekhalo.lego.starter.splitter;
 import com.geekhalo.lego.annotation.spliter.Split;
 import com.geekhalo.lego.core.spliter.service.ParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.executor.ParallelMethodExecutor;
+import com.geekhalo.lego.core.spliter.service.support.merger.IntResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.merger.ListResultMerger;
+import com.geekhalo.lego.core.spliter.service.support.merger.LongResultMerger;
+import com.geekhalo.lego.core.spliter.service.support.merger.SetResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.spliter.ListParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spliter.SetParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spring.SplitInterceptor;
@@ -89,6 +92,21 @@ public class SplitterAutoConfiguration {
     @Bean
     public ListResultMerger listResultMerger(){
         return new ListResultMerger();
+    }
+
+    @Bean
+    public LongResultMerger longResultMerger(){
+        return new LongResultMerger();
+    }
+
+    @Bean
+    public IntResultMerger intResultMerger(){
+        return new IntResultMerger();
+    }
+
+    @Bean
+    public SetResultMerger setResultMerger(){
+        return new SetResultMerger();
     }
 
     @Bean

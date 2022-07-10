@@ -6,7 +6,9 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,28 @@ public class SplitTestService {
     public List<Long> splitByList(@SplitParam List<Long> params, Long other){
         Preconditions.checkArgument(other != null);
         return convert(params);
+    }
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public Set<Long> splitByListAsSet(List<Long> params){
+        return new HashSet<>(convert(params));
+    }
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public Set<Long> splitByListAsSet(@SplitParam List<Long> params, Long other){
+        Preconditions.checkArgument(other != null);
+        return new HashSet<>(convert(params));
+    }
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public Integer splitByListAsCount(List<Long> params){
+        return convert(params).size();
+    }
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public Integer splitByListAsCount(@SplitParam List<Long> params, Long other){
+        Preconditions.checkArgument(other != null);
+        return convert(params).size();
     }
 
 //    @Split(sizePrePartition = 2, taskPreThread = 2)
