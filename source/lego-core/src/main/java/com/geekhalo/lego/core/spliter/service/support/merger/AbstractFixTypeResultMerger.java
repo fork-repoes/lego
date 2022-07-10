@@ -2,9 +2,6 @@ package com.geekhalo.lego.core.spliter.service.support.merger;
 
 import com.geekhalo.lego.core.spliter.service.SmartResultMerger;
 import com.google.common.reflect.TypeToken;
-import org.apache.commons.collections.CollectionUtils;
-
-import java.util.List;
 
 /**
  * Created by taoli on 2022/7/6.

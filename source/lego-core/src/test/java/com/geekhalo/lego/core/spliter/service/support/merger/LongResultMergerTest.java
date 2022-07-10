@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.spliter.service.support.merger;
 
-import com.geekhalo.lego.core.spliter.service.ResultMerger;
 import com.geekhalo.lego.core.spliter.service.SmartResultMerger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/7/9.

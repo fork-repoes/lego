@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.spliter.service.support.spliter;
 
-import com.geekhalo.lego.core.spliter.service.ParamSplitter;
 import com.geekhalo.lego.core.spliter.service.SmartParamSplitter;
 import com.google.common.reflect.TypeToken;
 

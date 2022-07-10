@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geekhalo.lego</groupId>
-	<artifactId>starter-module</artifactId>
+	<artifactId>lego-starter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>lego-starter</name>
 	<modules>
-		<module>lego-starter-spliter</module>
+		<module>lego-starter-splitter</module>
 	</modules>
 
 </project>

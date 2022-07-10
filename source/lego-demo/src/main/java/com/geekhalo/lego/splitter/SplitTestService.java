@@ -1,0 +1,57 @@
+package com.geekhalo.lego.splitter;
+
+import com.geekhalo.lego.annotation.spliter.Split;
+import com.geekhalo.lego.annotation.spliter.SplitParam;
+import com.google.common.base.Preconditions;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+@Service
+@Slf4j
+public class SplitTestService {
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public List<Long> splitByList(List<Long> params){
+        return convert(params);
+    }
+
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public List<Long> splitByList(@SplitParam List<Long> params, Long other){
+        Preconditions.checkArgument(other != null);
+        return convert(params);
+    }
+
+//    @Split(sizePrePartition = 2, taskPreThread = 2)
+//    public List<Long> splitByParam(AnnBasedInputParam param){
+//        Preconditions.checkArgument(param.getOther() != null);
+//        return convert(param.getNumbers());
+//    }
+//
+//    @Split(sizePrePartition = 2, taskPreThread = 2)
+//    public List<Long> splitByParam(SplittableInputParam param){
+//        Preconditions.checkArgument(param.getOther() != null);
+//        return convert(param.getNumbers());
+//    }
+
+
+
+    private List<Long> convert(List<Long> input){
+        if (input.size() > 5){
+            throw new RuntimeException("Many Param");
+        }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            log.error("failed to sleep", e);
+            Thread.currentThread().interrupt();
+        }
+        log.info("Thread {} run with {}", Thread.currentThread().getName(), input);
+        return input.stream()
+                .map( i -> i + 10000L)
+                .collect(Collectors.toList());
+    }
+}

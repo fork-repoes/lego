@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Created by taoli on 2022/7/9.
  * gitee : https://gitee.com/litao851025/lego

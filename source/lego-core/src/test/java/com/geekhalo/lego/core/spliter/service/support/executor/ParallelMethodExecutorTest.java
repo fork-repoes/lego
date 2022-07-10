@@ -1,15 +1,16 @@
 package com.geekhalo.lego.core.spliter.service.support.executor;
 
 import com.geekhalo.lego.core.spliter.service.MethodExecutor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/7/9.

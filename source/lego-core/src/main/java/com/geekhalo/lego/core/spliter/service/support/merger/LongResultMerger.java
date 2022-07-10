@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.spliter.service.support.merger;
 
-import com.geekhalo.lego.core.spliter.service.SmartParamSplitter;
 import com.geekhalo.lego.core.spliter.service.SmartResultMerger;
 import org.apache.commons.collections.CollectionUtils;
 
