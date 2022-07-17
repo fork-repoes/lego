@@ -37,3 +37,5 @@ target/*
 /work
 .DS_Store
 */*.iml
+source/*/*/target/*
+

@@ -11,8 +11,14 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public class IntResultMerger
-        extends AbstractFixTypeResultMerger<Integer>
+        extends AbstractResultMerger<Integer>
         implements SmartResultMerger<Integer> {
+
+    @Override
+    public boolean support(Class<Integer> resultType) {
+        return Integer.class == resultType || Integer.TYPE == resultType;
+    }
+
     @Override
     Integer doMerge(List<Integer> integers) {
         if (CollectionUtils.isEmpty(integers)){

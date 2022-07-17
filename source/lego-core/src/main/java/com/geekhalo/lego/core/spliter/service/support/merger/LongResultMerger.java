@@ -11,7 +11,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public class LongResultMerger
-        extends AbstractFixTypeResultMerger<Long>
+        extends AbstractResultMerger<Long>
         implements SmartResultMerger<Long> {
     @Override
     Long doMerge(List<Long> longs) {
@@ -21,5 +21,10 @@ public class LongResultMerger
         return longs.stream()
                 .mapToLong(Long::longValue)
                 .sum();
+    }
+
+    @Override
+    public boolean support(Class<Long> resultType) {
+        return Long.class == resultType || Long.TYPE == resultType;
     }
 }
