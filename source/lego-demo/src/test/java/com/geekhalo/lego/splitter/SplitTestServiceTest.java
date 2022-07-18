@@ -132,15 +132,16 @@ class SplitTestServiceTest {
 //        List<Long> longs = this.splitTestService.splitByParam(annBasedInputParam);
 //        Assert.assertEquals(8, longs.size());
 //    }
-//
-//    @Test(timeout = 3 * 1000)
-//    public void splitByParam_Splittable() {
-//        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
-//        SplittableInputParam annBasedInputParam = SplittableInputParam.builder()
-//                .numbers(params)
-//                .other(10L)
-//                .build();
-//        List<Long> longs = this.splitTestService.splitByParam(annBasedInputParam);
-//        Assert.assertEquals(8, longs.size());
-//    }
+
+    @Test
+    @Timeout(3)
+    public void splitByParam_Splittable() {
+        List<Long> params = Lists.newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
+        SplittableInputParam annBasedInputParam = SplittableInputParam.builder()
+                .numbers(params)
+                .other(10L)
+                .build();
+        List<Long> longs = this.splitTestService.splitByParam(annBasedInputParam);
+        Assertions.assertEquals(8, longs.size());
+    }
 }

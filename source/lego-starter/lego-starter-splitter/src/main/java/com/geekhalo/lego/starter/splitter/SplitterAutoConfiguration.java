@@ -9,6 +9,7 @@ import com.geekhalo.lego.core.spliter.service.support.merger.LongResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.merger.SetResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.spliter.ListParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spliter.SetParamSplitter;
+import com.geekhalo.lego.core.spliter.service.support.spliter.SplittableParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spring.SplitInterceptor;
 import com.geekhalo.lego.core.spliter.service.support.spring.SplitInvokerProcessor;
 import com.geekhalo.lego.core.spliter.service.support.spring.invoker.SplitInvokerRegistry;
@@ -117,5 +118,10 @@ public class SplitterAutoConfiguration {
     @Bean
     public ParamSplitter setParamSplitter(){
         return new SetParamSplitter();
+    }
+
+    @Bean
+    public SplittableParamSplitter splittableParamSplitter(){
+        return new SplittableParamSplitter();
     }
 }
