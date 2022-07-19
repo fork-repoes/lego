@@ -82,12 +82,12 @@ public class SplitTestService {
         return Long.valueOf(convert(params).size());
     }
 
-//    @Split(sizePrePartition = 2, taskPreThread = 2)
-//    public List<Long> splitByParam(AnnBasedInputParam param){
-//        Preconditions.checkArgument(param.getOther() != null);
-//        return convert(param.getNumbers());
-//    }
-//
+    @Split(sizePrePartition = 2, taskPreThread = 2)
+    public List<Long> splitByParam(AnnBasedInputParam param){
+        Preconditions.checkArgument(param.getOther() != null);
+        return convert(param.getNumbers());
+    }
+
     @Split(sizePrePartition = 2, taskPreThread = 2)
     public List<Long> splitByParam(SplittableInputParam param){
         Preconditions.checkArgument(param.getOther() != null);

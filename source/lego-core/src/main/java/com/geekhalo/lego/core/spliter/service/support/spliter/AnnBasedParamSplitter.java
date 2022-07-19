@@ -1,61 +1,66 @@
-//package com.geekhalo.lego.core.spliter.service.support.spliter;
-//
-//import com.gaotu.blocks.split.ParamSplitService;
-//import com.gaotu.blocks.split.SplitParam;
-//import com.google.common.base.Preconditions;
-//import org.apache.commons.lang3.reflect.ConstructorUtils;
-//import org.apache.commons.lang3.reflect.FieldUtils;
-//
-//import java.lang.reflect.Field;
-//import java.util.List;
-//import java.util.stream.Collectors;
-//
-//public class AnnBasedParamSplitter extends AbstractParamSplitter{
-//    private final ParamSplitService paramSplitService;
-//
-//    public AnnBasedParamSplitter(ParamSplitService paramSplitService) {
-//        this.paramSplitService = paramSplitService;
-//    }
-//
-//    @Override
-//    protected List<Object> doSplit(Object param, int maxSize) {
-//        try {
-//            Class<?> aClass = param.getClass();
-//            List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(aClass, SplitParam.class);
-//            Preconditions.checkState(fieldsListWithAnnotation.size() == 1);
-//            Field splitField = fieldsListWithAnnotation.get(0);
-//            Object splitValue = FieldUtils.readField(splitField, param, true);
-//            List<Object> split = this.paramSplitService.split(splitValue, maxSize);
-//            return split.stream()
-//                    .map(value->{
-//                        try {
-//                            Object o = ConstructorUtils.invokeConstructor(aClass);
-//                            FieldUtils.getAllFieldsList(aClass).forEach(field -> {
-//                                try {
-//                                    Object v = null;
-//                                    if (field.equals(splitField)){
-//                                        v = value;
-//                                    }else {
-//                                        v = FieldUtils.readField(field, param, true);
-//                                    }
-//                                    FieldUtils.writeField(field, o, v, true);
-//                                }catch (Exception e){
-//                                    throw new RuntimeException(e);
-//                                }
-//                            });
-//                            return o;
-//                        }catch (Exception e){
-//                            throw new RuntimeException(e);
-//                        }
-//                    }).collect(Collectors.toList());
-//        }catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    @Override
-//    public boolean doSupport(Class paramType) {
-//        return FieldUtils.getAllFieldsList(paramType).stream()
-//                .anyMatch(field -> field.getAnnotation(SplitParam.class) != null);
-//    }
-//}
+package com.geekhalo.lego.core.spliter.service.support.spliter;
+
+
+import com.geekhalo.lego.core.spliter.service.ParamSplitter;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Created by taoli on 2022/7/19.
+ * gitee : https://gitee.com/litao851025/lego
+ * 编程就像玩 Lego
+ *
+ * 参数拆分器公共父类
+ */
+public class AnnBasedParamSplitter extends AbstractParamSplitter{
+    private final ParamSplitter paramSplitter;
+    private final Field splitField;
+
+    public AnnBasedParamSplitter(Class paramCls,
+                                 ParamSplitter paramSplitter,
+                                 Field splitField) {
+        this.paramSplitter = paramSplitter;
+        this.splitField = splitField;
+    }
+
+
+    @Override
+    protected List<Object> doSplit(Object param, int maxSize) {
+        try {
+            Class<?> aClass = param.getClass();
+            Object splitValue = FieldUtils.readField(this.splitField, param, true);
+            List<Object> split = this.paramSplitter.split(splitValue, maxSize);
+            return split.stream()
+                    .map(value-> cloneBySplittedValue(aClass, param, value))
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object cloneBySplittedValue(Class<?> aClass, Object source, Object splittedFieldValue) {
+        try {
+            Object o = ConstructorUtils.invokeConstructor(aClass);
+            FieldUtils.getAllFieldsList(aClass).forEach(field -> {
+                try {
+                    Object v = null;
+                    if (field.equals(splitField)){
+                        v = splittedFieldValue;
+                    }else {
+                        v = FieldUtils.readField(field, source, true);
+                    }
+                    FieldUtils.writeField(field, o, v, true);
+                }catch (Exception e){
+                    throw new RuntimeException(e);
+                }
+            });
+            return o;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+}

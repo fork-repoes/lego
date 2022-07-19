@@ -4,6 +4,7 @@ import com.geekhalo.lego.annotation.spliter.Split;
 import com.geekhalo.lego.annotation.spliter.SplitParam;
 import com.geekhalo.lego.core.spliter.service.*;
 import com.geekhalo.lego.core.spliter.service.support.DefaultSplitService;
+import com.geekhalo.lego.core.spliter.service.support.ParamSplitterBuilder;
 import com.geekhalo.lego.core.spliter.service.support.spliter.InvokeParamsSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spring.invoker.MultipleParamSplitInvoker;
 import com.geekhalo.lego.core.spliter.service.support.spring.invoker.SingleParamSplitInvoker;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.Map;
 /**
  * Created by taoli on 2022/7/6.
@@ -33,6 +35,9 @@ public class SplitInvokerProcessor implements BeanPostProcessor {
 
     @Autowired
     private Map<String, ParamSplitter> splitterMap;
+
+    @Autowired
+    private List<ParamSplitterBuilder> paramSplitterBuilders;
 
     @Autowired
     private Map<String, MethodExecutor> executorMap;
@@ -150,6 +155,12 @@ public class SplitInvokerProcessor implements BeanPostProcessor {
                 if (paramSplitter instanceof SmartParamSplitter &&
                         ((SmartParamSplitter)paramSplitter).support(parameterType)){
                     return paramSplitter;
+                }
+            }
+
+            for (ParamSplitterBuilder paramSplitterBuilder : this.paramSplitterBuilders){
+                if (paramSplitterBuilder.support(parameterType)){
+                    return paramSplitterBuilder.build(parameterType);
                 }
             }
             return null;

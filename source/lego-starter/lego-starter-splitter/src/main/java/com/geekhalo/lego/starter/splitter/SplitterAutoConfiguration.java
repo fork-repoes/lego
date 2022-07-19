@@ -2,11 +2,14 @@ package com.geekhalo.lego.starter.splitter;
 
 import com.geekhalo.lego.annotation.spliter.Split;
 import com.geekhalo.lego.core.spliter.service.ParamSplitter;
+import com.geekhalo.lego.core.spliter.service.SmartParamSplitter;
+import com.geekhalo.lego.core.spliter.service.SmartResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.executor.ParallelMethodExecutor;
 import com.geekhalo.lego.core.spliter.service.support.merger.IntResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.merger.ListResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.merger.LongResultMerger;
 import com.geekhalo.lego.core.spliter.service.support.merger.SetResultMerger;
+import com.geekhalo.lego.core.spliter.service.support.spliter.AnnBasedParamSplitterBuilder;
 import com.geekhalo.lego.core.spliter.service.support.spliter.ListParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spliter.SetParamSplitter;
 import com.geekhalo.lego.core.spliter.service.support.spliter.SplittableParamSplitter;
@@ -23,6 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -118,6 +122,11 @@ public class SplitterAutoConfiguration {
     @Bean
     public ParamSplitter setParamSplitter(){
         return new SetParamSplitter();
+    }
+
+    @Bean
+    public AnnBasedParamSplitterBuilder annBasedParamSplitterBuilder(List<SmartParamSplitter> smartParamSplitters){
+        return new AnnBasedParamSplitterBuilder(smartParamSplitters);
     }
 
     @Bean
