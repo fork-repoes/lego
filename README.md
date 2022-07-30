@@ -41,12 +41,5 @@ tiny-url | 短链服务，将长链接转换为短链接，主要用于 App Push
 如果对项目感兴趣，不想错过精粹内容，可以：
 1. 知识星球找 "草根架构师的成长史"
 2. 加我个人微信"litao851025"
-3. 关注
-
-知识星球：
-![知识星球](http://images.geekhalo.com/qrcode/zsxq.jpeg)
-个人微信：
-![个人微信](http://images.geekhalo.com/qrcode/litao851025_wx.jpeg)
-公众号：
-![个人微信](http://images.geekhalo.com/qrcode/qrcode.jpg)
+3. 关注 "geekhalo"
 
