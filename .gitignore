@@ -27,6 +27,7 @@ hs_err_pid*
 logs/*
 .idea/*
 */target/*
+/support/lego-starter/*/target/*
 */*/target/*
 */build/*
 target/*
