@@ -3,17 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geekhalo.lego</groupId>
-	<artifactId>support-module</artifactId>
+	<artifactId>modules</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>lego-support-module</name>
+	<name>lego-modules</name>
 	<modules>
-		<module>lego-annotation</module>
-		<module>lego-common</module>
-		<module>lego-core</module>
-		<module>lego-parent</module>
-		<module>lego-starter</module>
-		<module>lego-demo</module>
+		<module>support</module>
 	</modules>
 
 </project>
