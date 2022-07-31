@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
  * @param <JOIN_DATA> join 获取的 数据
  * @param <JOIN_RESULT> 转换后的结果数据
  */
-public abstract class AbstractJoinExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinExecutor<SOURCE_DATA> {
+abstract class AbstractJoinExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinExecutor<SOURCE_DATA> {
 
     /**
      * 从原始数据中生成 JoinKey

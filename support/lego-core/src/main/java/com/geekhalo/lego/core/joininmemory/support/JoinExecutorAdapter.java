@@ -2,6 +2,8 @@ package com.geekhalo.lego.core.joininmemory.support;
 
 import com.google.common.base.Preconditions;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -15,20 +17,25 @@ import java.util.function.Function;
  */
 @Slf4j
 @Builder
+@Getter
 public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinExecutor<DATA, JOIN_KEY, JOIN_DATA, RESULT>{
+    private final String name;
     private final Function<DATA, JOIN_KEY> keyGeneratorFromData;
     private final Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader;
     private final Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData;
     private final Function<JOIN_DATA, RESULT> dataConverter;
     private final BiConsumer<DATA, RESULT> foundFunction;
     private final BiConsumer<DATA, JOIN_KEY> lostFunction;
+    private final int runLevel;
 
-    public JoinExecutorAdapter(Function<DATA, JOIN_KEY> keyGeneratorFromData,
+    public JoinExecutorAdapter(String name,
+                               Function<DATA, JOIN_KEY> keyGeneratorFromData,
                                Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader,
                                Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData,
                                Function<JOIN_DATA, RESULT> dataConverter,
                                BiConsumer<DATA, RESULT> foundFunction,
-                               BiConsumer<DATA, JOIN_KEY> lostFunction) {
+                               BiConsumer<DATA, JOIN_KEY> lostFunction,
+                               Integer runLevel) {
 
         Preconditions.checkArgument(keyGeneratorFromData != null);
         Preconditions.checkArgument(dataLoeader != null);
@@ -36,6 +43,7 @@ public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends Abst
         Preconditions.checkArgument(dataConverter != null);
         Preconditions.checkArgument(foundFunction != null);
 
+        this.name = name;
         this.keyGeneratorFromData = keyGeneratorFromData;
         this.dataLoeader = dataLoeader;
         this.keyGeneratorFromJoinData = keyGeneratorFromJoinData;
@@ -45,6 +53,12 @@ public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends Abst
             this.lostFunction = getDefaultLostFunction().andThen(lostFunction);
         }else {
             this.lostFunction = getDefaultLostFunction();
+        }
+
+        if (runLevel == null){
+            this.runLevel = 0;
+        }else {
+            this.runLevel = runLevel.intValue();
         }
     }
 
@@ -82,5 +96,15 @@ public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends Abst
         return (data, joinKey) -> {
             log.warn("failed to find join data by {} for {}", joinKey, data);
         };
+    }
+
+    @Override
+    public int runOnLevel() {
+        return this.runLevel;
+    }
+
+    @Override
+    public String toString() {
+        return "JoinExecutorAdapter-for-" + name;
     }
 }

@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -7,10 +8,10 @@ import lombok.Data;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Builder
 @Data
-public class OrderDetail {
-    private final Order order;
-    private User user;
-    private Product product;
-    private Shop shop;
+public class Product {
+    private Long id;
+    private Long shopId;
+    private String name;
 }

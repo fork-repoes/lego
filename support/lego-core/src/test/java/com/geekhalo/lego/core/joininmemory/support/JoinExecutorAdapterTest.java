@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
 import com.google.common.collect.Lists;
+import lombok.Data;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Data
 class JoinExecutorAdapterTest {
     private JoinExecutorAdapter<OrderDetail, Long, User, User> joinExecutorAdapter;
 
