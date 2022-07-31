@@ -36,17 +36,17 @@ public class OrderDetailServiceV1 implements OrderDetailService{
     private UserRepository userRepository;
 
     @Override
-    public List<OrderDetailVO> getByUserId(Long userId) {
+    public List<? extends BaseOrderDetailVO> getByUserId(Long userId) {
         List<Order> orders = this.orderRepository.getByUserId(userId);
         return orders.stream()
                 .map(order -> convertToOrderDetailVO(order))
                 .collect(toList());
     }
 
-    private OrderDetailVO convertToOrderDetailVO(Order order) {
+    private CommonOrderDetailVO convertToOrderDetailVO(Order order) {
         OrderVO orderVO = OrderVO.apply(order);
 
-        OrderDetailVO orderDetailVO = new OrderDetailVO(orderVO);
+        CommonOrderDetailVO orderDetailVO = new CommonOrderDetailVO(orderVO);
 
         Address address = this.addressRepository.getById(order.getAddressId());
         AddressVO addressVO = AddressVO.apply(address);

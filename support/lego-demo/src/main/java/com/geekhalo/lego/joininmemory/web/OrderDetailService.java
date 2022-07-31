@@ -8,5 +8,5 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public interface OrderDetailService {
-    List<OrderDetailVO> getByUserId(Long userId);
+    List<? extends BaseOrderDetailVO> getByUserId(Long userId);
 }

@@ -12,7 +12,6 @@ import com.geekhalo.lego.joininmemory.web.vo.AddressVO;
 import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
 import com.geekhalo.lego.joininmemory.web.vo.ProductVO;
 import com.geekhalo.lego.joininmemory.web.vo.UserVO;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +39,11 @@ public class OrderDetailServiceV2 implements OrderDetailService{
     private UserRepository userRepository;
 
     @Override
-    public List<OrderDetailVO> getByUserId(Long userId) {
+    public List<? extends BaseOrderDetailVO> getByUserId(Long userId) {
         List<Order> orders = this.orderRepository.getByUserId(userId);
 
-        List<OrderDetailVO> orderDetailVOS = orders.stream()
-                .map(order -> new OrderDetailVO(OrderVO.apply(order)))
+        List<CommonOrderDetailVO> orderDetailVOS = orders.stream()
+                .map(order -> new CommonOrderDetailVO(OrderVO.apply(order)))
                 .collect(toList());
 
         List<Long> userIds = orders.stream()
@@ -53,7 +52,7 @@ public class OrderDetailServiceV2 implements OrderDetailService{
         List<User> users = this.userRepository.getByIds(userIds);
         Map<Long, User> userMap = users.stream()
                 .collect(toMap(User::getId, Function.identity(), (a, b) -> a));
-        for (OrderDetailVO orderDetailVO : orderDetailVOS){
+        for (CommonOrderDetailVO orderDetailVO : orderDetailVOS){
             User user = userMap.get(orderDetailVO.getOrder().getUserId());
             UserVO userVO = UserVO.apply(user);
             orderDetailVO.setUser(userVO);
@@ -65,7 +64,7 @@ public class OrderDetailServiceV2 implements OrderDetailService{
         List<Address> addresses = this.addressRepository.getByIds(addressIds);
         Map<Long, Address> addressMap = addresses.stream()
                 .collect(toMap(Address::getId, Function.identity(), (a, b) -> a));
-        for (OrderDetailVO orderDetailVO : orderDetailVOS){
+        for (CommonOrderDetailVO orderDetailVO : orderDetailVOS){
             Address address = addressMap.get(orderDetailVO.getOrder().getAddressId());
             AddressVO addressVO = AddressVO.apply(address);
             orderDetailVO.setAddress(addressVO);
@@ -77,7 +76,7 @@ public class OrderDetailServiceV2 implements OrderDetailService{
         List<Product> products = this.productRepository.getByIds(productIds);
         Map<Long, Product> productMap = products.stream()
                 .collect(toMap(Product::getId, Function.identity(), (a, b) -> a));
-        for (OrderDetailVO orderDetailVO : orderDetailVOS){
+        for (CommonOrderDetailVO orderDetailVO : orderDetailVOS){
             Product product = productMap.get(orderDetailVO.getOrder().getProductId());
             ProductVO productVO = ProductVO.apply(product);
             orderDetailVO.setProduct(productVO);
