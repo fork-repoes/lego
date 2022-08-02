@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinExecutor;
-import com.geekhalo.lego.core.joininmemory.JoinExecutorGroup;
+import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
+import com.geekhalo.lego.core.joininmemory.JoinItemsExecutor;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -12,21 +12,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.geekhalo.lego.core.TimeUtils.sleepAsMS;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/7/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-class SerialJoinExecutorGroupsTest {
-    private JoinExecutorGroup<OrderDetail> joinExecutorGroup;
+class SerialJoinItemsExecutorTest {
+    private JoinItemsExecutor<OrderDetail> joinItemsExecutor;
 
     @BeforeEach
     void setUp() {
-        JoinExecutor<OrderDetail> userJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, User, User>builder()
+        JoinItemExecutor<OrderDetail> userJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, User, User>builder()
                 .name("User")
                 .keyGeneratorFromData(order->order.getOrder().getUserId())
                 .keyGeneratorFromJoinData(user -> user.getId())
@@ -36,7 +34,7 @@ class SerialJoinExecutorGroupsTest {
                 .runLevel(1)
                 .build();
 
-        JoinExecutor<OrderDetail> productJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, Product, Product>builder()
+        JoinItemExecutor<OrderDetail> productJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, Product, Product>builder()
                 .name("Product")
                 .keyGeneratorFromData(order->order.getOrder().getProductId())
                 .keyGeneratorFromJoinData(product -> product.getId())
@@ -46,7 +44,7 @@ class SerialJoinExecutorGroupsTest {
                 .runLevel(1)
                 .build();
 
-        JoinExecutor<OrderDetail> shopJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, Shop, Shop>builder()
+        JoinItemExecutor<OrderDetail> shopJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, Shop, Shop>builder()
                 .name("Shop")
                 .keyGeneratorFromData(orderDetail -> orderDetail.getProduct().getShopId())
                 .keyGeneratorFromJoinData(shop -> shop.getId())
@@ -56,8 +54,8 @@ class SerialJoinExecutorGroupsTest {
                 .runLevel(3)
                 .build();
 
-        this.joinExecutorGroup = new SerialJoinExecutorGroups<>(OrderDetail.class,
-                Arrays.asList(userJoinExecutor, productJoinExecutor, shopJoinExecutor));
+        this.joinItemsExecutor = new SerialJoinItemsExecutor<>(OrderDetail.class,
+                Arrays.asList(userJoinItemExecutor, productJoinItemExecutor, shopJoinItemExecutor));
     }
 
     private List<Product> createProduct(List<Long> productIds) {
@@ -105,7 +103,7 @@ class SerialJoinExecutorGroupsTest {
                     .build();
             orderDetails.add(new OrderDetail(order));
         }
-        this.joinExecutorGroup.execute(orderDetails);
+        this.joinItemsExecutor.execute(orderDetails);
 
         orderDetails.forEach(orderDetail -> {
             Assertions.assertNotNull(orderDetail);

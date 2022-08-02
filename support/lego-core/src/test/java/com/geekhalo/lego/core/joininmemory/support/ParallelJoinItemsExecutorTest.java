@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinExecutor;
-import com.geekhalo.lego.core.joininmemory.JoinExecutorGroup;
+import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
+import com.geekhalo.lego.core.joininmemory.JoinItemsExecutor;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.*;
 
@@ -13,19 +13,18 @@ import java.util.stream.Collectors;
 
 import static com.geekhalo.lego.core.TimeUtils.sleepAsMS;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/7/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-class ParallelJoinExecutorGroupTest {
-    private JoinExecutorGroup<OrderDetail> joinExecutorGroup;
+class ParallelJoinItemsExecutorTest {
+    private JoinItemsExecutor<OrderDetail> joinItemsExecutor;
 
     @BeforeEach
     void setUp() {
-        JoinExecutor<OrderDetail> userJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, User, User>builder()
+        JoinItemExecutor<OrderDetail> userJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, User, User>builder()
                 .name("User")
                 .keyGeneratorFromData(order->order.getOrder().getUserId())
                 .keyGeneratorFromJoinData(user -> user.getId())
@@ -35,7 +34,7 @@ class ParallelJoinExecutorGroupTest {
                 .runLevel(1)
                 .build();
 
-        JoinExecutor<OrderDetail> productJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, Product, Product>builder()
+        JoinItemExecutor<OrderDetail> productJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, Product, Product>builder()
                 .name("Product")
                 .keyGeneratorFromData(order->order.getOrder().getProductId())
                 .keyGeneratorFromJoinData(product -> product.getId())
@@ -45,7 +44,7 @@ class ParallelJoinExecutorGroupTest {
                 .runLevel(1)
                 .build();
 
-        JoinExecutor<OrderDetail> shopJoinExecutor = JoinExecutorAdapter.<OrderDetail, Long, Shop, Shop>builder()
+        JoinItemExecutor<OrderDetail> shopJoinItemExecutor = JoinItemExecutorAdapter.<OrderDetail, Long, Shop, Shop>builder()
                 .name("Shop")
                 .keyGeneratorFromData(orderDetail -> orderDetail.getProduct().getShopId())
                 .keyGeneratorFromJoinData(shop -> shop.getId())
@@ -55,8 +54,8 @@ class ParallelJoinExecutorGroupTest {
                 .runLevel(3)
                 .build();
 
-        this.joinExecutorGroup = new ParallelJoinExecutorGroup(OrderDetail.class,
-                Arrays.asList(userJoinExecutor, productJoinExecutor, shopJoinExecutor),
+        this.joinItemsExecutor = new ParallelJoinItemsExecutor(OrderDetail.class,
+                Arrays.asList(userJoinItemExecutor, productJoinItemExecutor, shopJoinItemExecutor),
                 Executors.newFixedThreadPool(2));
     }
 
@@ -108,7 +107,7 @@ class ParallelJoinExecutorGroupTest {
                     .build();
             orderDetails.add(new OrderDetail(order));
         }
-        this.joinExecutorGroup.execute(orderDetails);
+        this.joinItemsExecutor.execute(orderDetails);
 
         orderDetails.forEach(orderDetail -> {
             Assertions.assertNotNull(orderDetail);

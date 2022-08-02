@@ -5,6 +5,6 @@ package com.geekhalo.lego.core.joininmemory;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface JoinExecutorGroupFactory {
-    <D> JoinExecutorGroup<D> createFor(Class<D> cls);
+public interface JoinItemsExecutorFactory {
+    <D> JoinItemsExecutor<D> createFor(Class<D> cls);
 }

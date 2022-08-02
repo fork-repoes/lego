@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/7/31.
@@ -18,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * 编程就像玩 Lego
  */
 @Data
-class JoinExecutorAdapterTest {
-    private JoinExecutorAdapter<OrderDetail, Long, User, User> joinExecutorAdapter;
+class JoinItemExecutorAdapterTest {
+    private JoinItemExecutorAdapter<OrderDetail, Long, User, User> joinExecutorAdapter;
 
     @BeforeEach
     void setUp() {
-        this.joinExecutorAdapter = JoinExecutorAdapter.<OrderDetail, Long, User, User>builder()
+        this.joinExecutorAdapter = JoinItemExecutorAdapter.<OrderDetail, Long, User, User>builder()
                 .keyGeneratorFromData(order->order.getOrder().getUserId())
                 .keyGeneratorFromJoinData(user -> user.getId())
                 .dataConverter(user -> user)

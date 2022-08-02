@@ -1,6 +1,6 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinExecutor;
+import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
  * @param <JOIN_DATA> join 获取的 数据
  * @param <JOIN_RESULT> 转换后的结果数据
  */
-abstract class AbstractJoinExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinExecutor<SOURCE_DATA> {
+abstract class AbstractJoinItemExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinItemExecutor<SOURCE_DATA> {
 
     /**
      * 从原始数据中生成 JoinKey

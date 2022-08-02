@@ -3,7 +3,6 @@ package com.geekhalo.lego.core.joininmemory.support;
 import com.google.common.base.Preconditions;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.function.Function;
 @Slf4j
 @Builder
 @Getter
-public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinExecutor<DATA, JOIN_KEY, JOIN_DATA, RESULT>{
+public class JoinItemExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinItemExecutor<DATA, JOIN_KEY, JOIN_DATA, RESULT> {
     private final String name;
     private final Function<DATA, JOIN_KEY> keyGeneratorFromData;
     private final Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader;
@@ -28,14 +27,14 @@ public class JoinExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends Abst
     private final BiConsumer<DATA, JOIN_KEY> lostFunction;
     private final int runLevel;
 
-    public JoinExecutorAdapter(String name,
-                               Function<DATA, JOIN_KEY> keyGeneratorFromData,
-                               Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader,
-                               Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData,
-                               Function<JOIN_DATA, RESULT> dataConverter,
-                               BiConsumer<DATA, RESULT> foundFunction,
-                               BiConsumer<DATA, JOIN_KEY> lostFunction,
-                               Integer runLevel) {
+    public JoinItemExecutorAdapter(String name,
+                                   Function<DATA, JOIN_KEY> keyGeneratorFromData,
+                                   Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader,
+                                   Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData,
+                                   Function<JOIN_DATA, RESULT> dataConverter,
+                                   BiConsumer<DATA, RESULT> foundFunction,
+                                   BiConsumer<DATA, JOIN_KEY> lostFunction,
+                                   Integer runLevel) {
 
         Preconditions.checkArgument(keyGeneratorFromData != null);
         Preconditions.checkArgument(dataLoeader != null);
