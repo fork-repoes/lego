@@ -27,6 +27,11 @@ public class DefaultJoinService implements JoinService {
         joinItemsExecutor.execute(t);
     }
 
+    @Override
+    public <T> void register(Class<T> tCls) {
+        this.cache.computeIfAbsent(tCls, this::createJoinExecutorGroup);
+    }
+
     private JoinItemsExecutor createJoinExecutorGroup(Class aClass) {
         return this.joinItemsExecutorFactory.createFor(aClass);
     }

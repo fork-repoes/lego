@@ -1,5 +1,6 @@
 package com.geekhalo.lego.joininmemory.web;
 
+import com.geekhalo.lego.annotation.joininmemory.JoinInMemory;
 import com.geekhalo.lego.joininmemory.service.address.JoinAddressOnId;
 import com.geekhalo.lego.joininmemory.service.product.JoinProductOnId;
 import com.geekhalo.lego.joininmemory.service.user.JoinUserOnId;
@@ -15,9 +16,9 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class AnnOrderDetailVO extends BaseOrderDetailVO {
+public class CommonAnnOrderDetailVO extends BaseOrderDetailVO {
     private final OrderVO order;
-    @JoinUserOnId(userId = "order.userId")
+    @JoinInMemory
     private UserVO user;
 
     @JoinAddressOnId(addressId = "order.addressId")

@@ -38,4 +38,11 @@ public interface JoinService {
      * @param t 需要抓取的集合
      */
     <T> void joinInMemory(Class<T> tCls, List<T> t);
+
+    /**
+     * 注册一个类型，主要用于初始化
+     * @param tCls
+     * @param <T>
+     */
+    <T> void register(Class<T> tCls);
 }
