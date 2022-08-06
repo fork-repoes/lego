@@ -1,9 +1,6 @@
 package com.geekhalo.lego.joininmemory.web;
 
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemory;
-import com.geekhalo.lego.joininmemory.service.address.JoinAddressOnId;
-import com.geekhalo.lego.joininmemory.service.product.JoinProductOnId;
-import com.geekhalo.lego.joininmemory.service.user.JoinUserOnId;
 import com.geekhalo.lego.joininmemory.web.vo.AddressVO;
 import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
 import com.geekhalo.lego.joininmemory.web.vo.ProductVO;
@@ -18,13 +15,25 @@ import lombok.Data;
 @Data
 public class CommonAnnOrderDetailVO extends BaseOrderDetailVO {
     private final OrderVO order;
-    @JoinInMemory
+    @JoinInMemory(keyFromSourceData = "#{order.userId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@userRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.vo.UserVO).apply(#root)}"
+        )
     private UserVO user;
 
-    @JoinAddressOnId(addressId = "order.addressId")
+    @JoinInMemory(keyFromSourceData = "#{order.addressId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@addressRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.vo.AddressVO).apply(#root)}"
+    )
     private AddressVO address;
 
-    @JoinProductOnId(productId = "order.productId")
+    @JoinInMemory(keyFromSourceData = "#{order.productId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@productRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.vo.ProductVO).apply(#root)}"
+    )
     private ProductVO product;
 
 }

@@ -23,11 +23,11 @@ class JoinItemExecutorAdapterTest {
     @BeforeEach
     void setUp() {
         this.joinExecutorAdapter = JoinItemExecutorAdapter.<OrderDetail, Long, User, User>builder()
-                .keyGeneratorFromData(order->order.getOrder().getUserId())
-                .keyGeneratorFromJoinData(user -> user.getId())
-                .dataConverter(user -> user)
-                .foundFunction((orderDetail, user) -> orderDetail.setUser(user))
-                .dataLoeader(userIds -> createUser(userIds))
+                .keyFromSourceData(order->order.getOrder().getUserId())
+                .keyFromJoinData(user -> user.getId())
+                .joinDataConverter(user -> user)
+                .foundCallback((orderDetail, user) -> orderDetail.setUser(user))
+                .joinDataLoader(userIds -> createUser(userIds))
                 .build();
     }
 

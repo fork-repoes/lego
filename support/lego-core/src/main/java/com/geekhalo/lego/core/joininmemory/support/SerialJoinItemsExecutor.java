@@ -9,6 +9,8 @@ import java.util.List;
  * Created by taoli on 2022/7/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * 串行执行器，多个 join 操作顺序执行
  */
 @Slf4j
 public class SerialJoinItemsExecutor<DATA> extends AbstractJoinItemsExecutor<DATA> {

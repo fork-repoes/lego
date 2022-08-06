@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
  * Created by taoli on 2022/7/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * 并行执行器，同一 level 的 join 在线程中并行执行
  */
 @Slf4j
 public class ParallelJoinItemsExecutor<DATA> extends AbstractJoinItemsExecutor<DATA> {
@@ -34,6 +36,7 @@ public class ParallelJoinItemsExecutor<DATA> extends AbstractJoinItemsExecutor<D
                 .entrySet().stream()
                 .map(entry -> new JoinExecutorWithLevel(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+        // 根据 level 进行排序，解决依赖问题
         Collections.sort(collect, Comparator.comparingInt(o -> o.level));
         return collect;
     }

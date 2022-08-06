@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-class OrderDetailServiceV2Test extends AbstractOrderDetailServiceTest{
+class OrderDetailServiceV3Test extends AbstractOrderDetailServiceTest{
     @Autowired
-    private OrderDetailServiceV2 orderDetailService;
+    private OrderDetailServiceV3 orderDetailService;
 
     @Override
     protected OrderDetailService getOrderDetailService() {

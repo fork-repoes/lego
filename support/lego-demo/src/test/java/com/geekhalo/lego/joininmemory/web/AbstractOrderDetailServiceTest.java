@@ -3,6 +3,7 @@ package com.geekhalo.lego.joininmemory.web;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,6 +16,13 @@ import java.util.concurrent.TimeUnit;
  */
 abstract class AbstractOrderDetailServiceTest {
     protected abstract OrderDetailService getOrderDetailService();
+
+    @BeforeEach
+    void setUp() {
+        for (int i = 0; i < 10; i++) {
+            this.getOrderDetailService().getByUserId(100L);
+        }
+    }
 
     @Test
     void getByUserId() {

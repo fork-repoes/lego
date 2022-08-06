@@ -1,9 +1,9 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
-import com.geekhalo.lego.annotation.joininmemory.JoinInMemory;
 import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
 import com.geekhalo.lego.core.joininmemory.JoinItemExecutorFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -29,29 +29,37 @@ abstract class AbstractAnnotationBasedJoinItemExecutorFactory<A extends Annotati
 
     @Override
     public <DATA> List<JoinItemExecutor<DATA>> createForType(Class<DATA> cls) {
-        List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(cls, this.annotationCls);
+        // 从 字段 上获取 注解，并将其转换为 JoinItemExecutor
+        List<Field> fieldsListWithAnnotation = FieldUtils.getAllFieldsList(cls);
+
         return fieldsListWithAnnotation.stream()
-                .map(field -> createForField(cls, field, field.getAnnotation(this.annotationCls)))
-                .filter(Objects::nonNull)
+                .map(field -> createForField(cls, field,
+                        AnnotatedElementUtils.findMergedAnnotation(field, annotationCls))
+                ).filter(Objects::nonNull)
                 .collect(toList());
     }
 
     private <DATA> JoinItemExecutor<DATA> createForField(Class<DATA> cls, Field field,A ann) {
+        if (ann == null){
+            return null;
+        }
         JoinItemExecutorAdapter adapter = JoinItemExecutorAdapter.builder()
                 .name(createName(cls, field, ann))
                 .runLevel(createRunLevel(cls, field, ann))
-                .keyGeneratorFromData(createKeyGeneratorFromData(cls, field, ann))
-                .dataLoeader(createDataLoeader(cls, field, ann))
-                .keyGeneratorFromJoinData(createKeyGeneratorFromJoinData(cls, field, ann))
-                .dataConverter(createDataConverter(cls, field, ann))
-                .foundFunction(createFoundFunction(cls, field, ann))
-                .lostFunction(createLostFunction(cls, field, ann))
+                .keyFromSourceData(createKeyGeneratorFromData(cls, field, ann))
+                .joinDataLoader(createDataLoader(cls, field, ann))
+                .keyFromJoinData(createKeyGeneratorFromJoinData(cls, field, ann))
+                .joinDataConverter(createDataConverter(cls, field, ann))
+                .foundCallback(createFoundFunction(cls, field, ann))
+                .lostCallback(createLostFunction(cls, field, ann))
                 .build();
 
         return adapter;
     }
 
-    protected abstract <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> cls, Field field, A ann);
+    protected <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> cls, Field field, A ann){
+        return null;
+    }
 
     protected abstract <DATA> BiConsumer<Object, Object> createFoundFunction(Class<DATA> cls, Field field, A ann);
 
@@ -59,11 +67,17 @@ abstract class AbstractAnnotationBasedJoinItemExecutorFactory<A extends Annotati
 
     protected abstract <DATA> Function<Object, Object> createKeyGeneratorFromJoinData(Class<DATA> cls, Field field, A ann);
 
-    protected abstract <DATA> Function<List<Object>, List<Object>> createDataLoeader(Class<DATA> cls, Field field, A ann);
+    protected abstract <DATA> Function<List<Object>, List<Object>> createDataLoader(Class<DATA> cls, Field field, A ann);
 
     protected abstract <DATA> Function<Object, Object> createKeyGeneratorFromData(Class<DATA> cls, Field field, A ann);
 
     protected abstract <DATA> int createRunLevel(Class<DATA> cls, Field field, A ann);
 
-    protected abstract <DATA> String createName(Class<DATA> cls, Field field, A ann);
+    protected <DATA> String createName(Class<DATA> cls, Field field, A ann){
+        return new StringBuilder()
+                .append("class[").append(cls.getSimpleName()).append("]")
+                .append("#field[").append(field.getName()).append("]")
+                .append("-").append(ann.getClass().getSimpleName())
+                .toString();
+    }
 }

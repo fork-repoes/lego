@@ -1,8 +1,10 @@
 package com.geekhalo.lego.joininmemory.web;
 
-import com.geekhalo.lego.joininmemory.service.address.JoinAddressOnId;
-import com.geekhalo.lego.joininmemory.service.product.JoinProductOnId;
-import com.geekhalo.lego.joininmemory.service.user.JoinUserOnId;
+import com.geekhalo.lego.annotation.joininmemory.JoinInMemeoryExecutorType;
+import com.geekhalo.lego.annotation.joininmemory.JoinInMemoryConfig;
+import com.geekhalo.lego.joininmemory.service.address.JoinAddressVOOnId;
+import com.geekhalo.lego.joininmemory.service.product.JoinProductVOOnId;
+import com.geekhalo.lego.joininmemory.service.user.JoinUserVOOnId;
 import com.geekhalo.lego.joininmemory.web.vo.AddressVO;
 import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
 import com.geekhalo.lego.joininmemory.web.vo.ProductVO;
@@ -15,15 +17,16 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
+@JoinInMemoryConfig(executorType = JoinInMemeoryExecutorType.PARALLEL)
 public class CustomAnnOrderDetailVO extends BaseOrderDetailVO {
     private final OrderVO order;
-    @JoinUserOnId(userId = "order.userId")
+    @JoinUserVOOnId(keyFromSourceData = "#{order.userId}")
     private UserVO user;
 
-    @JoinAddressOnId(addressId = "order.addressId")
+    @JoinAddressVOOnId(keyFromSourceData = "#{order.addressId}")
     private AddressVO address;
 
-    @JoinProductOnId(productId = "order.productId")
+    @JoinProductVOOnId(keyFromSourceData = "#{order.productId}")
     private ProductVO product;
 
 }

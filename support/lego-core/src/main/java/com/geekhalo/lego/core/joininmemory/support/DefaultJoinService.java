@@ -12,9 +12,15 @@ import java.util.Map;
  * Created by taoli on 2022/7/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * Join 服务对外接口
  */
 public class DefaultJoinService implements JoinService {
     private final JoinItemsExecutorFactory joinItemsExecutorFactory;
+
+    /**
+     * 缓存，避免频繁的初始化
+     */
     private final Map<Class, JoinItemsExecutor> cache = Maps.newConcurrentMap();
 
     public DefaultJoinService(JoinItemsExecutorFactory joinItemsExecutorFactory) {
@@ -23,8 +29,8 @@ public class DefaultJoinService implements JoinService {
 
     @Override
     public <T> void joinInMemory(Class<T> tCls, List<T> t) {
-        JoinItemsExecutor joinItemsExecutor = this.cache.computeIfAbsent(tCls, this::createJoinExecutorGroup);
-        joinItemsExecutor.execute(t);
+        this.cache.computeIfAbsent(tCls, this::createJoinExecutorGroup)
+                .execute(t);
     }
 
     @Override

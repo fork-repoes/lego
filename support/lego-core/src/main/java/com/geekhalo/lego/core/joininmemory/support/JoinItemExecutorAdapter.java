@@ -17,41 +17,45 @@ import java.util.function.Function;
 @Slf4j
 @Builder
 @Getter
-public class JoinItemExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinItemExecutor<DATA, JOIN_KEY, JOIN_DATA, RESULT> {
+public class JoinItemExecutorAdapter<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT>
+        extends AbstractJoinItemExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT> {
     private final String name;
-    private final Function<DATA, JOIN_KEY> keyGeneratorFromData;
-    private final Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader;
-    private final Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData;
-    private final Function<JOIN_DATA, RESULT> dataConverter;
-    private final BiConsumer<DATA, RESULT> foundFunction;
-    private final BiConsumer<DATA, JOIN_KEY> lostFunction;
     private final int runLevel;
 
-    public JoinItemExecutorAdapter(String name,
-                                   Function<DATA, JOIN_KEY> keyGeneratorFromData,
-                                   Function<List<JOIN_KEY>, List<JOIN_DATA>> dataLoeader,
-                                   Function<JOIN_DATA, JOIN_KEY> keyGeneratorFromJoinData,
-                                   Function<JOIN_DATA, RESULT> dataConverter,
-                                   BiConsumer<DATA, RESULT> foundFunction,
-                                   BiConsumer<DATA, JOIN_KEY> lostFunction,
-                                   Integer runLevel) {
+    private final Function<SOURCE_DATA, JOIN_KEY> keyFromSourceData;
+    private final Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader;
+    private final Function<JOIN_DATA, JOIN_KEY> keyFromJoinData;
+    private final Function<JOIN_DATA, RESULT> joinDataConverter;
+    private final BiConsumer<SOURCE_DATA, RESULT> foundCallback;
+    private final BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback;
 
-        Preconditions.checkArgument(keyGeneratorFromData != null);
-        Preconditions.checkArgument(dataLoeader != null);
-        Preconditions.checkArgument(keyGeneratorFromJoinData != null);
-        Preconditions.checkArgument(dataConverter != null);
-        Preconditions.checkArgument(foundFunction != null);
+
+    public JoinItemExecutorAdapter(String name,
+                                   Integer runLevel,
+                                   Function<SOURCE_DATA, JOIN_KEY> keyFromSourceData,
+                                   Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader,
+                                   Function<JOIN_DATA, JOIN_KEY> keyFromJoinData,
+                                   Function<JOIN_DATA, RESULT> joinDataConverter,
+                                   BiConsumer<SOURCE_DATA, RESULT> foundCallback,
+                                   BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback) {
+
+        Preconditions.checkArgument(keyFromSourceData != null);
+        Preconditions.checkArgument(joinDataLoader != null);
+        Preconditions.checkArgument(keyFromJoinData != null);
+        Preconditions.checkArgument(joinDataConverter != null);
+        Preconditions.checkArgument(foundCallback != null);
 
         this.name = name;
-        this.keyGeneratorFromData = keyGeneratorFromData;
-        this.dataLoeader = dataLoeader;
-        this.keyGeneratorFromJoinData = keyGeneratorFromJoinData;
-        this.dataConverter = dataConverter;
-        this.foundFunction = foundFunction;
-        if (lostFunction != null) {
-            this.lostFunction = getDefaultLostFunction().andThen(lostFunction);
+        this.keyFromSourceData = keyFromSourceData;
+        this.joinDataLoader = joinDataLoader;
+        this.keyFromJoinData = keyFromJoinData;
+        this.joinDataConverter = joinDataConverter;
+        this.foundCallback = foundCallback;
+
+        if (lostCallback != null) {
+            this.lostCallback = getDefaultLostFunction().andThen(lostCallback);
         }else {
-            this.lostFunction = getDefaultLostFunction();
+            this.lostCallback = getDefaultLostFunction();
         }
 
         if (runLevel == null){
@@ -62,36 +66,36 @@ public class JoinItemExecutorAdapter<DATA, JOIN_KEY, JOIN_DATA, RESULT> extends 
     }
 
     @Override
-    protected JOIN_KEY createJoinKeyFromSourceData(DATA data) {
-        return this.keyGeneratorFromData.apply(data);
+    protected JOIN_KEY createJoinKeyFromSourceData(SOURCE_DATA data) {
+        return this.keyFromSourceData.apply(data);
     }
 
     @Override
-    protected List<JOIN_DATA> getJoinDatasByJoinKeys(List<JOIN_KEY> joinKeys) {
-        return this.dataLoeader.apply(joinKeys);
+    protected List<JOIN_DATA> getJoinDataByJoinKeys(List<JOIN_KEY> joinKeys) {
+        return this.joinDataLoader.apply(joinKeys);
     }
 
     @Override
     protected JOIN_KEY createJoinKeyFromJoinData(JOIN_DATA joinData) {
-        return this.keyGeneratorFromJoinData.apply(joinData);
+        return this.keyFromJoinData.apply(joinData);
     }
 
     @Override
     protected RESULT convertToResult(JOIN_DATA joinData) {
-        return this.dataConverter.apply(joinData);
+        return this.joinDataConverter.apply(joinData);
     }
 
     @Override
-    protected void onFound(DATA data, RESULT JoinResult) {
-        this.foundFunction.accept(data, JoinResult);
+    protected void onFound(SOURCE_DATA data, RESULT JoinResult) {
+        this.foundCallback.accept(data, JoinResult);
     }
 
     @Override
-    protected void onNotFound(DATA data, JOIN_KEY joinKey) {
-        this.lostFunction.accept(data, joinKey);
+    protected void onNotFound(SOURCE_DATA data, JOIN_KEY joinKey) {
+        this.lostCallback.accept(data, joinKey);
     }
 
-    private BiConsumer<DATA, JOIN_KEY> getDefaultLostFunction() {
+    private BiConsumer<SOURCE_DATA, JOIN_KEY> getDefaultLostFunction() {
         return (data, joinKey) -> {
             log.warn("failed to find join data by {} for {}", joinKey, data);
         };

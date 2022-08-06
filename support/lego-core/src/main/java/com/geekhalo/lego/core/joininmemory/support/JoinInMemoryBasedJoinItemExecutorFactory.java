@@ -1,7 +1,15 @@
 package com.geekhalo.lego.core.joininmemory.support;
 
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemory;
-import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.expression.BeanResolver;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,49 +21,98 @@ import java.util.function.Function;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Slf4j
 public class JoinInMemoryBasedJoinItemExecutorFactory extends AbstractAnnotationBasedJoinItemExecutorFactory<JoinInMemory>{
-    protected JoinInMemoryBasedJoinItemExecutorFactory() {
+    private final ExpressionParser parser = new SpelExpressionParser();
+    private final TemplateParserContext templateParserContext = new TemplateParserContext();
+    private final BeanResolver beanResolver;
+
+    public JoinInMemoryBasedJoinItemExecutorFactory(BeanResolver beanResolver) {
         super(JoinInMemory.class);
+        this.beanResolver = beanResolver;
     }
 
-
-    @Override
-    protected <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
-    }
 
     @Override
     protected <DATA> BiConsumer<Object, Object> createFoundFunction(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+        log.info("write field is {} for class {}", field.getName(), cls);
+        return new DataSetter(field.getName());
     }
 
     @Override
     protected <DATA> Function<Object, Object> createDataConverter(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+        if (StringUtils.isEmpty(ann.dataConverter())){
+            log.info("No Data Convert for class {}, field {}", cls, field.getName());
+            return Function.identity();
+        }else {
+            log.info("Data Convert is {} for class {}, field {}", ann.dataConverter(), cls, field.getName());
+            return new DataGetter(ann.dataConverter());
+        }
     }
 
     @Override
     protected <DATA> Function<Object, Object> createKeyGeneratorFromJoinData(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+        log.info("Key from join data is {} for class {}, field {}",
+                ann.keyFromJoinData(), cls, field.getName());
+        return new DataGetter(ann.keyFromJoinData());
     }
 
     @Override
-    protected <DATA> Function<List<Object>, List<Object>> createDataLoeader(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+    protected <DATA> Function<List<Object>, List<Object>> createDataLoader(Class<DATA> cls, Field field, JoinInMemory ann) {
+        log.info("data loader is {} for class {}, field {}",
+                ann.loader(), cls, field.getName());
+        return new DataGetter(ann.loader());
     }
 
     @Override
     protected <DATA> Function<Object, Object> createKeyGeneratorFromData(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+        log.info("Key from source data is {} for class {}, field {}",
+                ann.keyFromJoinData(), cls, field.getName());
+        return new DataGetter(ann.keyFromSourceData());
     }
 
     @Override
     protected <DATA> int createRunLevel(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return 0;
+        log.info("run level is {} for class {}, field {}",
+                ann.runLevel(), cls, field.getName());
+        return ann.runLevel();
     }
 
-    @Override
-    protected <DATA> String createName(Class<DATA> cls, Field field, JoinInMemory ann) {
-        return null;
+    private class DataSetter<T, U> implements BiConsumer<Object, Object>{
+        private final String fieldName;
+        private final Expression expression;
+
+        private DataSetter(String fieldName) {
+            this.fieldName = fieldName;
+            this.expression = parser.parseExpression(fieldName);
+        }
+
+        @Override
+        public void accept(Object data, Object result) {
+            this.expression.setValue(data, result);
+        }
+    }
+
+    private class DataGetter<T, R> implements Function<T, R>{
+        private final String expStr;
+        private final Expression expression;
+        private final EvaluationContext evaluationContext;
+
+        private DataGetter(String expStr) {
+            this.expStr = expStr;
+            this.expression = parser.parseExpression(expStr, templateParserContext);
+            StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+            evaluationContext.setBeanResolver(beanResolver);
+            this.evaluationContext = evaluationContext;
+        }
+
+        @Override
+        public Object apply(Object data) {
+            if (data == null){
+                return null;
+            }
+
+            return expression.getValue(evaluationContext, data);
+        }
     }
 }

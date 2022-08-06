@@ -10,7 +10,16 @@ import java.lang.annotation.Target;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JoinInMemory {
+    String keyFromSourceData();
+
+    String keyFromJoinData();
+
+    String loader();
+
+    String dataConverter() default "";
+
+    int runLevel() default 10;
 }
