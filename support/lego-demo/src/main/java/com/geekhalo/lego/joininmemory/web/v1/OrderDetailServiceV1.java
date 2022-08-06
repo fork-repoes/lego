@@ -1,4 +1,4 @@
-package com.geekhalo.lego.joininmemory.web;
+package com.geekhalo.lego.joininmemory.web.v1;
 
 import com.geekhalo.lego.joininmemory.service.address.Address;
 import com.geekhalo.lego.joininmemory.service.address.AddressRepository;
@@ -8,10 +8,12 @@ import com.geekhalo.lego.joininmemory.service.product.Product;
 import com.geekhalo.lego.joininmemory.service.product.ProductRepository;
 import com.geekhalo.lego.joininmemory.service.user.User;
 import com.geekhalo.lego.joininmemory.service.user.UserRepository;
-import com.geekhalo.lego.joininmemory.web.vo.AddressVO;
-import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
-import com.geekhalo.lego.joininmemory.web.vo.ProductVO;
-import com.geekhalo.lego.joininmemory.web.vo.UserVO;
+import com.geekhalo.lego.joininmemory.web.OrderDetailService;
+import com.geekhalo.lego.joininmemory.web.OrderDetailVO;
+import com.geekhalo.lego.joininmemory.web.AddressVO;
+import com.geekhalo.lego.joininmemory.web.OrderVO;
+import com.geekhalo.lego.joininmemory.web.ProductVO;
+import com.geekhalo.lego.joininmemory.web.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ import static java.util.stream.Collectors.toList;
  * 编程就像玩 Lego
  */
 @Service
-public class OrderDetailServiceV1 implements OrderDetailService{
+public class OrderDetailServiceV1 implements OrderDetailService {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -36,17 +38,17 @@ public class OrderDetailServiceV1 implements OrderDetailService{
     private UserRepository userRepository;
 
     @Override
-    public List<? extends BaseOrderDetailVO> getByUserId(Long userId) {
+    public List<? extends OrderDetailVO> getByUserId(Long userId) {
         List<Order> orders = this.orderRepository.getByUserId(userId);
         return orders.stream()
                 .map(order -> convertToOrderDetailVO(order))
                 .collect(toList());
     }
 
-    private CommonOrderDetailVO convertToOrderDetailVO(Order order) {
+    private OrderDetailVOV1 convertToOrderDetailVO(Order order) {
         OrderVO orderVO = OrderVO.apply(order);
 
-        CommonOrderDetailVO orderDetailVO = new CommonOrderDetailVO(orderVO);
+        OrderDetailVOV1 orderDetailVO = new OrderDetailVOV1(orderVO);
 
         Address address = this.addressRepository.getById(order.getAddressId());
         AddressVO addressVO = AddressVO.apply(address);

@@ -1,6 +1,7 @@
 package com.geekhalo.lego.joininmemory.web;
 
 import com.geekhalo.lego.DemoApplication;
+import com.geekhalo.lego.joininmemory.web.v4.OrderDetailServiceV4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

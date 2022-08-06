@@ -1,9 +1,11 @@
-package com.geekhalo.lego.joininmemory.web;
+package com.geekhalo.lego.joininmemory.web.v4;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.joininmemory.service.order.Order;
 import com.geekhalo.lego.joininmemory.service.order.OrderRepository;
-import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
+import com.geekhalo.lego.joininmemory.web.OrderDetailService;
+import com.geekhalo.lego.joininmemory.web.OrderDetailVO;
+import com.geekhalo.lego.joininmemory.web.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +19,21 @@ import static java.util.stream.Collectors.toList;
  * 编程就像玩 Lego
  */
 @Service
-public class OrderDetailServiceV4 implements OrderDetailService{
+public class OrderDetailServiceV4 implements OrderDetailService {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private JoinService joinService;
 
     @Override
-    public List<? extends BaseOrderDetailVO> getByUserId(Long userId) {
+    public List<? extends OrderDetailVO> getByUserId(Long userId) {
         List<Order> orders = this.orderRepository.getByUserId(userId);
 
-        List<CustomAnnOrderDetailVO> orderDetailVOS = orders.stream()
-                .map(order -> new CustomAnnOrderDetailVO(OrderVO.apply(order)))
+        List<OrderDetailVOV4> orderDetailVOS = orders.stream()
+                .map(order -> new OrderDetailVOV4(OrderVO.apply(order)))
                 .collect(toList());
 
-        this.joinService.joinInMemory(CustomAnnOrderDetailVO.class, orderDetailVOS);
+        this.joinService.joinInMemory(OrderDetailVOV4.class, orderDetailVOS);
         return orderDetailVOS;
     }
 }

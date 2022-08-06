@@ -27,7 +27,7 @@ abstract class AbstractOrderDetailServiceTest {
     @Test
     void getByUserId() {
         StopWatch stopWatch = StopWatch.createStarted();
-        List<? extends BaseOrderDetailVO> orderDetailVOS = this.getOrderDetailService().getByUserId(100L);
+        List<? extends OrderDetailVO> orderDetailVOS = this.getOrderDetailService().getByUserId(100L);
         stopWatch.stop();
         System.out.println("cost " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
         Assertions.assertTrue(CollectionUtils.isNotEmpty(orderDetailVOS));

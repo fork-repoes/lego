@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @JoinInMemory(keyFromSourceData = "",
         keyFromJoinData = "#{id}",
         loader = "#{@addressRepository.getByIds(#root)}",
-        dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.vo.AddressVO).apply(#root)}"
+        dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.AddressVO).apply(#root)}"
 )
 public @interface JoinAddressVOOnId {
     @AliasFor(

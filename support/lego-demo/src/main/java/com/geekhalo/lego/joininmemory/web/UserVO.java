@@ -1,4 +1,4 @@
-package com.geekhalo.lego.joininmemory.web.vo;
+package com.geekhalo.lego.joininmemory.web;
 
 import com.geekhalo.lego.joininmemory.service.user.User;
 import lombok.Value;

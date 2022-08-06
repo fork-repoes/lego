@@ -1,14 +1,15 @@
-package com.geekhalo.lego.joininmemory.web;
+package com.geekhalo.lego.joininmemory.web.v4;
 
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemeoryExecutorType;
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemoryConfig;
 import com.geekhalo.lego.joininmemory.service.address.JoinAddressVOOnId;
 import com.geekhalo.lego.joininmemory.service.product.JoinProductVOOnId;
 import com.geekhalo.lego.joininmemory.service.user.JoinUserVOOnId;
-import com.geekhalo.lego.joininmemory.web.vo.AddressVO;
-import com.geekhalo.lego.joininmemory.web.vo.OrderVO;
-import com.geekhalo.lego.joininmemory.web.vo.ProductVO;
-import com.geekhalo.lego.joininmemory.web.vo.UserVO;
+import com.geekhalo.lego.joininmemory.web.OrderDetailVO;
+import com.geekhalo.lego.joininmemory.web.AddressVO;
+import com.geekhalo.lego.joininmemory.web.OrderVO;
+import com.geekhalo.lego.joininmemory.web.ProductVO;
+import com.geekhalo.lego.joininmemory.web.UserVO;
 import lombok.Data;
 
 /**
@@ -18,8 +19,9 @@ import lombok.Data;
  */
 @Data
 @JoinInMemoryConfig(executorType = JoinInMemeoryExecutorType.PARALLEL)
-public class CustomAnnOrderDetailVO extends BaseOrderDetailVO {
+public class OrderDetailVOV4 extends OrderDetailVO {
     private final OrderVO order;
+
     @JoinUserVOOnId(keyFromSourceData = "#{order.userId}")
     private UserVO user;
 
