@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
+import com.geekhalo.lego.core.excelasbean.support.write.HSSFColumnWriters;
+import com.geekhalo.lego.core.excelasbean.support.write.HSSFColumnWritersFactory;
 import com.google.common.collect.Maps;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 

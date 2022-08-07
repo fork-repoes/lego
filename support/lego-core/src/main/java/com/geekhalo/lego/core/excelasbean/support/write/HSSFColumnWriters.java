@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support;
+package com.geekhalo.lego.core.excelasbean.support.write;
 
 import com.google.common.collect.Lists;
 import org.apache.poi.hssf.usermodel.HSSFCell;
