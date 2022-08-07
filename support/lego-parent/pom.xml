@@ -20,6 +20,7 @@
 		<commons.lang3-version>3.7</commons.lang3-version>
 		<commons.collections-version>3.2.2</commons.collections-version>
 		<spring-cloud.version>2021.0.3</spring-cloud.version>
+		<poi.version>3.17</poi.version>
 	</properties>
 
 	<dependencyManagement>
@@ -45,6 +46,11 @@
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
 				<version>${commons.collections-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
