@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JoinInMemoryConfig {
-    JoinInMemeoryExecutorType executorType() default JoinInMemeoryExecutorType.PARALLEL;
+    JoinInMemeoryExecutorType executorType() default JoinInMemeoryExecutorType.SERIAL;
     String executorName() default "defaultExecutor";
 }

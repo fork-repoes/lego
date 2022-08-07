@@ -19,22 +19,21 @@ public class OrderDetailVOV4 extends OrderDetailVO {
     @JoinInMemory(keyFromSourceData = "#{order.userId}",
             keyFromJoinData = "#{id}",
             loader = "#{@userRepository.getByIds(#root)}",
-            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.UserVO).apply(#root)}"
+            joinDataConverter = "#{T(com.geekhalo.lego.joininmemory.web.UserVO).apply(#root)}"
         )
     private UserVO user;
 
     @JoinInMemory(keyFromSourceData = "#{order.addressId}",
             keyFromJoinData = "#{id}",
             loader = "#{@addressRepository.getByIds(#root)}",
-            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.AddressVO).apply(#root)}"
+            joinDataConverter = "#{T(com.geekhalo.lego.joininmemory.web.AddressVO).apply(#root)}"
     )
     private AddressVO address;
 
     @JoinInMemory(keyFromSourceData = "#{order.productId}",
             keyFromJoinData = "#{id}",
             loader = "#{@productRepository.getByIds(#root)}",
-            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.ProductVO).apply(#root)}"
+            joinDataConverter = "#{T(com.geekhalo.lego.joininmemory.web.ProductVO).apply(#root)}"
     )
     private ProductVO product;
-
 }

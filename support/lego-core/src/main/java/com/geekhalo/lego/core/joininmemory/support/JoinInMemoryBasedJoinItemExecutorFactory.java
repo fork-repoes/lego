@@ -41,12 +41,12 @@ public class JoinInMemoryBasedJoinItemExecutorFactory extends AbstractAnnotation
 
     @Override
     protected <DATA> Function<Object, Object> createDataConverter(Class<DATA> cls, Field field, JoinInMemory ann) {
-        if (StringUtils.isEmpty(ann.dataConverter())){
+        if (StringUtils.isEmpty(ann.joinDataConverter())){
             log.info("No Data Convert for class {}, field {}", cls, field.getName());
             return Function.identity();
         }else {
-            log.info("Data Convert is {} for class {}, field {}", ann.dataConverter(), cls, field.getName());
-            return new DataGetter(ann.dataConverter());
+            log.info("Data Convert is {} for class {}, field {}", ann.joinDataConverter(), cls, field.getName());
+            return new DataGetter(ann.joinDataConverter());
         }
     }
 

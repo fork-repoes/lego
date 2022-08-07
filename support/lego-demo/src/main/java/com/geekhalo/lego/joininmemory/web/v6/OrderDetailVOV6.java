@@ -1,15 +1,11 @@
-package com.geekhalo.lego.joininmemory.web.v5;
+package com.geekhalo.lego.joininmemory.web.v6;
 
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemeoryExecutorType;
 import com.geekhalo.lego.annotation.joininmemory.JoinInMemoryConfig;
 import com.geekhalo.lego.joininmemory.service.address.JoinAddressVOOnId;
 import com.geekhalo.lego.joininmemory.service.product.JoinProductVOOnId;
 import com.geekhalo.lego.joininmemory.service.user.JoinUserVOOnId;
-import com.geekhalo.lego.joininmemory.web.OrderDetailVO;
-import com.geekhalo.lego.joininmemory.web.AddressVO;
-import com.geekhalo.lego.joininmemory.web.OrderVO;
-import com.geekhalo.lego.joininmemory.web.ProductVO;
-import com.geekhalo.lego.joininmemory.web.UserVO;
+import com.geekhalo.lego.joininmemory.web.*;
 import lombok.Data;
 
 /**
@@ -18,7 +14,8 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class OrderDetailVOV5 extends OrderDetailVO {
+@JoinInMemoryConfig(executorType = JoinInMemeoryExecutorType.PARALLEL)
+public class OrderDetailVOV6 extends OrderDetailVO {
     private final OrderVO order;
 
     @JoinUserVOOnId(keyFromSourceData = "#{order.userId}")

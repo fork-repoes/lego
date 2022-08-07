@@ -26,12 +26,13 @@ abstract class AbstractOrderDetailServiceTest {
 
     @Test
     void getByUserId() {
+        int dataSize = 100;
         StopWatch stopWatch = StopWatch.createStarted();
-        List<? extends OrderDetailVO> orderDetailVOS = this.getOrderDetailService().getByUserId(100L);
+        List<? extends OrderDetailVO> orderDetailVOS = this.getOrderDetailService().getByUserId(dataSize + 0L);
         stopWatch.stop();
         System.out.println("cost " + stopWatch.getTime(TimeUnit.MILLISECONDS) + "ms");
         Assertions.assertTrue(CollectionUtils.isNotEmpty(orderDetailVOS));
-        Assertions.assertEquals(100, orderDetailVOS.size());
+        Assertions.assertEquals(dataSize, orderDetailVOS.size());
         orderDetailVOS.forEach(orderDetailVO -> {
             Assertions.assertNotNull(orderDetailVO.getOrder());
             Assertions.assertNotNull(orderDetailVO.getUser());

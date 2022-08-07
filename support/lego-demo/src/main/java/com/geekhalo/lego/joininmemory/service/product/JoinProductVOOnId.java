@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @JoinInMemory(keyFromSourceData = "",
         keyFromJoinData = "#{id}",
         loader = "#{@productRepository.getByIds(#root)}",
-        dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.ProductVO).apply(#root)}"
+        joinDataConverter = "#{T(com.geekhalo.lego.joininmemory.web.ProductVO).apply(#root)}"
 )
 public @interface JoinProductVOOnId {
     @AliasFor(

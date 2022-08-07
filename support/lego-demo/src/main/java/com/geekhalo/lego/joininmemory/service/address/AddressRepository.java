@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class AddressRepository {
     public List<Address> getByIds(List<Long> ids){
-        sleepAsMS(50);
+        sleepAsMS(10);
         return ids.stream()
                 .distinct()
                 .map(id->createAddress(id))
@@ -23,7 +23,7 @@ public class AddressRepository {
     }
 
     public Address getById(Long id){
-        sleepAsMS(5);
+        sleepAsMS(3);
         return createAddress(id);
     }
 

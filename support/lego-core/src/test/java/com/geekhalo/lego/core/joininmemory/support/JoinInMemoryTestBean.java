@@ -15,7 +15,7 @@ public class JoinInMemoryTestBean {
     @JoinInMemory(keyFromSourceData = "#{order.userId}",
             keyFromJoinData = "#{id}",
             loader = "#{@userRepository.getByIds(#root)}",
-            dataConverter = "#{T(com.geekhalo.lego.core.joininmemory.support.UserVO).apply(#root)}")
+            joinDataConverter = "#{T(com.geekhalo.lego.core.joininmemory.support.UserVO).apply(#root)}")
     private UserVO user;
 
     @JoinInMemory(keyFromSourceData = "#{order.productId}",
