@@ -1,8 +1,7 @@
 package com.geekhalo.lego.joininmemory.web;
 
 import com.geekhalo.lego.DemoApplication;
-import com.geekhalo.lego.joininmemory.web.v2.OrderDetailServiceV2;
-import com.geekhalo.lego.joininmemory.web.v3.OrderDetailServiceV3;
+import com.geekhalo.lego.joininmemory.web.v5.OrderDetailServiceV5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-class OrderDetailServiceV3Test extends AbstractOrderDetailServiceTest{
+class OrderDetailServiceV5Test extends AbstractOrderDetailServiceTest{
     @Autowired
-    private OrderDetailServiceV3 orderDetailService;
+    private OrderDetailServiceV5 orderDetailService;
 
     @Override
     protected OrderDetailService getOrderDetailService() {

@@ -1,10 +1,6 @@
 package com.geekhalo.lego.joininmemory.web.v4;
 
-import com.geekhalo.lego.annotation.joininmemory.JoinInMemeoryExecutorType;
-import com.geekhalo.lego.annotation.joininmemory.JoinInMemoryConfig;
-import com.geekhalo.lego.joininmemory.service.address.JoinAddressVOOnId;
-import com.geekhalo.lego.joininmemory.service.product.JoinProductVOOnId;
-import com.geekhalo.lego.joininmemory.service.user.JoinUserVOOnId;
+import com.geekhalo.lego.annotation.joininmemory.JoinInMemory;
 import com.geekhalo.lego.joininmemory.web.OrderDetailVO;
 import com.geekhalo.lego.joininmemory.web.AddressVO;
 import com.geekhalo.lego.joininmemory.web.OrderVO;
@@ -18,17 +14,27 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-@JoinInMemoryConfig(executorType = JoinInMemeoryExecutorType.PARALLEL)
 public class OrderDetailVOV4 extends OrderDetailVO {
     private final OrderVO order;
-
-    @JoinUserVOOnId(keyFromSourceData = "#{order.userId}")
+    @JoinInMemory(keyFromSourceData = "#{order.userId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@userRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.UserVO).apply(#root)}"
+        )
     private UserVO user;
 
-    @JoinAddressVOOnId(keyFromSourceData = "#{order.addressId}")
+    @JoinInMemory(keyFromSourceData = "#{order.addressId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@addressRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.AddressVO).apply(#root)}"
+    )
     private AddressVO address;
 
-    @JoinProductVOOnId(keyFromSourceData = "#{order.productId}")
+    @JoinInMemory(keyFromSourceData = "#{order.productId}",
+            keyFromJoinData = "#{id}",
+            loader = "#{@productRepository.getByIds(#root)}",
+            dataConverter = "#{T(com.geekhalo.lego.joininmemory.web.ProductVO).apply(#root)}"
+    )
     private ProductVO product;
 
 }
