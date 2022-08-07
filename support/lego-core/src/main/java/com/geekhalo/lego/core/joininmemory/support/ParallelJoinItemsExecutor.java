@@ -3,12 +3,14 @@ package com.geekhalo.lego.core.joininmemory.support;
 import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +51,17 @@ public class ParallelJoinItemsExecutor<DATA> extends AbstractJoinItemsExecutor<D
 
             List<Task> tasks = buildTasks(joinExecutorWithLevel1, datas);
             try {
-                this.executor.invokeAll(tasks);
+                if (log.isDebugEnabled()) {
+                    StopWatch stopWatch = StopWatch.createStarted();
+                    this.executor.invokeAll(tasks);
+                    stopWatch.stop();
+
+                    log.debug("run execute cost {} ms, task is {}.",
+                            stopWatch.getTime(TimeUnit.MILLISECONDS),
+                            tasks);
+                }else {
+                    this.executor.invokeAll(tasks);
+                }
             } catch (InterruptedException e) {
                 log.error("invoke task {} interrupted", tasks, e);
             }

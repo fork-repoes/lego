@@ -16,14 +16,14 @@ import static java.util.stream.Collectors.toList;
 public class ProductRepository {
 
     public List<Product> getByIds(List<Long> ids){
-        sleepAsMS(20);
+        sleepAsMS(50);
         return ids.stream()
                 .map(id -> createProduct(id))
                 .collect(toList());
     }
 
     public Product getById(Long id){
-        sleepAsMS(2);
+        sleepAsMS(5);
         return createProduct(id);
     }
 

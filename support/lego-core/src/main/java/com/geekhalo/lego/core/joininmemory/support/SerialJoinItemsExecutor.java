@@ -2,8 +2,10 @@ package com.geekhalo.lego.core.joininmemory.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by taoli on 2022/7/31.
@@ -24,7 +26,19 @@ public class SerialJoinItemsExecutor<DATA> extends AbstractJoinItemsExecutor<DAT
         getJoinItemExecutors().forEach(dataJoinExecutor -> {
             log.debug("run join on level {} use {}",
                     dataJoinExecutor.runOnLevel(), dataJoinExecutor);
-            dataJoinExecutor.execute(datas);
+            if (log.isDebugEnabled()){
+                StopWatch stopWatch = StopWatch.createStarted();
+                dataJoinExecutor.execute(datas);
+                stopWatch.stop();
+
+                log.debug("run execute cost {} ms, executor is {}, data is {}.",
+                        stopWatch.getTime(TimeUnit.MILLISECONDS),
+                        dataJoinExecutor,
+                        datas);
+            }else {
+                dataJoinExecutor.execute(datas);
+            }
+
         });
     }
 }

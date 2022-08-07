@@ -16,7 +16,7 @@ import static com.geekhalo.lego.util.TimeUtils.sleepAsMS;
 @Repository
 public class OrderRepository {
     public List<Order> getByUserId(Long userId){
-        sleepAsMS(20);
+        sleepAsMS(5);
         List<Order> orders = Lists.newArrayListWithCapacity(100);
         for (int i = 0; i< 100; i++){
             orders.add(createOrder(i+1));

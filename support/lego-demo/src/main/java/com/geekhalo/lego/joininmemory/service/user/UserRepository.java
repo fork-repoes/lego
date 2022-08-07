@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class UserRepository {
     public List<User> getByIds(List<Long> ids){
-        sleepAsMS(20);
+        sleepAsMS(50);
         return ids.stream()
                 .distinct()
                 .map(id -> createUser(id))
@@ -23,7 +23,7 @@ public class UserRepository {
     }
 
     public User getById(Long id){
-        sleepAsMS(2);
+        sleepAsMS(5);
         return createUser(id);
     }
 
