@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.excelasbean;
 
 import com.google.common.collect.Lists;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,12 +17,13 @@ import java.util.function.Consumer;
 public interface ExcelAsBeanService {
     /**
      * 将 D 写入到 Sheet
-     * @param sheet 待写入的 Sheet
+     * @param workbook
+     * @param sheetName 待写入的 Sheet名称
      * @param dataCls 待写入的 Class
      * @param data 待写入数据
      * @param <D>
      */
-    <D> void writToSheet(HSSFSheet sheet, Class<D> dataCls, List<D> data);
+    <D> void writToSheet(HSSFWorkbook workbook, String sheetName, Class<D> dataCls, List<D> data);
 
     /**
      * 将 Excel 模板写入到 Sheet

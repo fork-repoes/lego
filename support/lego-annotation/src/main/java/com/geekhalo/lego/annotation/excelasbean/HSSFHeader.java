@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * 用于标记 表格头信息
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HSSFHeader {
     String value();

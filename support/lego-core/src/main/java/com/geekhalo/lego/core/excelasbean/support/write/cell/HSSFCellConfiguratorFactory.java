@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.write.header;
+package com.geekhalo.lego.core.excelasbean.support.write.cell;
 
 import com.geekhalo.lego.core.SmartComponent;
 
@@ -9,8 +9,8 @@ import java.lang.reflect.Field;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface HSSFHeaderWriterFactory extends SmartComponent<Field> {
+public interface HSSFCellConfiguratorFactory extends SmartComponent<Field> {
     boolean support(Field field);
 
-    HSSFHeaderWriter create(Field field);
+    HSSFCellConfigurator create(Field field);
 }

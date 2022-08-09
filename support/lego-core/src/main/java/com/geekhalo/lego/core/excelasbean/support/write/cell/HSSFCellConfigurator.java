@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.write;
+package com.geekhalo.lego.core.excelasbean.support.write.cell;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 
@@ -8,5 +8,5 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
  * 编程就像玩 Lego
  */
 public interface HSSFCellConfigurator {
-    void configFor(HSSFCell cell);
+    void configFor(HSSFCellWriterContext context, HSSFCell cell);
 }
