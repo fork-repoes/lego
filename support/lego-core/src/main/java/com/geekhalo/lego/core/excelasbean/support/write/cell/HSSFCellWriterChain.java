@@ -17,11 +17,11 @@ import java.util.function.Function;
  * 编程就像玩 Lego
  */
 public class HSSFCellWriterChain<D> {
-    private final Function dataSupplier;
+    private final HSSFDataSupplier dataSupplier;
     private final List<HSSFCellConfigurator> cellConfigs = Lists.newArrayList();
     private final HSSFCellWriter cellWriter;
 
-    protected HSSFCellWriterChain(Function dataSupplier,
+    protected HSSFCellWriterChain(HSSFDataSupplier dataSupplier,
                                   List<HSSFCellConfigurator> cellConfigs,
                                   HSSFCellWriter cellWriter){
         Preconditions.checkArgument(dataSupplier != null);
@@ -39,7 +39,7 @@ public class HSSFCellWriterChain<D> {
 
     public void write(HSSFCellWriterContext context, D data){
         HSSFRow row = context.getRow();
-        HSSFCell cell = row.createCell(row.getLastCellNum());
+        HSSFCell cell = row.createCell(Math.max(0, row.getLastCellNum()));
         configForCell(context, cell);
 
         Object d = this.dataSupplier.apply(data);

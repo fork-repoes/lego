@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.excelasbean.support.write.cell;
 
 import com.geekhalo.lego.core.SmartComponent;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
 /**
@@ -9,8 +10,8 @@ import java.lang.reflect.Field;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface HSSFCellConfiguratorFactory extends SmartComponent<Field> {
-    boolean support(Field field);
+public interface HSSFHeaderCellConfiguratorFactory extends SmartComponent<AnnotatedElement> {
+    boolean support(AnnotatedElement element);
 
-    HSSFCellConfigurator create(Field field);
+    HSSFCellConfigurator create(AnnotatedElement element, String name);
 }

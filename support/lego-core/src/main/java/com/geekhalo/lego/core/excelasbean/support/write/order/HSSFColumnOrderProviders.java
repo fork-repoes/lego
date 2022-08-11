@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.excelasbean.support.write.order;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -15,10 +16,10 @@ public class HSSFColumnOrderProviders {
         this.orderProviders = orderProviders;
     }
 
-    public int orderFor(Field field){
+    public int orderFor(AnnotatedElement annotatedElement){
         return this.orderProviders.stream()
-                .filter(provider -> provider.support(field))
-                .map(provider -> provider.orderForColumn(field))
+                .filter(provider -> provider.support(annotatedElement))
+                .map(provider -> provider.orderForColumn(annotatedElement))
                 .findFirst()
                 .orElse(0);
     }

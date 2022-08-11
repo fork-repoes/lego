@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support.write.cell;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 import java.util.Date;
 
@@ -24,6 +26,10 @@ public class DefaultHSSFCellWriter implements HSSFCellWriter{
             cell.setCellValue(String.valueOf(value));
         }
         if (returnType == Date.class){
+            HSSFDataFormat df = context.getWorkbook().createDataFormat();
+            CellStyle cs = context.getWorkbook().createCellStyle();
+            cs.setDataFormat(df.getFormat("yyyy-mm-dd HH:MM"));
+            cell.setCellStyle(cs);
             cell.setCellValue((Date) value);
         }
     }

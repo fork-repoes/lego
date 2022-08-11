@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
  * 写入一列数据，包括数据头，和数据信息
  */
 public interface HSSFColumnWriter<D> extends Ordered {
+    String name();
 
     void writeData(HSSFCellWriterContext context, D data);
 

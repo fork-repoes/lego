@@ -21,6 +21,10 @@ public class DefaultHSSFRowWriter<D> implements HSSFRowWriter<D> {
 
     private final List<HSSFColumnWriter> columnWriters = Lists.newArrayList();
 
+    public DefaultHSSFRowWriter(List<HSSFColumnWriter> columnWriters){
+        this(null, null, columnWriters);
+    }
+
     public DefaultHSSFRowWriter(List<HSSFRowConfigurator> headerRowConfigurators,
                                 List<HSSFRowConfigurator> dataRowConfigurators,
                                 List<HSSFColumnWriter> columnWriters) {
@@ -61,7 +65,7 @@ public class DefaultHSSFRowWriter<D> implements HSSFRowWriter<D> {
 
     @Override
     public void writeData(HSSFRowWriterContext context, D data) {
-        HSSFRow row = context.getSheet().createRow(context.getSheet().getLastRowNum());
+        HSSFRow row = context.getSheet().createRow(context.getSheet().getLastRowNum() + 1);
 
         configForData(context, row);
 

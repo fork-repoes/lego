@@ -2,14 +2,20 @@ package com.geekhalo.lego.starter.excelasbean;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfiguratorFactories;
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfiguratorFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.*;
+import com.geekhalo.lego.core.excelasbean.support.write.column.DefaultHSSFColumnWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
-import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFIndexBasedHSSFColumnOrderProvider;
+import com.geekhalo.lego.core.excelasbean.support.write.spi.DefaultHSSFCellWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.spi.FieldBasedDataDataSupplierFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.spi.HSSFHeaderBasedHeaderDataSupplierFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.spi.HSSFIndexBasedHSSFColumnOrderProvider;
+import com.geekhalo.lego.core.excelasbean.support.write.row.DefaultHSSFRowWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.row.HSSFRowWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.sheet.DefaultHSSFSheetWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetWriterFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,22 +37,65 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
+    public HSSFSheetWriterFactory sheetWriterFactory(HSSFRowWriterFactory rowWriterFactory){
+        return new DefaultHSSFSheetWriterFactory(rowWriterFactory);
+    }
+
+    @Bean
+    public HSSFRowWriterFactory rowWriterFactory(HSSFColumnWriterFactory columnWriterFactory){
+        return new DefaultHSSFRowWriterFactory(columnWriterFactory);
+    }
+
+    @Bean
+    public HSSFColumnWriterFactory columnWriterFactory(HSSFColumnOrderProviders orderProviders, HSSFCellWriterChainFactory writerChainFactory){
+        return new DefaultHSSFColumnWriterFactory(orderProviders, writerChainFactory);
+    }
+
+    @Bean
+    public HSSFCellWriterChainFactory writerChainFactory(HSSFDataSupplierFactories dataSupplierFactories,
+                                                         HSSFCellConfiguratorFactories cellConfiguratorFactories,
+                                                         HSSFCellWriterFactories cellWriterFactories){
+        return new DefaultHSSFCellWriterChainFactory(dataSupplierFactories,
+                cellConfiguratorFactories,
+                cellWriterFactories);
+    }
+
+    @Bean
+    public HSSFDataSupplierFactories dataSupplierFactories(List<HSSFHeaderDataSupplierFactory> headerDataSupplierFactories,
+                                                           List<HSSFDataDataSupplierFactory> dataDataSupplierFactories){
+        return new HSSFDataSupplierFactories(headerDataSupplierFactories, dataDataSupplierFactories);
+    }
+
+    @Bean
+    public HSSFCellConfiguratorFactories cellConfiguratorFactories(List<HSSFHeaderCellConfiguratorFactory> headerCellFactories,
+                                                                   List<HSSFDataCellConfiguratorFactory> dataCellFactories){
+        return new HSSFCellConfiguratorFactories(headerCellFactories, dataCellFactories);
+    }
+
+    @Bean
+    public HSSFCellWriterFactories cellWriterFactories(List<HSSFHeaderCellWriterFactory> headerCellWriterFactories,
+                                                       List<HSSFDataCellWriterFactory> dataHeaderCellWriterFactories){
+        return new HSSFCellWriterFactories(headerCellWriterFactories, dataHeaderCellWriterFactories);
+    }
+
+    @Bean
+    public DefaultHSSFCellWriterFactory defaultHSSFCellWriterFactory(){
+        return new DefaultHSSFCellWriterFactory();
+    }
+
+    @Bean
+    public FieldBasedDataDataSupplierFactory fieldBasedDataDataSupplierFactory(){
+        return new FieldBasedDataDataSupplierFactory();
+    }
+
+    @Bean
+    public HSSFHeaderBasedHeaderDataSupplierFactory headerBasedHeaderDataSupplierFactory(){
+        return new HSSFHeaderBasedHeaderDataSupplierFactory();
+    }
+
+    @Bean
     public HSSFColumnOrderProviders columnOrderProviders(List<HSSFColumnOrderProvider> orderProviders){
         return new HSSFColumnOrderProviders(orderProviders);
-    }
-
-    @Bean
-    public HSSFCellConfiguratorFactories headerCellConfiguratorFactories(@Autowired(required = false)
-                                                                               List<HSSFCellConfiguratorFactory> factories){
-        return new HSSFCellConfiguratorFactories(factories);
-    }
-
-
-
-    @Bean
-    public HSSFCellConfiguratorFactories dataCellConfiguratorFactories(@Autowired(required = false)
-                                                                                   List<HSSFCellConfiguratorFactory> factories){
-        return new HSSFCellConfiguratorFactories(factories);
     }
 
     @Bean
