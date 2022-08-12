@@ -6,10 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用于标记数据列顺序
+ * Created by taoli on 2022/8/12.
+ * gitee : https://gitee.com/litao851025/lego
+ * 编程就像玩 Lego
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HSSFIndex {
-    int value() default 0;
+public @interface HSSFDateFormat {
+    String value();
 }

@@ -4,13 +4,11 @@ import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.*;
 import com.geekhalo.lego.core.excelasbean.support.write.column.DefaultHSSFColumnWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterFactories;
 import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
-import com.geekhalo.lego.core.excelasbean.support.write.spi.DefaultHSSFCellWriterFactory;
-import com.geekhalo.lego.core.excelasbean.support.write.spi.FieldBasedDataDataSupplierFactory;
-import com.geekhalo.lego.core.excelasbean.support.write.spi.HSSFHeaderBasedHeaderDataSupplierFactory;
-import com.geekhalo.lego.core.excelasbean.support.write.spi.HSSFIndexBasedHSSFColumnOrderProvider;
+import com.geekhalo.lego.core.excelasbean.support.write.spi.*;
 import com.geekhalo.lego.core.excelasbean.support.write.row.DefaultHSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.row.HSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.DefaultHSSFSheetWriterFactory;
@@ -42,8 +40,14 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public HSSFRowWriterFactory rowWriterFactory(HSSFColumnWriterFactory columnWriterFactory){
-        return new DefaultHSSFRowWriterFactory(columnWriterFactory);
+    public HSSFRowWriterFactory rowWriterFactory(HSSFColumnWriterFactories columnWriterFactories){
+        return new DefaultHSSFRowWriterFactory(columnWriterFactories);
+    }
+
+    @Bean
+    public HSSFColumnWriterFactories columnWriterFactories(HSSFColumnOrderProviders orderProviders,
+                                                           HSSFColumnWriterFactory writerFactory){
+        return new HSSFColumnWriterFactories(orderProviders, writerFactory);
     }
 
     @Bean
@@ -81,6 +85,11 @@ public class ExcelAsBeanAutoConfiguration {
     @Bean
     public DefaultHSSFCellWriterFactory defaultHSSFCellWriterFactory(){
         return new DefaultHSSFCellWriterFactory();
+    }
+
+    @Bean
+    public HSSFDateFormatCellWriterFactory dateFormatCellWriterFactory(){
+        return new HSSFDateFormatCellWriterFactory();
     }
 
     @Bean

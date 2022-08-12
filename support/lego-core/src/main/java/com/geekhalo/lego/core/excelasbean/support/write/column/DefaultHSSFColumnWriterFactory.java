@@ -1,8 +1,10 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
+import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterChain;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterChainFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -24,8 +26,18 @@ public class DefaultHSSFColumnWriterFactory implements HSSFColumnWriterFactory{
     }
 
     @Override
+    public boolean support(Method method) {
+        return AnnotatedElementUtils.hasAnnotation(method, HSSFHeader.class);
+    }
+
+    @Override
     public <D> HSSFColumnWriter<D> createForGetter(Method getter) {
         return createFor(getter, getter.getName());
+    }
+
+    @Override
+    public boolean support(Field field) {
+        return AnnotatedElementUtils.hasAnnotation(field, HSSFHeader.class);
     }
 
     @Override

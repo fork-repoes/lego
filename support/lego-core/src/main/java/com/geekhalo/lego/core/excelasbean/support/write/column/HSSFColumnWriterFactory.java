@@ -9,8 +9,10 @@ import java.lang.reflect.Method;
  * 编程就像玩 Lego
  */
 public interface HSSFColumnWriterFactory {
+    boolean support(Method method);
 
     <D> HSSFColumnWriter<D> createForGetter(Method getter);
 
+    boolean support(Field field);
     <D> HSSFColumnWriter<D> createForField(Field field);
 }

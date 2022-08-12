@@ -29,10 +29,6 @@ public class DefaultHSSFColumnWriter<D> implements HSSFColumnWriter<D>{
         return this.order;
     }
 
-    @Override
-    public String name() {
-        return this.name;
-    }
 
     @Override
     public void writeData(HSSFCellWriterContext context, D data) {

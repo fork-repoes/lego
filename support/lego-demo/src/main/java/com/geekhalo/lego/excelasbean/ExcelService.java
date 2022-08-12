@@ -37,9 +37,23 @@ public class ExcelService {
                     .name("测试用户-" + i)
                     .age(age)
                     .birthAt(DateUtils.addYears(new Date(), - age))
+                    .formatDate(DateUtils.addYears(new Date(), age))
+                    .address(createAddress(i+1))
                     .build();
             users.add(user);
         }
         return users;
+    }
+
+    private Address createAddress(int i) {
+        if (i % 5 == 0){
+            return null;
+        }
+        return Address.builder()
+                .l1("北京")
+                .l2("北京")
+                .l3("海淀")
+                .l4("中关村-" + i)
+                .build();
     }
 }

@@ -21,6 +21,9 @@ public class FieldBasedDataDataSupplierFactory implements HSSFDataDataSupplierFa
     public HSSFDataSupplier create(AnnotatedElement annotatedElement, String name) {
         Field field = (Field) annotatedElement;
         return o -> {
+            if (o == null){
+                return null;
+            }
             try {
                 return FieldUtils.readField(field, o, true);
             } catch (IllegalAccessException e) {

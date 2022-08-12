@@ -15,18 +15,18 @@ import java.util.List;
  */
 public class HSSFCellWriterFactories {
     private final List<HSSFHeaderCellWriterFactory> headerCellWriterFactories = Lists.newArrayList();
-    private final List<HSSFDataCellWriterFactory> dataHeaderCellWriterFactories = Lists.newArrayList();
+    private final List<HSSFDataCellWriterFactory> dataCellWriterFactories = Lists.newArrayList();
 
     public HSSFCellWriterFactories(List<HSSFHeaderCellWriterFactory> headerCellWriterFactories,
-                                   List<HSSFDataCellWriterFactory> dataHeaderCellWriterFactories) {
+                                   List<HSSFDataCellWriterFactory> dataCellWriterFactories) {
         Preconditions.checkArgument(CollectionUtils.isNotEmpty(headerCellWriterFactories));
-        Preconditions.checkArgument(CollectionUtils.isNotEmpty(dataHeaderCellWriterFactories));
+        Preconditions.checkArgument(CollectionUtils.isNotEmpty(dataCellWriterFactories));
 
         this.headerCellWriterFactories.addAll(headerCellWriterFactories);
-        this.dataHeaderCellWriterFactories.addAll(dataHeaderCellWriterFactories);
+        this.dataCellWriterFactories.addAll(dataCellWriterFactories);
 
         AnnotationAwareOrderComparator.sort(this.headerCellWriterFactories);
-        AnnotationAwareOrderComparator.sort(this.dataHeaderCellWriterFactories);
+        AnnotationAwareOrderComparator.sort(this.dataCellWriterFactories);
     }
 
     public HSSFCellWriter createForHeader(AnnotatedElement element, String name) {
@@ -38,7 +38,7 @@ public class HSSFCellWriterFactories {
     }
 
     public HSSFCellWriter createForData(AnnotatedElement element, String name) {
-        return this.dataHeaderCellWriterFactories.stream()
+        return this.dataCellWriterFactories.stream()
                 .filter(factory -> factory.support(element))
                 .map(factory -> factory.create(element, name))
                 .findFirst()

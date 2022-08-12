@@ -15,6 +15,9 @@ public class DefaultHSSFCellWriter implements HSSFCellWriter{
 
     @Override
     public void write(HSSFCellWriterContext context, HSSFCell cell, Object value) {
+        if (value == null){
+            return;
+        }
         Class returnType = value.getClass();
         if (returnType == String.class){
             cell.setCellValue((String) value);
