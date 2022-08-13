@@ -7,6 +7,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by taoli on 2022/8/13.
@@ -14,11 +15,11 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public class HSSFColumnWriterComposite implements HSSFColumnWriter{
-    private final String path;
+    private final Function converter;
     private final int order;
     private final List<HSSFColumnWriter> columnWriters = Lists.newArrayList();
-    public HSSFColumnWriterComposite(List<HSSFColumnWriter> writers, String path, int order){
-        this.path = path;
+    public HSSFColumnWriterComposite(List<HSSFColumnWriter> writers, Function converter, int order){
+        this.converter = converter;
         this.order = order;
         if(CollectionUtils.isNotEmpty(writers)){
             this.columnWriters.addAll(writers);
@@ -28,18 +29,10 @@ public class HSSFColumnWriterComposite implements HSSFColumnWriter{
 
     @Override
     public void writeData(HSSFCellWriterContext context, Object data) {
-        Object value = getValueFromPath(data);
+        Object value = this.converter.apply(data);
         this.columnWriters.forEach(writer -> writer.writeData(context, value));
     }
 
-    private Object getValueFromPath(Object data) {
-        try {
-            return FieldUtils.readField(data, this.path, true);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public void writeHeader(HSSFCellWriterContext context) {
