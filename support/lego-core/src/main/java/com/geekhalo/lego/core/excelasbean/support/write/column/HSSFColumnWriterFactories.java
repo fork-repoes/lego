@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
+import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfiguratorFactories;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -18,10 +19,12 @@ import java.util.stream.Stream;
  */
 public class HSSFColumnWriterFactories {
     private final List<HSSFColumnWriterFactory> writerFactories = Lists.newArrayList();
-    public HSSFColumnWriterFactories(HSSFColumnOrderProviders orderProviders, HSSFColumnWriterFactory writerFactory){
+    public HSSFColumnWriterFactories(HSSFColumnOrderProviders orderProviders,
+                                     HSSFColumnWriterFactory writerFactory,
+                                     HSSFCellConfiguratorFactories cellConfiguratorFactories){
         Preconditions.checkArgument(writerFactory != null);
         this.writerFactories.add(writerFactory);
-        this.writerFactories.add(new HSSFEmbeddedColumWriterFactory(orderProviders, this));
+        this.writerFactories.add(new HSSFEmbeddedColumWriterFactory(orderProviders, this, cellConfiguratorFactories));
 
     }
     public List<HSSFColumnWriter> createForCls(Class cls){

@@ -46,8 +46,9 @@ public class ExcelAsBeanAutoConfiguration {
 
     @Bean
     public HSSFColumnWriterFactories columnWriterFactories(HSSFColumnOrderProviders orderProviders,
-                                                           HSSFColumnWriterFactory writerFactory){
-        return new HSSFColumnWriterFactories(orderProviders, writerFactory);
+                                                           HSSFColumnWriterFactory writerFactory,
+                                                           HSSFCellConfiguratorFactories cellConfiguratorFactories){
+        return new HSSFColumnWriterFactories(orderProviders, writerFactory, cellConfiguratorFactories);
     }
 
     @Bean

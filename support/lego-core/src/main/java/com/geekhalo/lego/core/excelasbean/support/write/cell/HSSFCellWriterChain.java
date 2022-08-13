@@ -50,4 +50,9 @@ public class HSSFCellWriterChain<D> {
     protected void configForCell(HSSFCellWriterContext context, int columnIndex, HSSFCell cell) {
         this.cellConfigs.forEach(hssfCellConfigurator -> hssfCellConfigurator.configFor(context, columnIndex, cell));
     }
+
+    public void addCellConfigurator(HSSFCellConfigurator cellConfigurator){
+        this.cellConfigs.add(cellConfigurator);
+        AnnotationAwareOrderComparator.sort(this.cellConfigs);
+    }
 }

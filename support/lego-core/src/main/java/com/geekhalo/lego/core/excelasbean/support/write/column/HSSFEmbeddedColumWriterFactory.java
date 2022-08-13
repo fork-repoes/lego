@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
 import com.geekhalo.lego.annotation.excelasbean.HSSFEmbedded;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfigurator;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfiguratorFactories;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -21,12 +23,15 @@ import java.util.function.Function;
 public class HSSFEmbeddedColumWriterFactory implements HSSFColumnWriterFactory{
     private final HSSFColumnOrderProviders orderProviders;
     private final HSSFColumnWriterFactories writerFactories;
+    private final HSSFCellConfiguratorFactories cellConfiguratorFactories;
 
 
     public HSSFEmbeddedColumWriterFactory(HSSFColumnOrderProviders orderProviders,
-                                          HSSFColumnWriterFactories writerFactories) {
+                                          HSSFColumnWriterFactories writerFactories,
+                                          HSSFCellConfiguratorFactories cellConfiguratorFactories) {
         this.orderProviders = orderProviders;
         this.writerFactories = writerFactories;
+        this.cellConfiguratorFactories = cellConfiguratorFactories;
     }
 
     @Override
@@ -37,8 +42,18 @@ public class HSSFEmbeddedColumWriterFactory implements HSSFColumnWriterFactory{
     @Override
     public <D> HSSFColumnWriter<D> createForGetter(Method getter) {
         Class<?> returnType = getter.getReturnType();
+        List<HSSFCellConfigurator> headerCellConfigurators = this.cellConfiguratorFactories.createForHeader(getter);
+        List<HSSFCellConfigurator> dataCellConfigurators = this.cellConfiguratorFactories.createForData(getter);
+
         List<HSSFColumnWriter> writers = this.writerFactories.createForCls(returnType);
 
+        writers.stream()
+                .filter(writer -> writer instanceof DefaultHSSFColumnWriter)
+                .map(writer -> (DefaultHSSFColumnWriter) writer)
+                .forEach(writer->{
+                    writer.addDataCellConfigurators(dataCellConfigurators);
+                    writer.addHeaderCellConfigurators(headerCellConfigurators);
+                });
         int order = this.orderProviders.orderFor(getter);
         Function converter = new ConverterForMethod(getter.getName());
         return new HSSFColumnWriterComposite(writers, converter, order);
@@ -53,6 +68,17 @@ public class HSSFEmbeddedColumWriterFactory implements HSSFColumnWriterFactory{
     public <D> HSSFColumnWriter<D> createForField(Field field) {
         Class<?> type = field.getType();
         List<HSSFColumnWriter> writers = this.writerFactories.createForCls(type);
+
+        List<HSSFCellConfigurator> headerCellConfigurators = this.cellConfiguratorFactories.createForHeader(field);
+        List<HSSFCellConfigurator> dataCellConfigurators = this.cellConfiguratorFactories.createForData(field);
+
+        writers.stream()
+                .filter(writer -> writer instanceof DefaultHSSFColumnWriter)
+                .map(writer -> (DefaultHSSFColumnWriter) writer)
+                .forEach(writer->{
+                    writer.addDataCellConfigurators(dataCellConfigurators);
+                    writer.addHeaderCellConfigurators(headerCellConfigurators);
+                });
 
         int order = this.orderProviders.orderFor(field);
         Function converter = new ConvertForField(field.getName());

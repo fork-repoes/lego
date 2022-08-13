@@ -12,7 +12,6 @@ import lombok.Data;
  */
 @Data
 @Builder
-@HSSFHeaderStyle("header")
 public class Address {
     private Long id;
     @HSSFHeader("省")
