@@ -3,12 +3,17 @@ package com.geekhalo.lego.starter.excelasbean;
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.*;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.*;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.style.HSSFCellStyleFactories;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.style.HSSFCellStyleFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.supplier.*;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.writer.*;
 import com.geekhalo.lego.core.excelasbean.support.write.column.DefaultHSSFColumnWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterFactories;
 import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
-import com.geekhalo.lego.core.excelasbean.support.write.spi.*;
+import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFHeaderBasedColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.row.DefaultHSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.row.HSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.DefaultHSSFSheetWriterFactory;
@@ -57,7 +62,7 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public HSSFCellWriterChainFactory writerChainFactory(HSSFDataSupplierFactories dataSupplierFactories,
+    public HSSFCellWriterChainFactory writerChainFactory(HSSFValueSupplierFactories dataSupplierFactories,
                                                          HSSFCellConfiguratorFactories cellConfiguratorFactories,
                                                          HSSFCellWriterFactories cellWriterFactories){
         return new DefaultHSSFCellWriterChainFactory(dataSupplierFactories,
@@ -66,9 +71,9 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public HSSFDataSupplierFactories dataSupplierFactories(List<HSSFHeaderDataSupplierFactory> headerDataSupplierFactories,
-                                                           List<HSSFDataDataSupplierFactory> dataDataSupplierFactories){
-        return new HSSFDataSupplierFactories(headerDataSupplierFactories, dataDataSupplierFactories);
+    public HSSFValueSupplierFactories dataSupplierFactories(List<HSSFHeaderValueSupplierFactory> headerDataSupplierFactories,
+                                                            List<HSSFDataValueSupplierFactory> dataDataSupplierFactories){
+        return new HSSFValueSupplierFactories(headerDataSupplierFactories, dataDataSupplierFactories);
     }
 
     @Bean
@@ -94,13 +99,13 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public FieldBasedDataDataSupplierFactory fieldBasedDataDataSupplierFactory(){
-        return new FieldBasedDataDataSupplierFactory();
+    public FieldBasedDataValueSupplierFactory fieldBasedDataDataSupplierFactory(){
+        return new FieldBasedDataValueSupplierFactory();
     }
 
     @Bean
-    public HSSFHeaderBasedHeaderDataSupplierFactory headerBasedHeaderDataSupplierFactory(){
-        return new HSSFHeaderBasedHeaderDataSupplierFactory();
+    public HSSFHeaderBasedHeaderValueSupplierFactory headerBasedHeaderDataSupplierFactory(){
+        return new HSSFHeaderBasedHeaderValueSupplierFactory();
     }
 
     @Bean
@@ -109,13 +114,13 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public HSSFIndexBasedHSSFColumnOrderProvider hssfIndexBasedHSSFColumnOrderProvider(){
-        return new HSSFIndexBasedHSSFColumnOrderProvider();
+    public HSSFHeaderBasedColumnOrderProvider hssfIndexBasedHSSFColumnOrderProvider(){
+        return new HSSFHeaderBasedColumnOrderProvider();
     }
 
     @Bean
-    public MethodBasedDataDataSupplierFactory methodBasedDataDataSupplierFactory(){
-        return new MethodBasedDataDataSupplierFactory();
+    public MethodBasedDataValueSupplierFactory methodBasedDataDataSupplierFactory(){
+        return new MethodBasedDataValueSupplierFactory();
     }
 
     @Bean

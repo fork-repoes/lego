@@ -1,7 +1,6 @@
 package com.geekhalo.lego.excelasbean;
 
 import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
-import com.geekhalo.lego.annotation.excelasbean.HSSFHeaderStyle;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,12 +13,12 @@ import lombok.Data;
 @Builder
 public class Address {
     private Long id;
-    @HSSFHeader("省")
+    @HSSFHeader(title = "省")
     private String l1;
-    @HSSFHeader("市")
+    @HSSFHeader(title = "市")
     private String l2;
-    @HSSFHeader("区")
+    @HSSFHeader(title = "区")
     private String l3;
-    @HSSFHeader("详细地址")
+    @HSSFHeader(title = "详细地址")
     private String l4;
 }

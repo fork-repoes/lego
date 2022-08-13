@@ -1,6 +1,6 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellConfiguratorFactories;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.HSSFCellConfiguratorFactories;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -16,6 +16,8 @@ import java.util.stream.Stream;
  * Created by taoli on 2022/8/13.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * 提供统一的 HSSFColumnWriter 创建能力
  */
 public class HSSFColumnWriterFactories {
     private final List<HSSFColumnWriterFactory> writerFactories = Lists.newArrayList();

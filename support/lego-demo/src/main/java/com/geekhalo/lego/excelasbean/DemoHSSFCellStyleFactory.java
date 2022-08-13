@@ -1,7 +1,7 @@
 package com.geekhalo.lego.excelasbean;
 
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellStyleFactory;
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterContext;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.style.HSSFCellStyleFactory;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.writer.HSSFCellWriterContext;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;

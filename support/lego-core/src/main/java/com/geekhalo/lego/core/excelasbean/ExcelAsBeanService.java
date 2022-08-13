@@ -23,7 +23,18 @@ public interface ExcelAsBeanService {
      * @param data 待写入数据
      * @param <D>
      */
-    <D> void writToSheet(HSSFWorkbook workbook, String sheetName, Class<D> dataCls, List<D> data);
+    <D> void writHeaderAndDataToSheet(HSSFWorkbook workbook, String sheetName, Class<D> dataCls, List<D> data);
+
+    /**
+     * 写入数据
+     * @param workbook
+     * @param sheetName
+     * @param dataCls
+     * @param data
+     * @param <D>
+     */
+    <D> void writDataToSheet(HSSFWorkbook workbook, String sheetName, Class<D> dataCls, List<D> data);
+
 
     /**
      * 将 Excel 模板写入到 Sheet

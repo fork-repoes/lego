@@ -8,6 +8,8 @@ import java.util.List;
  * Created by taoli on 2022/8/7.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * 提供 列顺序，默认为 0
  */
 public class HSSFColumnOrderProviders {
     private final List<HSSFColumnOrderProvider> orderProviders;

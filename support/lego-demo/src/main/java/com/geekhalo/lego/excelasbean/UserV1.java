@@ -1,7 +1,6 @@
 package com.geekhalo.lego.excelasbean;
 
 import com.geekhalo.lego.annotation.excelasbean.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,16 +12,16 @@ import java.util.Date;
  */
 @Data
 public class UserV1 implements User{
-    @HSSFHeader("编号")
+    @HSSFHeader(title = "编号")
     private Long id;
 
-    @HSSFHeader("姓名")
+    @HSSFHeader(title = "姓名")
     private String name;
 
-    @HSSFHeader("生日")
+    @HSSFHeader(title = "生日")
     private Date birthAt;
 
-    @HSSFHeader("年龄")
+    @HSSFHeader(title = "年龄")
     private Integer age;
 
 

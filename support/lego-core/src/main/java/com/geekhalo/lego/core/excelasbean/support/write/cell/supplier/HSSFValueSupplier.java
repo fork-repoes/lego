@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.write.cell;
+package com.geekhalo.lego.core.excelasbean.support.write.cell.supplier;
 
 import java.util.function.Function;
 
@@ -8,5 +8,5 @@ import java.util.function.Function;
  * 编程就像玩 Lego
  */
 @FunctionalInterface
-public interface HSSFDataSupplier<T, R> extends Function<T, R> {
+public interface HSSFValueSupplier<T, R> extends Function<T, R> {
 }

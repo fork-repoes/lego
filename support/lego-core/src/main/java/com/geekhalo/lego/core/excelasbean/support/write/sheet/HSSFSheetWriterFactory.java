@@ -5,7 +5,14 @@ package com.geekhalo.lego.core.excelasbean.support.write.sheet;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  *
+ * HSSFSheetWriter 工厂
  */
 public interface HSSFSheetWriterFactory {
+    /**
+     * 创建 HSSFSheetWriter
+     * @param cls
+     * @param <D>
+     * @return
+     */
     <D> HSSFSheetWriter<D> createFor(Class<D> cls);
 }

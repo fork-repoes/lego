@@ -2,7 +2,6 @@ package com.geekhalo.lego.excelasbean;
 
 import com.geekhalo.lego.annotation.excelasbean.HSSFEmbedded;
 import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
-import com.geekhalo.lego.annotation.excelasbean.HSSFIndex;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,25 +13,22 @@ import java.util.Date;
  */
 @Data
 public class UserV4 implements User{
-    @HSSFHeader("编号")
+    @HSSFHeader(title = "编号")
     private Long id;
 
-    @HSSFHeader("姓名")
+    @HSSFHeader(title = "姓名")
     private String name;
 
-    @HSSFHeader("生日")
-    @HSSFIndex(value = 100)
+    @HSSFHeader(title = "生日")
     private Date birthAt;
 
-    @HSSFHeader("年龄")
+    @HSSFHeader(title = "年龄")
     private Integer age;
 
     @HSSFEmbedded
-    @HSSFIndex(value = 102)
     private Address address;
 
-    @HSSFHeader("详细地址")
-    @HSSFIndex(value = 101)
+    @HSSFHeader(title = "详细地址")
     public String showAddress(){
         if (this.address == null){
             return "暂无地址";

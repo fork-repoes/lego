@@ -24,7 +24,7 @@ public class ExcelService {
     public <D extends User> HSSFWorkbook downloadUser(Class<D> cls, Supplier<D> supplier){
         List<D> users = createUser(100, supplier);
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-        this.excelAsBeanService.writToSheet(hssfWorkbook,"User", cls, users);
+        this.excelAsBeanService.writHeaderAndDataToSheet(hssfWorkbook,"User", cls, users);
         return hssfWorkbook;
     }
 

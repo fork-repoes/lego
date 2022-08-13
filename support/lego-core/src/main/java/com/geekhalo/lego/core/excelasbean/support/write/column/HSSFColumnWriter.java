@@ -1,6 +1,6 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterContext;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.writer.HSSFCellWriterContext;
 import org.springframework.core.Ordered;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.core.Ordered;
  */
 public interface HSSFColumnWriter<D> extends Ordered {
 
-    void writeData(HSSFCellWriterContext context, D data);
+    void writeDataCell(HSSFCellWriterContext context, D data);
 
-    void writeHeader(HSSFCellWriterContext context);
+    void writeHeaderCell(HSSFCellWriterContext context);
 }

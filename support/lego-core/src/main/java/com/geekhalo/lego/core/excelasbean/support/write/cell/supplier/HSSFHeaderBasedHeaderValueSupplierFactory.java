@@ -1,8 +1,6 @@
-package com.geekhalo.lego.core.excelasbean.support.write.spi;
+package com.geekhalo.lego.core.excelasbean.support.write.cell.supplier;
 
 import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFDataSupplier;
-import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFHeaderDataSupplierFactory;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 
@@ -14,11 +12,12 @@ import java.lang.reflect.AnnotatedElement;
  * 编程就像玩 Lego
  */
 @Order(Integer.MAX_VALUE)
-public class HSSFHeaderBasedHeaderDataSupplierFactory implements HSSFHeaderDataSupplierFactory {
+public class HSSFHeaderBasedHeaderValueSupplierFactory implements HSSFHeaderValueSupplierFactory {
     @Override
-    public HSSFDataSupplier create(AnnotatedElement element) {
-        return t -> AnnotatedElementUtils.findMergedAnnotation(element, HSSFHeader.class)
-                .value();
+    public HSSFValueSupplier create(AnnotatedElement element) {
+        String title = AnnotatedElementUtils.findMergedAnnotation(element, HSSFHeader.class)
+                .title();
+        return new FixValueSupplier(title);
     }
 
     @Override

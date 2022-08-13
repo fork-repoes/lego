@@ -11,6 +11,21 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HSSFHeader {
-    String value();
+    /**
+     * 标题
+     * @return
+     */
+    String title();
+
+    /**
+     * 顺序
+     * @return
+     */
+    int order() default 0;
+
+    /**
+     * 是否自适应大小
+     * @return
+     */
     boolean autoSizeColumn() default true;
 }

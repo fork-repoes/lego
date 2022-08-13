@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.write.cell;
+package com.geekhalo.lego.core.excelasbean.support.write.cell.writer;
 
 import com.geekhalo.lego.core.SmartComponent;
 
