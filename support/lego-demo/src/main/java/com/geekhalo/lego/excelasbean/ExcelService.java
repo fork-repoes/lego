@@ -18,13 +18,19 @@ import java.util.function.Supplier;
  */
 @Service
 public class ExcelService {
+    // 注入 excelAsBeanService
+    // 由 ExcelAsBeanAutoConfiguration 完成 ExcelAsBeanService 的注册
     @Autowired
     private ExcelAsBeanService excelAsBeanService;
 
     public <D extends User> HSSFWorkbook downloadUser(Class<D> cls, Supplier<D> supplier){
+        // 1. 准备数据
         List<D> users = createUser(100, supplier);
+        // 2. 创建 Workbook
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+        // 3. 向 Sheet 中写入数据
         this.excelAsBeanService.writHeaderAndDataToSheet(hssfWorkbook,"User", cls, users);
+        // 4. 返回 workbook
         return hssfWorkbook;
     }
 

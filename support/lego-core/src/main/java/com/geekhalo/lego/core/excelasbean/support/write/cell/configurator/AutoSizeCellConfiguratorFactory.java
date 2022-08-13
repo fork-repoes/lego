@@ -26,10 +26,6 @@ public class AutoSizeCellConfiguratorFactory implements HSSFHeaderCellConfigurat
     @Override
     public HSSFCellConfigurator create(AnnotatedElement element) {
         HSSFHeader hssfHeader = AnnotatedElementUtils.findMergedAnnotation(element, HSSFHeader.class);
-        return (context, columnIndex, cell) -> {
-            if (hssfHeader.autoSizeColumn()) {
-                context.getSheet().autoSizeColumn(columnIndex);
-            }
-        };
+        return new AutoSizeCellConfigurator(hssfHeader.autoSizeColumn());
     }
 }

@@ -38,47 +38,4 @@ public class HSSFDateFormatCellWriterFactory implements HSSFDataCellWriterFactor
         HSSFDateFormat dateFormat = AnnotatedElementUtils.findMergedAnnotation(element, HSSFDateFormat.class);
         return new DateFormatHSSFCellWriter(dateFormat.value(), element);
     }
-
-    private static class DateFormatHSSFCellWriter implements HSSFCellWriter{
-        private final String format;
-        private final AnnotatedElement element;
-
-        private DateFormatHSSFCellWriter(String format,
-                                         AnnotatedElement element) {
-            this.format = format;
-            this.element = element;
-        }
-
-        @Override
-        public void write(HSSFCellWriterContext context, HSSFCell cell, Object data) {
-            if (data instanceof Date){
-                Date date = (Date) data;
-                String value = DateFormatUtils.format(date, this.format);
-                cell.setCellValue(value);
-                return;
-            }
-
-            if (data instanceof LocalDateTime){
-                LocalDateTime localDateTime = (LocalDateTime) data;
-                String value = localDateTime.format(DateTimeFormatter.ofPattern(this.format));
-                cell.setCellValue(value);
-                return;
-            }
-
-            if (data instanceof LocalDate){
-                LocalDate localDate = (LocalDate) data;
-                String value = localDate.format(DateTimeFormatter.ofPattern(this.format));
-                cell.setCellValue(value);
-                return;
-            }
-
-            if (data instanceof LocalTime){
-                LocalTime localTime = (LocalTime) data;
-                String value = localTime.format(DateTimeFormatter.ofPattern(this.format));
-                cell.setCellValue(value);
-                return;
-            }
-            log.warn("failed to handle @HSSFDateFormat for {}", this.element);
-        }
-    }
 }

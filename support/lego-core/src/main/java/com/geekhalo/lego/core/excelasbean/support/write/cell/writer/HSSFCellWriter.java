@@ -10,5 +10,11 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
  * 向 Cell 写入数据
  */
 public interface HSSFCellWriter<D> {
+    /**
+     * 向 Cell 写入数据
+     * @param context
+     * @param cell 待写入的 Cell
+     * @param data 待写入的 data
+     */
     void write(HSSFCellWriterContext context, HSSFCell cell, D data);
 }
