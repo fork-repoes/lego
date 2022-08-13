@@ -13,6 +13,7 @@ import java.util.Date;
  */
 @Data
 @Builder
+@HSSFHeaderStyle("header")
 public class User {
     @HSSFHeader("编号")
     @HSSFIndex(1)

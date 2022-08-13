@@ -121,4 +121,19 @@ public class ExcelAsBeanAutoConfiguration {
     public AutoSizeCellConfiguratorFactory autoSizeHeaderCellConfiguratorFactory(){
         return new AutoSizeCellConfiguratorFactory();
     }
+
+    @Bean
+    public HSSFDataCellStyleConfiguratorFactory hssfDataCellStyleConfiguratorFactory(HSSFCellStyleFactories cellStyleFactories){
+        return new HSSFDataCellStyleConfiguratorFactory(cellStyleFactories);
+    }
+
+    @Bean
+    public HSSFHeaderCellStyleConfiguratorFactory hssfHeaderCellStyleConfiguratorFactory(HSSFCellStyleFactories cellStyleFactories){
+        return new HSSFHeaderCellStyleConfiguratorFactory(cellStyleFactories);
+    }
+
+    @Bean
+    public HSSFCellStyleFactories cellStyleFactories(List<HSSFCellStyleFactory> cellStyleFactories){
+        return new HSSFCellStyleFactories(cellStyleFactories);
+    }
 }
