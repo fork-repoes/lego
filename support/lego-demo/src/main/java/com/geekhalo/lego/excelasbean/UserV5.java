@@ -3,6 +3,7 @@ package com.geekhalo.lego.excelasbean;
 import com.geekhalo.lego.annotation.excelasbean.HSSFEmbedded;
 import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
 import com.geekhalo.lego.annotation.excelasbean.HSSFHeaderStyle;
+import com.geekhalo.lego.annotation.excelasbean.HSSFShowOrder;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,22 +16,23 @@ import java.util.Date;
 @Data
 @HSSFHeaderStyle("header")
 public class UserV5 implements User{
-    @HSSFHeader(title = "编号")
+    @HSSFHeader(title = "编号", order = 1)
     private Long id;
 
-    @HSSFHeader(title = "姓名")
+    @HSSFHeader(title = "姓名", order = 2)
     private String name;
 
-    @HSSFHeader(title = "生日")
+    @HSSFHeader(title = "生日", order = 4)
     private Date birthAt;
 
-    @HSSFHeader(title = "年龄")
+    @HSSFHeader(title = "年龄", order = 3)
     private Integer age;
 
     @HSSFEmbedded
+    @HSSFShowOrder(5)
     private Address address;
 
-    @HSSFHeader(title = "详细地址")
+    @HSSFHeader(title = "详细地址", order = 6)
     public String showAddress(){
         if (this.address == null){
             return "暂无地址";

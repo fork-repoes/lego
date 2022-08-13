@@ -14,6 +14,7 @@ import com.geekhalo.lego.core.excelasbean.support.write.column.HSSFColumnWriterF
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFColumnOrderProviders;
 import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFHeaderBasedColumnOrderProvider;
+import com.geekhalo.lego.core.excelasbean.support.write.order.HSSFShowOrderBasedColumnOrderProvider;
 import com.geekhalo.lego.core.excelasbean.support.write.row.DefaultHSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.row.HSSFRowWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.DefaultHSSFSheetWriterFactory;
@@ -116,6 +117,11 @@ public class ExcelAsBeanAutoConfiguration {
     @Bean
     public HSSFHeaderBasedColumnOrderProvider hssfIndexBasedHSSFColumnOrderProvider(){
         return new HSSFHeaderBasedColumnOrderProvider();
+    }
+
+    @Bean
+    public HSSFShowOrderBasedColumnOrderProvider showOrderBasedColumnOrderProvider(){
+        return new HSSFShowOrderBasedColumnOrderProvider();
     }
 
     @Bean
