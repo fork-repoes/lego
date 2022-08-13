@@ -8,5 +8,5 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
  * 编程就像玩 Lego
  */
 public interface HSSFCellConfigurator {
-    void configFor(HSSFCellWriterContext context, HSSFCell cell);
+    void configFor(HSSFCellWriterContext context, int columnIndex, HSSFCell cell);
 }

@@ -116,4 +116,9 @@ public class ExcelAsBeanAutoConfiguration {
     public MethodBasedDataDataSupplierFactory methodBasedDataDataSupplierFactory(){
         return new MethodBasedDataDataSupplierFactory();
     }
+
+    @Bean
+    public AutoSizeCellConfiguratorFactory autoSizeHeaderCellConfiguratorFactory(){
+        return new AutoSizeCellConfiguratorFactory();
+    }
 }

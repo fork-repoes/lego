@@ -39,14 +39,15 @@ public class HSSFCellWriterChain<D> {
 
     public void write(HSSFCellWriterContext context, D data){
         HSSFRow row = context.getRow();
-        HSSFCell cell = row.createCell(Math.max(0, row.getLastCellNum()));
-        configForCell(context, cell);
+        int columnIndex = Math.max(0, row.getLastCellNum());
+        HSSFCell cell = row.createCell(columnIndex);
+        configForCell(context, columnIndex, cell);
 
         Object d = this.dataSupplier.apply(data);
         this.cellWriter.write(context, cell, d);
     }
 
-    protected void configForCell(HSSFCellWriterContext context, HSSFCell cell) {
-        this.cellConfigs.forEach(hssfCellConfigurator -> hssfCellConfigurator.configFor(context, cell));
+    protected void configForCell(HSSFCellWriterContext context, int columnIndex, HSSFCell cell) {
+        this.cellConfigs.forEach(hssfCellConfigurator -> hssfCellConfigurator.configFor(context, columnIndex, cell));
     }
 }

@@ -39,7 +39,7 @@ public class User {
     @HSSFIndex(4)
     private Address address;
 
-    @HSSFHeader("显示地址")
+    @HSSFHeader(value = "显示地址")
     public String getShowAddress(){
         return this.address == null ?  "-" : this.address.toString();
     }
