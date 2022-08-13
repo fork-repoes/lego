@@ -1,47 +1,18 @@
 package com.geekhalo.lego.excelasbean;
 
-import com.geekhalo.lego.annotation.excelasbean.*;
-import lombok.Builder;
-import lombok.Data;
-
-import java.util.Date;
-
 /**
- * Created by taoli on 2022/8/8.
+ * Created by taoli on 2022/8/13.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Data
-@Builder
-@HSSFHeaderStyle("header")
-public class User {
-    @HSSFHeader("编号")
-    @HSSFIndex(1)
-    private Long id;
+public interface User {
+    void setId(Long id);
 
-    @HSSFHeader("姓名")
-    @HSSFIndex(3)
-    private String name;
+    void setName(String name);
 
-    @HSSFHeader("生日")
-    @HSSFIndex(5)
-    private Date birthAt;
+    void setBirthAt(java.util.Date birthAt);
 
-    @HSSFHeader("年龄")
-    @HSSFIndex(4)
-    private Integer age;
+    void setAge(Integer age);
 
-    @HSSFDateFormat("yyyy-MM-dd")
-    @HSSFHeader("时间格式化")
-    @HSSFIndex(6)
-    private Date formatDate;
-
-    @HSSFEmbedded
-    @HSSFIndex(4)
-    private Address address;
-
-    @HSSFHeader(value = "显示地址")
-    public String getShowAddress(){
-        return this.address == null ?  "-" : this.address.toString();
-    }
+    void setAddress(Address address);
 }

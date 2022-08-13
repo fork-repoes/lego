@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Created by taoli on 2022/8/8.
  * gitee : https://gitee.com/litao851025/lego
@@ -32,8 +30,32 @@ class ExcelServiceTest {
     }
 
     @Test
-    void downloadUser() throws IOException {
-        HSSFWorkbook workbook = excelService.downloadUser();
-        workbook.write(new File("/tmp/downloadUser.xls"));
+    void downloadUserV1() throws IOException {
+        HSSFWorkbook workbook = excelService.downloadUser(UserV1.class, UserV1::new);
+        workbook.write(new File("/tmp/downloadUserV1.xls"));
+    }
+
+    @Test
+    void downloadUserV2() throws IOException {
+        HSSFWorkbook workbook = excelService.downloadUser(UserV2.class, UserV2::new);
+        workbook.write(new File("/tmp/downloadUserV2.xls"));
+    }
+
+    @Test
+    void downloadUserV3() throws IOException {
+        HSSFWorkbook workbook = excelService.downloadUser(UserV3.class, UserV3::new);
+        workbook.write(new File("/tmp/downloadUserV3.xls"));
+    }
+
+    @Test
+    void downloadUserV4() throws IOException {
+        HSSFWorkbook workbook = excelService.downloadUser(UserV4.class, UserV4::new);
+        workbook.write(new File("/tmp/downloadUserV4.xls"));
+    }
+
+    @Test
+    void downloadUserV5() throws IOException {
+        HSSFWorkbook workbook = excelService.downloadUser(UserV5.class, UserV5::new);
+        workbook.write(new File("/tmp/downloadUserV5.xls"));
     }
 }
