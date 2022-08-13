@@ -31,17 +31,17 @@ public class HSSFCellConfiguratorFactories {
         AnnotationAwareOrderComparator.sort(this.dataCellFactories);
     }
 
-    public List<HSSFCellConfigurator> createForHeader(AnnotatedElement element, String name) {
+    public List<HSSFCellConfigurator> createForHeader(AnnotatedElement element) {
         return this.headerCellFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .collect(toList());
     }
 
-    public List<HSSFCellConfigurator> createForData(AnnotatedElement element, String name) {
+    public List<HSSFCellConfigurator> createForData(AnnotatedElement element) {
         return this.dataCellFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .collect(toList());
     }
 }

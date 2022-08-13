@@ -29,18 +29,18 @@ public class HSSFDataSupplierFactories {
         AnnotationAwareOrderComparator.sort(this.dataDataSupplierFactories);
     }
 
-    public HSSFDataSupplier createForHeader(AnnotatedElement element, String name) {
+    public HSSFDataSupplier createForHeader(AnnotatedElement element) {
         return this.headerDataSupplierFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .findFirst()
                 .orElse(null);
     }
 
-    public HSSFDataSupplier createForData(AnnotatedElement element, String name) {
+    public HSSFDataSupplier createForData(AnnotatedElement element) {
         return this.dataDataSupplierFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .findFirst()
                 .orElse(null);
     }

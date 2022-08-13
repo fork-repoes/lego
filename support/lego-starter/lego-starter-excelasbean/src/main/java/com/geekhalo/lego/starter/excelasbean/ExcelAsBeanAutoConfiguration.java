@@ -111,4 +111,9 @@ public class ExcelAsBeanAutoConfiguration {
     public HSSFIndexBasedHSSFColumnOrderProvider hssfIndexBasedHSSFColumnOrderProvider(){
         return new HSSFIndexBasedHSSFColumnOrderProvider();
     }
+
+    @Bean
+    public MethodBasedDataDataSupplierFactory methodBasedDataDataSupplierFactory(){
+        return new MethodBasedDataDataSupplierFactory();
+    }
 }

@@ -16,7 +16,7 @@ import java.lang.reflect.AnnotatedElement;
 @Order(Integer.MAX_VALUE)
 public class HSSFHeaderBasedHeaderDataSupplierFactory implements HSSFHeaderDataSupplierFactory {
     @Override
-    public HSSFDataSupplier create(AnnotatedElement element, String name) {
+    public HSSFDataSupplier create(AnnotatedElement element) {
         return t -> AnnotatedElementUtils.findMergedAnnotation(element, HSSFHeader.class)
                 .value();
     }

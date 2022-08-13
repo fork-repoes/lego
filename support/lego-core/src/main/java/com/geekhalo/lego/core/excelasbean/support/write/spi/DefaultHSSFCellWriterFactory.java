@@ -16,7 +16,7 @@ import java.lang.reflect.AnnotatedElement;
 @Order(Integer.MAX_VALUE)
 public class DefaultHSSFCellWriterFactory implements HSSFHeaderCellWriterFactory, HSSFDataCellWriterFactory {
     @Override
-    public HSSFCellWriter create(AnnotatedElement annotatedElement, String name) {
+    public HSSFCellWriter create(AnnotatedElement annotatedElement) {
         return new DefaultHSSFCellWriter();
     }
 

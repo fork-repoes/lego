@@ -10,16 +10,13 @@ import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterConte
  */
 public class DefaultHSSFColumnWriter<D> implements HSSFColumnWriter<D>{
     private final int order;
-    private final String name;
     private final HSSFCellWriterChain headerWriterChain;
     private final HSSFCellWriterChain dataWriterChain;
 
     public DefaultHSSFColumnWriter(int order,
-                                   String name,
                                    HSSFCellWriterChain headerWriterChain,
                                    HSSFCellWriterChain dataWriterChain) {
         this.order = order;
-        this.name = name;
         this.headerWriterChain = headerWriterChain;
         this.dataWriterChain = dataWriterChain;
     }

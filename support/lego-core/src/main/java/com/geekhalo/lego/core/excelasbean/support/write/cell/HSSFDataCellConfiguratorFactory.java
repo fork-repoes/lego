@@ -10,5 +10,5 @@ import java.lang.reflect.AnnotatedElement;
  * 编程就像玩 Lego
  */
 public interface HSSFDataCellConfiguratorFactory extends SmartComponent<AnnotatedElement> {
-    HSSFCellConfigurator create(AnnotatedElement element, String name);
+    HSSFCellConfigurator create(AnnotatedElement element);
 }

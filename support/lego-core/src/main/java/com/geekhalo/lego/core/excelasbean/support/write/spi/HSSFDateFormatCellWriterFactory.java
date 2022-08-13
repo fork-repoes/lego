@@ -30,18 +30,19 @@ public class HSSFDateFormatCellWriterFactory implements HSSFDataCellWriterFactor
     }
 
     @Override
-    public HSSFCellWriter create(AnnotatedElement element, String name) {
+    public HSSFCellWriter create(AnnotatedElement element) {
         HSSFDateFormat dateFormat = AnnotatedElementUtils.findMergedAnnotation(element, HSSFDateFormat.class);
-        return new DateformatHSSFCellWriter(name, dateFormat.value());
+        return new DateFormatHSSFCellWriter(dateFormat.value(), element);
     }
 
-    private class DateformatHSSFCellWriter implements HSSFCellWriter{
-        private final String name;
+    private static class DateFormatHSSFCellWriter implements HSSFCellWriter{
         private final String format;
+        private final AnnotatedElement element;
 
-        private DateformatHSSFCellWriter(String name, String format) {
-            this.name = name;
+        private DateFormatHSSFCellWriter(String format,
+                                         AnnotatedElement element) {
             this.format = format;
+            this.element = element;
         }
 
         @Override
@@ -73,7 +74,7 @@ public class HSSFDateFormatCellWriterFactory implements HSSFDataCellWriterFactor
                 cell.setCellValue(value);
                 return;
             }
-            log.warn("failed to handle @HSSFDateFormat for name {}", name);
+            log.warn("failed to handle @HSSFDateFormat for {}", this.element);
         }
     }
 }

@@ -29,18 +29,18 @@ public class HSSFCellWriterFactories {
         AnnotationAwareOrderComparator.sort(this.dataCellWriterFactories);
     }
 
-    public HSSFCellWriter createForHeader(AnnotatedElement element, String name) {
+    public HSSFCellWriter createForHeader(AnnotatedElement element) {
         return this.headerCellWriterFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .findFirst()
                 .orElse(null);
     }
 
-    public HSSFCellWriter createForData(AnnotatedElement element, String name) {
+    public HSSFCellWriter createForData(AnnotatedElement element) {
         return this.dataCellWriterFactories.stream()
                 .filter(factory -> factory.support(element))
-                .map(factory -> factory.create(element, name))
+                .map(factory -> factory.create(element))
                 .findFirst()
                 .orElse(null);
     }

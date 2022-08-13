@@ -8,7 +8,7 @@ import java.lang.reflect.AnnotatedElement;
  * 编程就像玩 Lego
  */
 public interface HSSFCellWriterChainFactory {
-    <D>HSSFCellWriterChain<D> createHeaderWriterChain(AnnotatedElement element, String name);
+    <D>HSSFCellWriterChain<D> createHeaderWriterChain(AnnotatedElement element);
 
-    <D>HSSFCellWriterChain<D> createDataWriterChain(AnnotatedElement element, String name);
+    <D>HSSFCellWriterChain<D> createDataWriterChain(AnnotatedElement element);
 }

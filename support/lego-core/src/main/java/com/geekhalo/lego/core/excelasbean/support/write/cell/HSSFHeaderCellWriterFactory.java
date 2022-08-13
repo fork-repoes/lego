@@ -11,5 +11,5 @@ import java.lang.reflect.AnnotatedElement;
  */
 public interface HSSFHeaderCellWriterFactory extends SmartComponent<AnnotatedElement> {
 
-    HSSFCellWriter create(AnnotatedElement annotatedElement, String name);
+    HSSFCellWriter create(AnnotatedElement annotatedElement);
 }

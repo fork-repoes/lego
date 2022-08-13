@@ -27,12 +27,17 @@ public class DefaultHSSFColumnWriterFactory implements HSSFColumnWriterFactory{
 
     @Override
     public boolean support(Method method) {
-        return AnnotatedElementUtils.hasAnnotation(method, HSSFHeader.class);
+        return AnnotatedElementUtils.hasAnnotation(method, HSSFHeader.class) && isGetter(method);
+    }
+
+    private boolean isGetter(Method method) {
+        return method.getParameters().length == 0
+                && method.getReturnType() != Void.class && method.getReturnType() != Void.TYPE;
     }
 
     @Override
     public <D> HSSFColumnWriter<D> createForGetter(Method getter) {
-        return createFor(getter, getter.getName());
+        return create(getter);
     }
 
     @Override
@@ -42,17 +47,17 @@ public class DefaultHSSFColumnWriterFactory implements HSSFColumnWriterFactory{
 
     @Override
     public <D> HSSFColumnWriter<D> createForField(Field field) {
-        return createFor(field, field.getName());
+        return create(field);
     }
 
-    private <D> HSSFColumnWriter<D> createFor(AnnotatedElement element, String name) {
+    private <D> HSSFColumnWriter<D> create(AnnotatedElement element) {
         int order = this.orderProviders.orderFor(element);
-        HSSFCellWriterChain<Object> headerWriterChain = this.writerChainFactory.createHeaderWriterChain(element, name);
-        HSSFCellWriterChain<Object> dataWriterChain = this.writerChainFactory.createDataWriterChain(element, name);
+        HSSFCellWriterChain<Object> headerWriterChain = this.writerChainFactory.createHeaderWriterChain(element);
+        HSSFCellWriterChain<Object> dataWriterChain = this.writerChainFactory.createDataWriterChain(element);
 
         if (headerWriterChain == null || dataWriterChain == null){
             return null;
         }
-        return new DefaultHSSFColumnWriter<>(order, name, headerWriterChain, dataWriterChain);
+        return new DefaultHSSFColumnWriter<>(order, headerWriterChain, dataWriterChain);
     }
 }

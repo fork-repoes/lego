@@ -23,10 +23,10 @@ public class DefaultHSSFCellWriterChainFactory implements HSSFCellWriterChainFac
 
 
     @Override
-    public <D> HSSFCellWriterChain<D> createHeaderWriterChain(AnnotatedElement element, String name) {
-        HSSFDataSupplier dataSupplier = this.dataSupplierFactories.createForHeader(element, name);
-        List<HSSFCellConfigurator> cellConfigs = this.cellConfiguratorFactories.createForHeader(element, name);
-        HSSFCellWriter cellWriter = cellWriterFactories.createForHeader(element, name);
+    public <D> HSSFCellWriterChain<D> createHeaderWriterChain(AnnotatedElement element) {
+        HSSFDataSupplier dataSupplier = this.dataSupplierFactories.createForHeader(element);
+        List<HSSFCellConfigurator> cellConfigs = this.cellConfiguratorFactories.createForHeader(element);
+        HSSFCellWriter cellWriter = cellWriterFactories.createForHeader(element);
 
         if (dataSupplier == null || cellWriter == null){
             return null;
@@ -36,10 +36,10 @@ public class DefaultHSSFCellWriterChainFactory implements HSSFCellWriterChainFac
     }
 
     @Override
-    public <D> HSSFCellWriterChain<D> createDataWriterChain(AnnotatedElement element, String name) {
-        HSSFDataSupplier dataSupplier = this.dataSupplierFactories.createForData(element, name);
-        List<HSSFCellConfigurator> cellConfigs = this.cellConfiguratorFactories.createForData(element, name);
-        HSSFCellWriter cellWriter = this.cellWriterFactories.createForData(element, name);
+    public <D> HSSFCellWriterChain<D> createDataWriterChain(AnnotatedElement element) {
+        HSSFDataSupplier dataSupplier = this.dataSupplierFactories.createForData(element);
+        List<HSSFCellConfigurator> cellConfigs = this.cellConfiguratorFactories.createForData(element);
+        HSSFCellWriter cellWriter = this.cellWriterFactories.createForData(element);
 
         if (dataSupplier == null || cellWriter == null){
             return null;
