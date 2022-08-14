@@ -2,8 +2,10 @@ package com.geekhalo.lego.starter.excelasbean;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
-import com.geekhalo.lego.core.excelasbean.support.reader.bean.BeanPropertyWriterChainFactory;
-import com.geekhalo.lego.core.excelasbean.support.reader.bean.DefaultBeanPropertyWriterChainFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.bean.*;
+import com.geekhalo.lego.core.excelasbean.support.reader.cell.DefaultHSSFCellReaderFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.cell.HSSFCellReaderFactories;
+import com.geekhalo.lego.core.excelasbean.support.reader.cell.HSSFCellReaderFactory;
 import com.geekhalo.lego.core.excelasbean.support.reader.column.DefaultHSSFColumnToBeanPropertyWriterFactory;
 import com.geekhalo.lego.core.excelasbean.support.reader.column.HSSFColumnToBeanPropertyWriterFactories;
 import com.geekhalo.lego.core.excelasbean.support.reader.column.HSSFColumnToBeanPropertyWriterFactory;
@@ -76,8 +78,29 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public BeanPropertyWriterChainFactory beanPropertyWriterChainFactory(){
-        return new DefaultBeanPropertyWriterChainFactory();
+    public BeanPropertyWriterChainFactory beanPropertyWriterChainFactory(HSSFCellReaderFactories cellReaderFactories,
+                                                                         BeanPropertyWriterFactories beanPropertyWriterFactories){
+        return new DefaultBeanPropertyWriterChainFactory(cellReaderFactories, beanPropertyWriterFactories);
+    }
+
+    @Bean
+    public HSSFCellReaderFactories cellReaderFactories(List<HSSFCellReaderFactory> cellReaderFactories){
+        return new HSSFCellReaderFactories(cellReaderFactories);
+    }
+
+    @Bean
+    public DefaultHSSFCellReaderFactory defaultHSSFCellReaderFactory(){
+        return new DefaultHSSFCellReaderFactory();
+    }
+
+    @Bean
+    public BeanPropertyWriterFactories beanPropertyWriterFactories(List<BeanPropertyWriterFactory> beanPropertyWriterFactories){
+        return new BeanPropertyWriterFactories(beanPropertyWriterFactories);
+    }
+
+    @Bean
+    public DefaultBeanPropertyWriterFactory defaultBeanPropertyWriterFactory(){
+        return new DefaultBeanPropertyWriterFactory();
     }
 
     @Bean
