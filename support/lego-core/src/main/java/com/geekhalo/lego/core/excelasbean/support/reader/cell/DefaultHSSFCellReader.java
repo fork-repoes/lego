@@ -15,6 +15,9 @@ public class DefaultHSSFCellReader implements HSSFCellReader {
 
     @Override
     public Object readValue(HSSFCell cell){
+        if (cell == null){
+            return null;
+        }
         CellType cellTypeEnum = cell.getCellTypeEnum();
         switch (cellTypeEnum){
             case STRING:
