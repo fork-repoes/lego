@@ -37,7 +37,19 @@ public interface ExcelAsBeanService {
 
 
     /**
-     * 将 Excel 模板写入到 Sheet
+     * 创建 Excel 模板
+     * @param workbook
+     * @param sheetName
+     * @param dataCls
+     * @param <D>
+     */
+    default <D> void writTemplateToSheet(HSSFWorkbook workbook, String sheetName, Class<D> dataCls){
+        writTemplateToSheet(workbook.createSheet(sheetName), dataCls);
+    }
+
+
+    /**
+     * 创建 Excel 模板
      * @param sheet 待写入的 sheet
      * @param dataCls 待写入数据
      * @param <D>

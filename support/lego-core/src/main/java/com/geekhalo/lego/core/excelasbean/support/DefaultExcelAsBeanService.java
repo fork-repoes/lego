@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.HSSFSheetReader;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.HSSFSheetReaderFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetContext;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetWriter;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetWriterFactory;
@@ -32,9 +34,26 @@ public class DefaultExcelAsBeanService implements ExcelAsBeanService {
      */
     private final HSSFSheetWriterFactory writerFactory;
 
-    public DefaultExcelAsBeanService(HSSFSheetWriterFactory writerFactory) {
+
+    /**
+     * HSSFSheetReader 缓存，解析一次，运行多次
+     */
+    private final Map<Class, HSSFSheetReader> readersCache = Maps.newConcurrentMap();
+
+    /**
+     * HSSFSheetReader 工厂，从 class 中解析信息，构建 HSSFSheetReader 对象
+     */
+    private final HSSFSheetReaderFactory readerFactory;
+
+
+    public DefaultExcelAsBeanService(HSSFSheetWriterFactory writerFactory,
+                                     HSSFSheetReaderFactory readerFactory) {
+
         Preconditions.checkArgument(writerFactory != null);
+        Preconditions.checkArgument(readerFactory != null);
+
         this.writerFactory = writerFactory;
+        this.readerFactory = readerFactory;
     }
 
     @Override
@@ -72,11 +91,17 @@ public class DefaultExcelAsBeanService implements ExcelAsBeanService {
 
     @Override
     public <D> void writTemplateToSheet(HSSFSheet sheet, Class<D> dataCls) {
+        HSSFSheetReader<D> sheetReader = this.readersCache.computeIfAbsent(dataCls,
+                cls -> this.readerFactory.createFor(cls));
 
+        sheetReader.writeTemplate(sheet.getWorkbook(), sheet);
     }
 
     @Override
     public <D> void readFromSheet(HSSFSheet sheet, Class<D> dataCls, Consumer<D> consumer) {
+        HSSFSheetReader<D> sheetReader = this.readersCache.computeIfAbsent(dataCls,
+                cls -> this.readerFactory.createFor(cls));
 
+        sheetReader.readFromSheet(sheet.getWorkbook(), sheet, consumer);
     }
 }
