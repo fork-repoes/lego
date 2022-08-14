@@ -19,6 +19,8 @@ public class AutoSizeCellConfigurator implements HSSFCellConfigurator{
     public void configFor(HSSFCellWriterContext context, int columnIndex, HSSFCell cell) {
         if (autoSizeColumn) {
             context.getSheet().autoSizeColumn(columnIndex);
+            context.getSheet().setColumnWidth(columnIndex,
+                    context.getSheet().getColumnWidth(columnIndex) * 20 / 10);
         }
     }
 }
