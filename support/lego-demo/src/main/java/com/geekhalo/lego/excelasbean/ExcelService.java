@@ -3,6 +3,7 @@ package com.geekhalo.lego.excelasbean;
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,16 @@ public class ExcelService {
         this.excelAsBeanService.writHeaderAndDataToSheet(hssfWorkbook,"User", cls, users);
         // 4. 返回 workbook
         return hssfWorkbook;
+    }
+
+    public HSSFWorkbook downloadCreateUserTemplate(Class formCls){
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        this.excelAsBeanService.writTemplateToSheet(workbook,"CreateUser", formCls);
+        return workbook;
+    }
+
+    public List<CreateUserFrom> readFromExcel(HSSFSheet hssfSheet, Class cls){
+        return this.excelAsBeanService.readFromSheet(hssfSheet, cls);
     }
 
     private<D extends User> List<D> createUser(int count, Supplier<D> supplier) {

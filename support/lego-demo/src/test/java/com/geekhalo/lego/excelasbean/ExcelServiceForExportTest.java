@@ -17,7 +17,7 @@ import java.io.IOException;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-class ExcelServiceTest {
+class ExcelServiceForExportTest {
     @Autowired
     private ExcelService excelService;
 

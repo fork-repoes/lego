@@ -2,6 +2,7 @@ package com.geekhalo.lego.starter.excelasbean;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
+import com.geekhalo.lego.core.excelasbean.support.reader.*;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.*;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.*;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.style.HSSFCellStyleFactories;
@@ -36,8 +37,29 @@ import java.util.List;
 public class ExcelAsBeanAutoConfiguration {
 
     @Bean
-    public ExcelAsBeanService excelAsBeanService(HSSFSheetWriterFactory columnWritersFactory){
-        return new DefaultExcelAsBeanService(columnWritersFactory);
+    public ExcelAsBeanService excelAsBeanService(HSSFSheetWriterFactory columnWritersFactory,
+                                                 HSSFSheetReaderFactory readerFactory){
+        return new DefaultExcelAsBeanService(columnWritersFactory, readerFactory);
+    }
+
+    @Bean
+    public HSSFSheetReaderFactory readerFactory(HSSFRowToBeanWriterFactory rowToBeanWriterFactory){
+        return new DefaultHSSFSheetReaderFactory(rowToBeanWriterFactory);
+    }
+
+    @Bean
+    public HSSFRowToBeanWriterFactory rowToBeanWriterFactory(HSSFColumnToBeanWriterFactories columnToBeanWriterFactories){
+        return new DefaultHSSFRowToBeanWriterFactory(columnToBeanWriterFactories);
+    }
+
+    @Bean
+    public HSSFColumnToBeanWriterFactories columnToBeanWriterFactories(List<HSSFColumnToBeanWriterFactory> columnToBeanWriterFactories){
+        return new HSSFColumnToBeanWriterFactories(columnToBeanWriterFactories);
+    }
+
+    @Bean
+    public DefaultHSSFColumnToBeanWriterFactory defaultHSSFColumnToBeanWriterFactory(){
+        return new DefaultHSSFColumnToBeanWriterFactory();
     }
 
     @Bean
