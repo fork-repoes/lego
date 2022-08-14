@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.reader;
+package com.geekhalo.lego.core.excelasbean.support.reader.bean;
 
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;

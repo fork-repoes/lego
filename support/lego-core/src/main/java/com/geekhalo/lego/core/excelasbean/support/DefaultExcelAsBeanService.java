@@ -1,8 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
-import com.geekhalo.lego.core.excelasbean.support.reader.HSSFSheetReader;
-import com.geekhalo.lego.core.excelasbean.support.reader.HSSFSheetReaderFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.HSSFSheetReader;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.HSSFSheetReaderFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetContext;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetWriter;
 import com.geekhalo.lego.core.excelasbean.support.write.sheet.HSSFSheetWriterFactory;

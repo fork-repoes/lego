@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.excelasbean.support.reader;
+package com.geekhalo.lego.core.excelasbean.support.reader.cell;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class DefaultHSSFCellReader implements HSSFCellReader{
+public class DefaultHSSFCellReader implements HSSFCellReader {
 
     @Override
     public Object readValue(HSSFCell cell){

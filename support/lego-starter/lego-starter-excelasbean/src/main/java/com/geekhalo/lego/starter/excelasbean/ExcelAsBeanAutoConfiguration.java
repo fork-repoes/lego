@@ -2,7 +2,17 @@ package com.geekhalo.lego.starter.excelasbean;
 
 import com.geekhalo.lego.core.excelasbean.ExcelAsBeanService;
 import com.geekhalo.lego.core.excelasbean.support.DefaultExcelAsBeanService;
-import com.geekhalo.lego.core.excelasbean.support.reader.*;
+import com.geekhalo.lego.core.excelasbean.support.reader.bean.BeanPropertyWriterChainFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.bean.DefaultBeanPropertyWriterChainFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.column.DefaultHSSFColumnToBeanPropertyWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.column.HSSFColumnToBeanPropertyWriterFactories;
+import com.geekhalo.lego.core.excelasbean.support.reader.column.HSSFColumnToBeanPropertyWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.parser.DefaultHSSFHeaderParser;
+import com.geekhalo.lego.core.excelasbean.support.reader.parser.HSSFHeaderParser;
+import com.geekhalo.lego.core.excelasbean.support.reader.row.DefaultHSSFRowToBeanWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.row.HSSFRowToBeanWriterFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.DefaultHSSFSheetReaderFactory;
+import com.geekhalo.lego.core.excelasbean.support.reader.sheet.HSSFSheetReaderFactory;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.*;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.*;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.style.HSSFCellStyleFactories;
@@ -48,20 +58,32 @@ public class ExcelAsBeanAutoConfiguration {
     }
 
     @Bean
-    public HSSFRowToBeanWriterFactory rowToBeanWriterFactory(HSSFColumnToBeanWriterFactories columnToBeanWriterFactories){
-        return new DefaultHSSFRowToBeanWriterFactory(columnToBeanWriterFactories);
+    public HSSFRowToBeanWriterFactory rowToBeanWriterFactory(HSSFColumnToBeanPropertyWriterFactories columnToBeanWriterFactories,
+                                                             HSSFHeaderParser headerParser){
+        return new DefaultHSSFRowToBeanWriterFactory(columnToBeanWriterFactories, headerParser);
     }
 
     @Bean
-    public HSSFColumnToBeanWriterFactories columnToBeanWriterFactories(List<HSSFColumnToBeanWriterFactory> columnToBeanWriterFactories){
-        return new HSSFColumnToBeanWriterFactories(columnToBeanWriterFactories);
+    public HSSFColumnToBeanPropertyWriterFactories columnToBeanWriterFactories(List<HSSFColumnToBeanPropertyWriterFactory> columnToBeanWriterFactories,
+                                                                               HSSFHeaderParser headerParser){
+        return new HSSFColumnToBeanPropertyWriterFactories(columnToBeanWriterFactories, headerParser);
     }
 
     @Bean
-    public DefaultHSSFColumnToBeanWriterFactory defaultHSSFColumnToBeanWriterFactory(){
-        return new DefaultHSSFColumnToBeanWriterFactory();
+    public DefaultHSSFColumnToBeanPropertyWriterFactory defaultHSSFColumnToBeanWriterFactory(BeanPropertyWriterChainFactory beanPropertyWriterChainFactory,
+                                                                                             HSSFHeaderParser headerParser){
+        return new DefaultHSSFColumnToBeanPropertyWriterFactory(beanPropertyWriterChainFactory, headerParser);
     }
 
+    @Bean
+    public BeanPropertyWriterChainFactory beanPropertyWriterChainFactory(){
+        return new DefaultBeanPropertyWriterChainFactory();
+    }
+
+    @Bean
+    public HSSFHeaderParser headerParser(){
+        return new DefaultHSSFHeaderParser();
+    }
     @Bean
     public HSSFSheetWriterFactory sheetWriterFactory(HSSFRowWriterFactory rowWriterFactory){
         return new DefaultHSSFSheetWriterFactory(rowWriterFactory);
