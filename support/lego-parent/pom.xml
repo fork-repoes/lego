@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-parent</artifactId>
-	<version>0.0.1-excel_to_bean-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>lego-parent</name>
 
