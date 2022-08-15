@@ -1,5 +1,7 @@
 package com.geekhalo.lego.joininmemory.demo.v3;
 
+import com.geekhalo.lego.joininmemory.demo.*;
+import com.geekhalo.lego.joininmemory.demo.v2.OrderDetailVOV2;
 import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.address.AddressRepository;
 import com.geekhalo.lego.service.order.Order;
@@ -8,8 +10,6 @@ import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.product.ProductRepository;
 import com.geekhalo.lego.service.user.User;
 import com.geekhalo.lego.service.user.UserRepository;
-import com.geekhalo.lego.joininmemory.demo.*;
-import com.geekhalo.lego.joininmemory.demo.v2.OrderDetailVOV2;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;

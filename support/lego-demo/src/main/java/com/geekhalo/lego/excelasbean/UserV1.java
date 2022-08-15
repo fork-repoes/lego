@@ -1,6 +1,6 @@
 package com.geekhalo.lego.excelasbean;
 
-import com.geekhalo.lego.annotation.excelasbean.*;
+import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
 import lombok.Data;
 
 import java.util.Date;

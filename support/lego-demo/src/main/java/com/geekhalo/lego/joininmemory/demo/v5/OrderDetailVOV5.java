@@ -3,11 +3,7 @@ package com.geekhalo.lego.joininmemory.demo.v5;
 import com.geekhalo.lego.joininmemory.JoinAddressVOOnId;
 import com.geekhalo.lego.joininmemory.JoinProductVOOnId;
 import com.geekhalo.lego.joininmemory.JoinUserVOOnId;
-import com.geekhalo.lego.joininmemory.demo.OrderDetailVO;
-import com.geekhalo.lego.joininmemory.demo.AddressVO;
-import com.geekhalo.lego.joininmemory.demo.OrderVO;
-import com.geekhalo.lego.joininmemory.demo.ProductVO;
-import com.geekhalo.lego.joininmemory.demo.UserVO;
+import com.geekhalo.lego.joininmemory.demo.*;
 import lombok.Data;
 
 /**

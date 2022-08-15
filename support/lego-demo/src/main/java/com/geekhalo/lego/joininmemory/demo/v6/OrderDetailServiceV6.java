@@ -1,11 +1,11 @@
 package com.geekhalo.lego.joininmemory.demo.v6;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
-import com.geekhalo.lego.service.order.Order;
-import com.geekhalo.lego.service.order.OrderRepository;
 import com.geekhalo.lego.joininmemory.demo.OrderDetailService;
 import com.geekhalo.lego.joininmemory.demo.OrderDetailVO;
 import com.geekhalo.lego.joininmemory.demo.OrderVO;
+import com.geekhalo.lego.service.order.Order;
+import com.geekhalo.lego.service.order.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

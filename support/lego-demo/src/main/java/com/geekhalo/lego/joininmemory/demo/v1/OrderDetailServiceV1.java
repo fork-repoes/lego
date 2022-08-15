@@ -1,5 +1,6 @@
 package com.geekhalo.lego.joininmemory.demo.v1;
 
+import com.geekhalo.lego.joininmemory.demo.*;
 import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.address.AddressRepository;
 import com.geekhalo.lego.service.order.Order;
@@ -8,12 +9,6 @@ import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.product.ProductRepository;
 import com.geekhalo.lego.service.user.User;
 import com.geekhalo.lego.service.user.UserRepository;
-import com.geekhalo.lego.joininmemory.demo.OrderDetailService;
-import com.geekhalo.lego.joininmemory.demo.OrderDetailVO;
-import com.geekhalo.lego.joininmemory.demo.AddressVO;
-import com.geekhalo.lego.joininmemory.demo.OrderVO;
-import com.geekhalo.lego.joininmemory.demo.ProductVO;
-import com.geekhalo.lego.joininmemory.demo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
