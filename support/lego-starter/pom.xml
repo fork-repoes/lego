@@ -4,18 +4,19 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
+		<version>0.1.1-loader-SNAPSHOT</version>
 		<relativePath>../lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-starter</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.1-loader-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>lego-starter</name>
 	<modules>
 		<module>lego-starter-excelasbean</module>
-		<module>lego-starter-splitter</module>
 		<module>lego-starter-joininmemory</module>
+		<module>lego-starter-loader</module>
+		<module>lego-starter-splitter</module>
 	</modules>
 
 </project>

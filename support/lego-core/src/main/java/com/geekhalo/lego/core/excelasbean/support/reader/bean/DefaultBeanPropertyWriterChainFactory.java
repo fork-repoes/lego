@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.excelasbean.support.reader.bean;
 
-import com.geekhalo.lego.core.excelasbean.support.reader.cell.DefaultHSSFCellReader;
 import com.geekhalo.lego.core.excelasbean.support.reader.cell.HSSFCellReader;
 import com.geekhalo.lego.core.excelasbean.support.reader.cell.HSSFCellReaderFactories;
 import com.google.common.base.Preconditions;
