@@ -1,9 +1,7 @@
 package com.geekhalo.lego.core.excelasbean.support.write.cell.writer;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

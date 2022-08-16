@@ -3,7 +3,8 @@ package com.geekhalo.lego.core.excelasbean.support.reader.sheet;
 import com.geekhalo.lego.core.excelasbean.support.reader.row.HSSFRowToBeanWriter;
 import com.google.common.base.Preconditions;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 import java.util.Map;
 import java.util.function.Consumer;

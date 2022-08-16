@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.excelasbean.support.write.column;
 
-import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.HSSFCellConfigurator;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.HSSFCellWriterChain;
+import com.geekhalo.lego.core.excelasbean.support.write.cell.configurator.HSSFCellConfigurator;
 import com.geekhalo.lego.core.excelasbean.support.write.cell.writer.HSSFCellWriterContext;
 import com.google.common.base.Preconditions;
 import org.apache.commons.collections.CollectionUtils;

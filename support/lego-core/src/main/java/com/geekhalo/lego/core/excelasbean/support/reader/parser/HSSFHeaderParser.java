@@ -1,10 +1,8 @@
 package com.geekhalo.lego.core.excelasbean.support.reader.parser;
 
 import com.geekhalo.lego.annotation.excelasbean.HSSFTemplateHeader;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 /**
  * Created by taoli on 2022/8/14.

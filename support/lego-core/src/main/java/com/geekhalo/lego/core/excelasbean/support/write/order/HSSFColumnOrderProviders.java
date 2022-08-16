@@ -1,7 +1,6 @@
 package com.geekhalo.lego.core.excelasbean.support.write.order;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**

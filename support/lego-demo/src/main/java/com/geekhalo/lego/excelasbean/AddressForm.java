@@ -1,6 +1,5 @@
 package com.geekhalo.lego.excelasbean;
 
-import com.geekhalo.lego.annotation.excelasbean.HSSFHeader;
 import com.geekhalo.lego.annotation.excelasbean.HSSFTemplateHeader;
 import lombok.Data;
 
