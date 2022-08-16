@@ -2,6 +2,7 @@ package com.geekhalo.lego.starter.loader;
 
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.loader.support.DefaultLazyLoadProxyFactory;
+import com.geekhalo.lego.core.loader.support.LazyLoaderInterceptorFactory;
 import com.geekhalo.lego.core.loader.support.PropertyLazyLoaderFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +17,13 @@ import org.springframework.context.annotation.Configuration;
 public class LazyLoadAutoConfiguration {
 
     @Bean
-    public LazyLoadProxyFactory lazyLoadProxyFactory(PropertyLazyLoaderFactory propertyLazyLoaderFactory){
-        return new DefaultLazyLoadProxyFactory(propertyLazyLoaderFactory);
+    public LazyLoadProxyFactory lazyLoadProxyFactory(LazyLoaderInterceptorFactory lazyLoaderInterceptorFactory){
+        return new DefaultLazyLoadProxyFactory(lazyLoaderInterceptorFactory);
+    }
+
+    @Bean
+    public LazyLoaderInterceptorFactory lazyLoaderInterceptorFactory(PropertyLazyLoaderFactory lazyLoaderFactory){
+        return new LazyLoaderInterceptorFactory(lazyLoaderFactory);
     }
 
     @Bean
