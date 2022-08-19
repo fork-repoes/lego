@@ -1,31 +1,20 @@
 package com.geekhalo.lego.loader;
 
-import com.geekhalo.lego.service.address.Address;
-import com.geekhalo.lego.service.price.Price;
-import com.geekhalo.lego.service.product.Product;
-import com.geekhalo.lego.service.stock.LazyLoadStockByProductId;
-import com.geekhalo.lego.service.stock.Stock;
-import com.geekhalo.lego.service.user.User;
-import lombok.Data;
+/**
+ * Created by taoli on 2022/8/20.
+ * gitee : https://gitee.com/litao851025/lego
+ * 编程就像玩 Lego
+ */
+public interface CreateOrderContext {
+    com.geekhalo.lego.service.user.User getUser();
 
-@Data
-public class CreateOrderContext {
+    com.geekhalo.lego.service.product.Product getProduct();
 
-    private CreateOrderCmd cmd;
+    com.geekhalo.lego.service.address.Address getDefAddress();
 
-    @LazyLoadUserById(userId = "cmd.userId")
-    private User user;
+    com.geekhalo.lego.service.stock.Stock getStock();
 
-    @LazyLoadProduceById(productId = "cmd.productId")
-    private Product product;
+    com.geekhalo.lego.service.price.Price getPrice();
 
-    @LazyLoadDefaultAddressByUserId(userId = "user.id")
-    private Address defAddress;
-
-    @LazyLoadStockByProductId(productId = "product.id")
-    private Stock stock;
-
-    @LazyLoadPriceByUserAndProduct(userId = "user.id",
-            productId = "product.id")
-    private Price price;
+    CreateOrderCmd getCmd();
 }
