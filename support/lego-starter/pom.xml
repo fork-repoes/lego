@@ -16,6 +16,7 @@
 		<module>lego-starter-excelasbean</module>
 		<module>lego-starter-splitter</module>
 		<module>lego-starter-joininmemory</module>
+		<module>lego-starter-loader</module>
 	</modules>
 
 </project>
