@@ -7,7 +7,7 @@ public class AutowiredLazyLoadProxyFactoryWrapper implements LazyLoadProxyFactor
     private final LazyLoadProxyFactory lazyLoadProxyFactory;
     private final ApplicationContext applicationContext;
 
-    AutowiredLazyLoadProxyFactoryWrapper(LazyLoadProxyFactory lazyLoadProxyFactory,
+    public AutowiredLazyLoadProxyFactoryWrapper(LazyLoadProxyFactory lazyLoadProxyFactory,
                                          ApplicationContext applicationContext) {
         this.lazyLoadProxyFactory = lazyLoadProxyFactory;
         this.applicationContext = applicationContext;
