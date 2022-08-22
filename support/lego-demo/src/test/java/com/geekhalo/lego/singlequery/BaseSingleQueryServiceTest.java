@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Created by taoli on 2022/8/22.
  * gitee : https://gitee.com/litao851025/lego

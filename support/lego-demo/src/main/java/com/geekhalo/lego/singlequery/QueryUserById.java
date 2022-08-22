@@ -1,10 +1,7 @@
 package com.geekhalo.lego.singlequery;
 
 import com.geekhalo.lego.annotation.singlequery.FieldEqualTo;
-import com.geekhalo.lego.annotation.singlequery.FieldIn;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * Created by taoli on 2022/8/22.

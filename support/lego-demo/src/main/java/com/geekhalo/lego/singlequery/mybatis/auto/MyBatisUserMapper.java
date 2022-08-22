@@ -1,9 +1,8 @@
 package com.geekhalo.lego.singlequery.mybatis.auto;
 
-import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
-import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface MyBatisUserMapper {
     long countByExample(MyBatisUserExample example);
