@@ -12,4 +12,6 @@ public interface SingleQueryService {
     User oneOf(Object query);
 
     List<User> listOf(Object query);
+
+    Long countOf(Object query);
 }

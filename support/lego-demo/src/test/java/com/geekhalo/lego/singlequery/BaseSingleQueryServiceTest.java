@@ -33,10 +33,16 @@ abstract class BaseSingleQueryServiceTest {
         List<Long> ids = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
         QueryUserByIds queryUserByIds = new QueryUserByIds();
         queryUserByIds.setIds(ids);
-        List<User> users = this.getSingleQueryService().listOf(queryUserByIds);
-        Assertions.assertNotNull(users);
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
-        Assertions.assertEquals(10, users.size());
+        {
+            List<User> users = this.getSingleQueryService().listOf(queryUserByIds);
+            Assertions.assertNotNull(users);
+            Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
+            Assertions.assertEquals(10, users.size());
+        }
+        {
+            Long count = this.getSingleQueryService().countOf(queryUserByIds);
+            Assertions.assertEquals(10L, count);
+        }
     }
 
     @Test
@@ -44,25 +50,44 @@ abstract class BaseSingleQueryServiceTest {
         {
             QueryUserByIdGreater queryUserByIdGreater = new QueryUserByIdGreater();
             queryUserByIdGreater.setStartUserId(1L);
-            List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(12, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(12, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(queryUserByIdGreater);
+                Assertions.assertEquals(12L, count);
+            }
         }
 
         {
             QueryUserByIdGreater queryUserByIdGreater = new QueryUserByIdGreater();
             queryUserByIdGreater.setStartUserId(10L);
-            List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(3, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(3, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(queryUserByIdGreater);
+                Assertions.assertEquals(3L, count);
+            }
         }
 
         {
             QueryUserByIdGreater queryUserByIdGreater = new QueryUserByIdGreater();
             queryUserByIdGreater.setStartUserId(13L);
-            List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(0, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(queryUserByIdGreater);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(0, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(queryUserByIdGreater);
+                Assertions.assertEquals(0L, count);
+            }
         }
     }
 
@@ -72,25 +97,46 @@ abstract class BaseSingleQueryServiceTest {
         {
             QueryUserByIdGreaterOrEquals query = new QueryUserByIdGreaterOrEquals();
             query.setStartUserId(1L);
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(13, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(13, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(13L, count);
+            }
+
         }
 
         {
             QueryUserByIdGreaterOrEquals query = new QueryUserByIdGreaterOrEquals();
             query.setStartUserId(10L);
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(4, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(4, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(4L, count);
+            }
         }
 
         {
             QueryUserByIdGreaterOrEquals query = new QueryUserByIdGreaterOrEquals();
             query.setStartUserId(13L);
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(1, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(1, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(1L, count);
+            }
         }
     }
 
@@ -100,9 +146,15 @@ abstract class BaseSingleQueryServiceTest {
             QueryByNameIsNull queryByNameIsNull = new QueryByNameIsNull();
             queryByNameIsNull.setNull(true);
 
-            List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(0, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(0, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(queryByNameIsNull);
+                Assertions.assertEquals(0L, count);
+            }
         }
 
         {
@@ -110,9 +162,15 @@ abstract class BaseSingleQueryServiceTest {
             QueryByNameIsNull queryByNameIsNull = new QueryByNameIsNull();
             queryByNameIsNull.setNull(false);
 
-            List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(13, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(13, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(queryByNameIsNull);
+                Assertions.assertEquals(13L, count);
+            }
         }
     }
 
@@ -122,27 +180,46 @@ abstract class BaseSingleQueryServiceTest {
             QueryByLess query = new QueryByLess();
             query.setMaxId(14L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(13, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(13, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(13L, count);
+            }
         }
 
         {
             QueryByLess query = new QueryByLess();
             query.setMaxId(10L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(9, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(9, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(9L, count);
+            }
         }
 
         {
             QueryByLess query = new QueryByLess();
             query.setMaxId(5L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(4, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(4, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(4L, count);
+            }
         }
     }
 
@@ -152,27 +229,46 @@ abstract class BaseSingleQueryServiceTest {
             QueryByLessOrEqual query = new QueryByLessOrEqual();
             query.setMaxId(13L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(13, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(13, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(13L, count);
+            }
         }
 
         {
             QueryByLessOrEqual query = new QueryByLessOrEqual();
             query.setMaxId(10L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(10, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(10, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(10L, count);
+            }
         }
 
         {
             QueryByLessOrEqual query = new QueryByLessOrEqual();
             query.setMaxId(5L);
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(5, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(5, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(5L, count);
+            }
         }
     }
 
@@ -182,26 +278,46 @@ abstract class BaseSingleQueryServiceTest {
             QueryByNotEqual query = new QueryByNotEqual();
             query.setName("李四");
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(13, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(13, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(13L, count);
+            }
         }
 
         {
             QueryByNotEqual query = new QueryByNotEqual();
             query.setName("张三6");
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(12, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(12, users.size());
+            }
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(12L, count);
+            }
         }
         {
             QueryByNotEqual query = new QueryByNotEqual();
             query.setName("张三8");
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(12, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(12, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(12L, count);
+            }
         }
     }
 
@@ -211,9 +327,16 @@ abstract class BaseSingleQueryServiceTest {
             QueryByNotIn query = new QueryByNotIn();
             query.setIds(Arrays.asList(1L, 2L));
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(11, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(11, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(11L, count);
+            }
         }
 
 
@@ -221,9 +344,16 @@ abstract class BaseSingleQueryServiceTest {
             QueryByNotIn query = new QueryByNotIn();
             query.setIds(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
 
-            List<User> users = this.getSingleQueryService().listOf(query);
-            Assertions.assertNotNull(users);
-            Assertions.assertEquals(5, users.size());
+            {
+                List<User> users = this.getSingleQueryService().listOf(query);
+                Assertions.assertNotNull(users);
+                Assertions.assertEquals(5, users.size());
+            }
+
+            {
+                Long count = this.getSingleQueryService().countOf(query);
+                Assertions.assertEquals(5L, count);
+            }
         }
 
     }
