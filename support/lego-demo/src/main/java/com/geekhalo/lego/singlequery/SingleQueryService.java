@@ -8,7 +8,8 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public interface SingleQueryService {
-    List<User> getByIds(QueryUserByIds queryUserByIds);
 
-    User getById(QueryUserById queryUserById);
+    User oneOf(Object query);
+
+    List<User> listOf(Object query);
 }

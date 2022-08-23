@@ -1,10 +1,7 @@
 package com.geekhalo.lego.singlequery.mybatis;
 
 import com.geekhalo.lego.core.singlequery.mybatis.support.AbstractReflectBasedExampleQueryRepository;
-import com.geekhalo.lego.singlequery.QueryUserById;
-import com.geekhalo.lego.singlequery.QueryUserByIds;
-import com.geekhalo.lego.singlequery.SingleQueryService;
-import com.geekhalo.lego.singlequery.User;
+import com.geekhalo.lego.singlequery.*;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserExample;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserMapper;
@@ -25,12 +22,12 @@ public class MyBatisSingleQueryService
         super(mapper, MyBatisUserExample.class);
     }
     @Override
-    public List<User> getByIds(QueryUserByIds queryUserByIds) {
-        return listOf(queryUserByIds);
+    public List<User> listOf(Object query) {
+        return super.listOf(query);
     }
 
     @Override
-    public User getById(QueryUserById queryUserById){
-        return (MyBatisUser) get(queryUserById);
+    public User oneOf(Object query){
+        return (MyBatisUser) get(query);
     }
 }
