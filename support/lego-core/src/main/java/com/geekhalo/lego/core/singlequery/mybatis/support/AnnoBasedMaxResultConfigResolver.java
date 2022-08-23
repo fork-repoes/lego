@@ -1,8 +1,8 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResult;
-import com.geekhalo.lego.core.singlequery.mybatis.MaxResultConfig;
-import com.geekhalo.lego.core.singlequery.mybatis.MaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.MaxResultConfig;
+import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
 import com.google.common.collect.Maps;
 
 import java.util.Map;

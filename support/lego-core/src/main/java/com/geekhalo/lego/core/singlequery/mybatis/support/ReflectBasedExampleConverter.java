@@ -2,9 +2,9 @@ package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.*;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
-import com.geekhalo.lego.core.singlequery.mybatis.Pageable;
-import com.geekhalo.lego.core.singlequery.mybatis.Sort;
-import com.geekhalo.lego.core.singlequery.mybatis.ValueContainer;
+import com.geekhalo.lego.core.singlequery.Pageable;
+import com.geekhalo.lego.core.singlequery.Sort;
+import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.mybatis.support.handler.*;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;

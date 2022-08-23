@@ -1,6 +1,9 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
+import com.geekhalo.lego.core.singlequery.ManyResultException;
+import com.geekhalo.lego.core.singlequery.MaxResultConfig;
+import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
 import com.geekhalo.lego.core.singlequery.mybatis.*;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.singlequery.mybatis;
+package com.geekhalo.lego.core.singlequery;
 
 public class ManyResultException extends RuntimeException{
 }

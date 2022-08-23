@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.singlequery.mybatis;
+package com.geekhalo.lego.core.singlequery;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
 import lombok.Builder;
