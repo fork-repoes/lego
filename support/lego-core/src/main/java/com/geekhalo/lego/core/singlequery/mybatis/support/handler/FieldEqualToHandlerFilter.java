@@ -5,15 +5,15 @@ import com.geekhalo.lego.annotation.singlequery.FieldEqualTo;
 
 public class FieldEqualToHandlerFilter
         extends AbstractFilterAnnotationHandler<FieldEqualTo>
-        implements FilterAnnotationHandler<FieldEqualTo> {
+        implements FieldAnnotationHandler<FieldEqualTo> {
 
     public FieldEqualToHandlerFilter() {
-        super("EqualTo");
+        super(FieldEqualTo.class);
     }
+
 
     @Override
-    public String getFieldValue(FieldEqualTo annotation) {
-        return annotation.value();
+    public void addCriteria(Object criteria, FieldEqualTo fieldEqualTo, Object value) throws Exception{
+        addCriteria(criteria, fieldEqualTo.value(), "EqualTo", value);
     }
-
 }

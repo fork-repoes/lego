@@ -36,15 +36,16 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
     }
 
     @Override
-    public <R, V> List<V> listOf(R request, Function<E, V> converter) {
+    public <Q, R> List<R> listOf(Q query, Function<E, R> converter) {
         Preconditions.checkArgument(converter != null);
-        if (request == null){
+
+        if (query == null){
             return Collections.emptyList();
         }
 
-        Object example = this.exampleConverter.convert(request);
+        Object example = this.exampleConverter.convertForQuery(query);
 
-        MaxResultConfig maxResultConfig = this.maxResultConfigResolver.maxResult(request);
+        MaxResultConfig maxResultConfig = this.maxResultConfigResolver.maxResult(query);
 
         if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.SET_LIMIT){
             setLimitForExample(maxResultConfig.getMaxResult(), example);
@@ -56,7 +57,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
             return Collections.emptyList();
         }
 
-        processForMaxResult(request, maxResultConfig, entities);
+        processForMaxResult(query, maxResultConfig, entities);
 
         return entities.stream()
                 .filter(Objects::nonNull)
@@ -64,13 +65,13 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
                 .collect(Collectors.toList());
     }
 
-    private void processForMaxResult(Object request, MaxResultConfig maxResultConfig, List<E> entities) {
+    private void processForMaxResult(Object query, MaxResultConfig maxResultConfig, List<E> entities) {
         if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.LOG){
             if (entities.size() >= maxResultConfig.getMaxResult()){
                 log.warn("【LOG】result size is {} more than {}, mapper is {} param is {}", entities.size(),
                         maxResultConfig.getMaxResult(),
                         this.mapper,
-                        request);
+                        query);
                 return;
             }
         }
@@ -80,7 +81,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
                 log.error("【ERROR】result size is {} more than {}, mapper is {} param is {}", entities.size(),
                         maxResultConfig.getMaxResult(),
                         this.mapper,
-                        request);
+                        query);
                 throw new ManyResultException();
             }
         }
@@ -90,7 +91,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
                 log.error("【SET_LIMIT】result size is {} more than {}, please find and fix, mapper is {} param is {}", entities.size(),
                         maxResultConfig.getMaxResult(),
                         this.mapper,
-                        request);
+                        query);
                 return;
             }
         }
@@ -98,9 +99,9 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
 
     private void setLimitForExample(Integer maxResult, Object example) {
         try {
-            MethodUtils.invokeMethod(example, true, "setLimit", maxResult);
+            MethodUtils.invokeMethod(example, true, "setRows", maxResult);
         } catch (Exception e) {
-            log.error("failed to invoke method {} of {} ", "setLimit", this.mapper);
+            log.error("failed to invoke method {} of {} ", "setRows", this.mapper);
             if (e instanceof RuntimeException){
                 throw (RuntimeException) e;
             }else {
@@ -111,29 +112,37 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
 
 
     @Override
-    public <R, V> V get(R request, Function<E, V> converter) {
+    public <Q, R> R get(Q query, Function<E, R> converter) {
         Preconditions.checkArgument(converter != null);
-        if (request == null){
+
+        if (query == null){
             return null;
         }
-        Object example = this.exampleConverter.convert(request);
+
+        Object example = this.exampleConverter.convertForQuery(query);
+
         List<E> entities = doList(example);
+
         if (CollectionUtils.isEmpty(entities)){
             return null;
         }
         return entities.stream()
                 .filter(Objects::nonNull)
-                .map(converter).findAny().orElse(null);
+                .map(converter)
+                .findAny()
+                .orElse(null);
     }
 
     @Override
-    public <R, V> Page<V> pageOf(R request, Function<E, V> converter) {
-        Pageable pageable = exampleConverter.findPageable(request);
+    public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
+        Pageable pageable = exampleConverter.findPageable(query);
+
         if (pageable == null){
             throw new IllegalArgumentException("Pageable Lost");
         }
-        Long totalElement = countOf(request);
-        List<V> content =  listOf(request, converter);
+
+        Long totalElement = countOf(query);
+        List<R> content =  listOf(query, converter);
 
         return new Page<>(content, pageable, totalElement);
     }
@@ -156,7 +165,9 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
         if (request == null){
             return null;
         }
-        Object example = this.exampleConverter.convert(request);
+
+        Object example = this.exampleConverter.convertForCount(request);
+
         return doCount(example);
     }
 

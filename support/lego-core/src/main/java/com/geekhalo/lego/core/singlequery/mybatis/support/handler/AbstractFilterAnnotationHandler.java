@@ -1,17 +1,28 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
+
 import java.lang.annotation.Annotation;
 
 abstract class AbstractFilterAnnotationHandler<A extends Annotation>
-        implements FilterAnnotationHandler<A>{
-    private final String operator;
+        implements FieldAnnotationHandler<A>{
+    private final Class<A> aClass;
 
-    protected AbstractFilterAnnotationHandler(String operator) {
-        this.operator = operator;
+    public AbstractFilterAnnotationHandler(Class<A> aClass) {
+        this.aClass = aClass;
+    }
+    public boolean support(A a){
+        return a != null && a.annotationType() == aClass;
     }
 
-    @Override
-    public final String getOperator() {
-        return operator;
+    protected void addCriteria(Object criteria, String fieldName, String operator, Object ... value) throws Exception{
+        String methodName = createFilterMethodName(fieldName, operator);
+        MethodUtils.invokeMethod(criteria, true, methodName, value);
     }
+
+    private String createFilterMethodName(String fieldName, String operator){
+        return "and" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length()) + operator;
+    }
+
+
 }

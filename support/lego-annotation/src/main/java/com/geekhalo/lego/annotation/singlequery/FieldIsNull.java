@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Field
 public @interface FieldIsNull {
-    @AliasFor(annotation = Field.class, attribute = "fieldName")
     String value();
 }

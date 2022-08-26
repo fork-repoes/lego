@@ -6,7 +6,6 @@ import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.Sort;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.mybatis.support.handler.*;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
@@ -15,87 +14,113 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
     private final Class<E> eClass;
-    private final Map<Class, FilterAnnotationHandler> annotationHandlerMap = Maps.newHashMap();
+    private final List<FieldAnnotationHandler> fieldAnnotationHandlers = new ArrayList<>();
 
     public ReflectBasedExampleConverter(Class<E> eClass) {
         this.eClass = eClass;
-        annotationHandlerMap.put(FieldEqualTo.class, new FieldEqualToHandlerFilter());
-        annotationHandlerMap.put(FieldGreaterThan.class, new FieldGreaterThanHandler());
-        annotationHandlerMap.put(FieldGreaterThanOrEqualTo.class, new FieldGreaterThanOrEqualToHandler());
-        annotationHandlerMap.put(FieldIn.class, new FieldInHandler());
-        annotationHandlerMap.put(FieldIsNull.class, new FieldIsNullHandler());
-        annotationHandlerMap.put(FieldLessThan.class, new FieldLessThanHandler());
-        annotationHandlerMap.put(FieldLessThanOrEqualTo.class, new FieldLessThanOrEqualToHandler());
-        annotationHandlerMap.put(FieldNotEqualTo.class, new FieldNotEqualToHandler());
-        annotationHandlerMap.put(FieldNotIn.class, new FieldNotInHandler());
+        fieldAnnotationHandlers.add(new FieldEqualToHandlerFilter());
+        fieldAnnotationHandlers.add(new FieldGreaterThanHandler());
+        fieldAnnotationHandlers.add(new FieldGreaterThanOrEqualToHandler());
+        fieldAnnotationHandlers.add(new FieldInHandler());
+        fieldAnnotationHandlers.add(new FieldIsNullHandler());
+        fieldAnnotationHandlers.add(new FieldLessThanHandler());
+        fieldAnnotationHandlers.add(new FieldLessThanOrEqualToHandler());
+        fieldAnnotationHandlers.add(new FieldNotEqualToHandler());
+        fieldAnnotationHandlers.add(new FieldNotInHandler());
     }
 
     @Override
-    public E convert(Object o) {
+    public E convertForQuery(Object query) {
         try {
-            E example = ConstructorUtils.invokeConstructor(this.eClass);
+            E example = instanceExample();
 
-            Object criteria = MethodUtils.invokeExactMethod(example, "createCriteria");
+            Object criteria = instanceCriteria(example);
 
-            bindFilter(o, criteria);
+            bindWhere(query, criteria);
 
-            bindPagable(o, example);
+            bindSort(query, example);
 
-            bindSort(o, example);
+            bindPageable(query, example);
 
             return example;
-        } catch (NoSuchMethodException e) {
-            log.error("failed to run bind", e);
-        } catch (IllegalAccessException e) {
-            log.error("failed to run bind", e);
-        } catch (InvocationTargetException e) {
-            log.error("failed to run bind", e);
-        } catch (InstantiationException e) {
-            log.error("failed to run bind", e);
+        } catch (Exception e) {
+            log.error("failed to run convertForQuery", e);
         }
         return null;
     }
 
+    @Override
+    public E convertForCount(Object query) {
+        try {
+            E example = instanceExample();
+            Object criteria = instanceCriteria(example);
 
-    private void bindSort(Object o, E example) {
+            bindWhere(query, criteria);
+
+            return example;
+        } catch (Exception e) {
+            log.error("failed to run convertForCount", e);
+        }
+        return null;
+    }
+
+    private Object instanceCriteria(E example) throws Exception {
+        return MethodUtils.invokeExactMethod(example, "createCriteria");
+    }
+
+    private E instanceExample() throws Exception {
+        return ConstructorUtils.invokeConstructor(this.eClass);
+    }
+
+
+    private void bindSort(Object o, E example) throws Exception {
+        Sort sort = findSort(o);
+
+        bindSort(example, sort);
+    }
+
+    private void bindSort(E example, Sort sort) throws Exception {
+        if (sort != null){
+            MethodUtils.invokeMethod(example, "setOrderByClause", sort.toOrderByClause());
+        }
+    }
+
+    private Sort findSort(Object o) {
+        Sort sort = null;
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
         for (Field field : allFieldsList){
             if (field.getType() == Sort.class){
                 try {
-                    Sort sort = (Sort) FieldUtils.readField(field, o, true);
-                    if (sort != null){
-                        MethodUtils.invokeMethod(example, "setOrderByClause", sort.toOrderByClause());
-                    }
+                    sort = (Sort) FieldUtils.readField(field, o, true);
                 }catch (Exception e){
-                    log.error("failed to bind sort to {} from {}", example, o);
+                    log.error("failed to bind sort from {}", o);
                 }
                 break;
             }
         }
+        return sort;
     }
 
-    private void bindPagable(Object o, E example) {
+    private void bindPageable(Object o, E example) throws Exception{
         Pageable pageable = findPageable(o);
         bindPageable(example, pageable);
     }
 
-    public Pageable findPageable(Object o) {
+    public Pageable findPageable(Object query) {
         Pageable pageable = null;
-        List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
+        List<Field> allFieldsList = FieldUtils.getAllFieldsList(query.getClass());
         for (Field field : allFieldsList){
             if (field.getType() == Pageable.class){
                 try {
-                    pageable = (Pageable) FieldUtils.readField(field, o, true);
+                    pageable = (Pageable) FieldUtils.readField(field, query, true);
                 }catch (Exception e){
-                    log.error("failed to find pageable  from {}", o);
+                    log.error("failed to find pageable  from {}", query);
                 }
                 break;
             }
@@ -103,19 +128,14 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
         return pageable;
     }
 
-    private void bindPageable(E example, Pageable pageable){
+    private void bindPageable(E example, Pageable pageable) throws Exception{
         if (pageable != null){
-            try {
-                MethodUtils.invokeMethod(example, "setRows", pageable.getLimit());
-                MethodUtils.invokeMethod(example, "setOffset", pageable.getOffset());
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            MethodUtils.invokeMethod(example, "setRows", pageable.getLimit());
+            MethodUtils.invokeMethod(example, "setOffset", pageable.getOffset());
         }
-
     }
 
-    private void bindFilter(Object o, Object criteria){
+    private void bindWhere(Object o, Object criteria){
         Class cls = o.getClass();
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
         for (Field field : allFieldsList){
@@ -137,24 +157,28 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
 
                 Annotation[] annotations = field.getAnnotations();
                 for (Annotation annotation : annotations){
-                    FilterAnnotationHandler filterAnnotationHandler = annotationHandlerMap.get(annotation.annotationType());
-                    if (filterAnnotationHandler != null){
-                        String fieldName = filterAnnotationHandler.getFieldValue(annotation);
-                        String operator = filterAnnotationHandler.getOperator();
-                        String methodName = createFilterMethodName(fieldName, operator);
-                        boolean hadParam = filterAnnotationHandler.hasParam();
-                        if (hadParam) {
-                            MethodUtils.invokeMethod(criteria, true, methodName, value);
-                        }else {
-                            if (value instanceof Boolean && (Boolean) value){
-                                MethodUtils.invokeMethod(criteria, true, methodName);
-                            }
+                    for (FieldAnnotationHandler handler : fieldAnnotationHandlers){
+                        if (handler.support(annotation)){
+                            handler.addCriteria(criteria, annotation, value);
                         }
-                        continue;
                     }
+//                    if (filterAnnotationHandler != null){
+//                        String fieldName = filterAnnotationHandler.getFieldValue(annotation);
+//                        String operator = filterAnnotationHandler.getOperator();
+//                        String methodName = createFilterMethodName(fieldName, operator);
+//                        boolean hadParam = filterAnnotationHandler.hasParam();
+//                        if (hadParam) {
+//                            MethodUtils.invokeMethod(criteria, true, methodName, value);
+//                        }else {
+//                            if (value instanceof Boolean && (Boolean) value){
+//                                MethodUtils.invokeMethod(criteria, true, methodName);
+//                            }
+//                        }
+//                        continue;
+//                    }
 
-                    if (annotation.annotationType() == ExtFilter.class){
-                        bindFilter(value, criteria);
+                    if (annotation.annotationType() == EmbeddedFilter.class){
+                        bindWhere(value, criteria);
                     }
                 }
             }catch (Exception e){
@@ -170,54 +194,47 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
     @Override
     public void testInput(Class cls) {
         try {
-            E example = ConstructorUtils.invokeConstructor(this.eClass);
+            E example = instanceExample();
 
-            Object criteria = MethodUtils.invokeExactMethod(example, "createCriteria");
+            Object criteria = instanceCriteria(example);
 
-            testFilter(cls, criteria);
-
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
+//            testFilter(cls, criteria);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void testFilter(Class cls, Object criteria){
-        List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
-        for (Field field : allFieldsList){
-            Class fieldType = field.getType();
-            Annotation[] annotations = field.getAnnotations();
-            for (Annotation annotation : annotations){
-                FilterAnnotationHandler filterAnnotationHandler = annotationHandlerMap.get(annotation.annotationType());
-                if (filterAnnotationHandler != null){
-                    String fieldName = filterAnnotationHandler.getFieldValue(annotation);
-                    String operator = filterAnnotationHandler.getOperator();
-                    String methodName = createFilterMethodName(fieldName, operator);
-                    Method matchingMethod = null;
-
-                    boolean hadParam = filterAnnotationHandler.hasParam();
-                    if (hadParam) {
-                        matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName, fieldType);
-                    }else {
-                        if (fieldType == Boolean.class || fieldType == Boolean.TYPE){
-                            matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName);
-                        }
-                    }
-                    if (matchingMethod == null){
-                        throw new RuntimeException("Can not find method " + methodName + " on class " + criteria.getClass());
-                    }
-                    continue;
-                }
-
-                if (annotation.annotationType() == ExtFilter.class){
-                    bindFilter(fieldType, criteria);
-                }
-            }
-        }
-    }
+//    private void testFilter(Class cls, Object criteria){
+//        List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
+//        for (Field field : allFieldsList){
+//            Class fieldType = field.getType();
+//            Annotation[] annotations = field.getAnnotations();
+//            for (Annotation annotation : annotations){
+//                FilterAnnotationHandler filterAnnotationHandler = annotationHandlerMap.get(annotation.annotationType());
+//                if (filterAnnotationHandler != null){
+//                    String fieldName = filterAnnotationHandler.getFieldValue(annotation);
+//                    String operator = filterAnnotationHandler.getOperator();
+//                    String methodName = createFilterMethodName(fieldName, operator);
+//                    Method matchingMethod = null;
+//
+//                    boolean hadParam = filterAnnotationHandler.hasParam();
+//                    if (hadParam) {
+//                        matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName, fieldType);
+//                    }else {
+//                        if (fieldType == Boolean.class || fieldType == Boolean.TYPE){
+//                            matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName);
+//                        }
+//                    }
+//                    if (matchingMethod == null){
+//                        throw new RuntimeException("Can not find method " + methodName + " on class " + criteria.getClass());
+//                    }
+//                    continue;
+//                }
+//
+//                if (annotation.annotationType() == ExtFilter.class){
+//                    bindWhere(fieldType, criteria);
+//                }
+//            }
+//        }
+//    }
 }

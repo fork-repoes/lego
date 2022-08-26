@@ -2,15 +2,17 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 
 import com.geekhalo.lego.annotation.singlequery.FieldIn;
+import com.geekhalo.lego.annotation.singlequery.FieldNotEqualTo;
 
 public class FieldInHandler extends AbstractFilterAnnotationHandler<FieldIn>
-    implements FilterAnnotationHandler<FieldIn>{
+    implements FieldAnnotationHandler<FieldIn>{
     public FieldInHandler() {
-        super("In");
+        super(FieldIn.class);
     }
 
+
     @Override
-    public String getFieldValue(FieldIn annotation) {
-        return annotation.value();
+    public void addCriteria(Object criteria, FieldIn notEqualTo, Object value) throws Exception{
+        addCriteria(criteria, notEqualTo.value(), "In", value);
     }
 }

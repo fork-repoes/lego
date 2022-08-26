@@ -2,16 +2,17 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 
 import com.geekhalo.lego.annotation.singlequery.FieldGreaterThanOrEqualTo;
+import com.geekhalo.lego.annotation.singlequery.FieldLessThan;
 
 public class FieldGreaterThanOrEqualToHandler
     extends AbstractFilterAnnotationHandler<FieldGreaterThanOrEqualTo>
-    implements FilterAnnotationHandler<FieldGreaterThanOrEqualTo>{
+    implements FieldAnnotationHandler<FieldGreaterThanOrEqualTo>{
     public FieldGreaterThanOrEqualToHandler() {
-        super("GreaterThanOrEqualTo");
+        super(FieldGreaterThanOrEqualTo.class);
     }
 
     @Override
-    public String getFieldValue(FieldGreaterThanOrEqualTo annotation) {
-        return annotation.value();
+    public void addCriteria(Object criteria, FieldGreaterThanOrEqualTo greaterThanOrEqualTo, Object value) throws Exception{
+        addCriteria(criteria, greaterThanOrEqualTo.value(), "GreaterThanOrEqualTo", value);
     }
 }
