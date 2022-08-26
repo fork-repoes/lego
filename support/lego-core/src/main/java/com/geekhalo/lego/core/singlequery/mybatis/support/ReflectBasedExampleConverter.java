@@ -1,11 +1,11 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support;
 
-import com.geekhalo.lego.annotation.singlequery.*;
-import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
+import com.geekhalo.lego.annotation.singlequery.EmbeddedFilter;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.Sort;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
-import com.geekhalo.lego.core.singlequery.mybatis.support.handler.*;
+import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
+import com.geekhalo.lego.core.singlequery.mybatis.support.handler.FieldAnnotationHandler;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,7 +15,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j

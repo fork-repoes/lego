@@ -2,7 +2,8 @@ package com.geekhalo.lego.singlequery.mybatis;
 
 import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.mybatis.support.AbstractReflectBasedExampleQueryRepository;
-import com.geekhalo.lego.singlequery.*;
+import com.geekhalo.lego.singlequery.User;
+import com.geekhalo.lego.singlequery.UserSingleQueryService;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserExample;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserMapper;

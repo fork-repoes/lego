@@ -2,7 +2,9 @@ package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
 import com.geekhalo.lego.core.singlequery.*;
-import com.geekhalo.lego.core.singlequery.mybatis.*;
+import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
+import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
+import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;

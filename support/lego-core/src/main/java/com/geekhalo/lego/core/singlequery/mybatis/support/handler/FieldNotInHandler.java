@@ -1,7 +1,6 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 
-import com.geekhalo.lego.annotation.singlequery.FieldLessThanOrEqualTo;
 import com.geekhalo.lego.annotation.singlequery.FieldNotIn;
 
 public class FieldNotInHandler

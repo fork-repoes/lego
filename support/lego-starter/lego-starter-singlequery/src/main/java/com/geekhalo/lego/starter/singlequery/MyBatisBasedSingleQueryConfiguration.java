@@ -1,6 +1,5 @@
 package com.geekhalo.lego.starter.singlequery;
 
-import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.support.DefaultExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.support.handler.*;

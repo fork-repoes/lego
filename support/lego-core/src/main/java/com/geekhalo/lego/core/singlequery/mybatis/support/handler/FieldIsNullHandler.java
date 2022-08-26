@@ -1,7 +1,6 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 
-import com.geekhalo.lego.annotation.singlequery.FieldGreaterThan;
 import com.geekhalo.lego.annotation.singlequery.FieldIsNull;
 
 public class FieldIsNullHandler extends AbstractFilterAnnotationHandler<FieldIsNull>

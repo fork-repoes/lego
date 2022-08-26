@@ -2,7 +2,6 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 
 import com.geekhalo.lego.annotation.singlequery.FieldNotEqualTo;
-import com.geekhalo.lego.annotation.singlequery.FieldNotIn;
 
 public class FieldNotEqualToHandler
     extends AbstractFilterAnnotationHandler<FieldNotEqualTo>
