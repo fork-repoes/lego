@@ -1,5 +1,7 @@
 package com.geekhalo.lego.singlequery;
 
+import com.geekhalo.lego.core.singlequery.Page;
+
 import java.util.List;
 
 /**
@@ -14,4 +16,6 @@ public interface SingleQueryService {
     List<User> listOf(Object query);
 
     Long countOf(Object query);
+
+    Page<User> pageOf(Object query);
 }

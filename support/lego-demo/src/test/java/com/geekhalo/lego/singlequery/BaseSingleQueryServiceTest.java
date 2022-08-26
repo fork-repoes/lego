@@ -1,5 +1,8 @@
 package com.geekhalo.lego.singlequery;
 
+import com.geekhalo.lego.core.singlequery.Page;
+import com.geekhalo.lego.core.singlequery.Pageable;
+import com.geekhalo.lego.core.singlequery.Sort;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -355,6 +358,110 @@ abstract class BaseSingleQueryServiceTest {
                 Assertions.assertEquals(5L, count);
             }
         }
+    }
 
+    @Test
+    void pageOf(){
+        {
+            PageByIdGreater pageByIdGreater = new PageByIdGreater();
+            pageByIdGreater.setStartId(0L);
+            Pageable pageable = new Pageable();
+            pageByIdGreater.setPageable(pageable);
+            pageable.setPageNo(0);
+            pageable.setPageSize(5);
+
+            Sort sort = new Sort();
+            pageByIdGreater.setSort(sort);
+            Sort.Order order = Sort.Order.<Orders>builder()
+                    .orderField(Orders.ID)
+                    .direction(Sort.Direction.ASC)
+                    .build();
+
+            sort.getOrders().add(order);
+
+            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+
+            Assertions.assertTrue(userPage.hasContent());
+            Assertions.assertEquals(5, userPage.getContent().size());
+
+            Assertions.assertEquals(0, userPage.getCurrentPage());
+            Assertions.assertEquals(5, userPage.getPageSize());
+            Assertions.assertEquals(3, userPage.getTotalPages());
+            Assertions.assertEquals(13, userPage.getTotalElements());
+
+            Assertions.assertTrue(userPage.isFirst());
+            Assertions.assertFalse( userPage.hasPrevious());
+
+            Assertions.assertTrue( userPage.hasNext());
+            Assertions.assertFalse(userPage.isLast());
+
+
+        }
+
+        {
+            PageByIdGreater pageByIdGreater = new PageByIdGreater();
+            pageByIdGreater.setStartId(0L);
+            Pageable pageable = new Pageable();
+            pageByIdGreater.setPageable(pageable);
+            pageable.setPageNo(1);
+            pageable.setPageSize(5);
+
+            Sort sort = new Sort();
+            pageByIdGreater.setSort(sort);
+            Sort.Order order = Sort.Order.<Orders>builder()
+                    .orderField(Orders.ID)
+                    .direction(Sort.Direction.ASC)
+                    .build();
+
+            sort.getOrders().add(order);
+
+            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+            Assertions.assertTrue(userPage.hasContent());
+            Assertions.assertEquals(5, userPage.getContent().size());
+
+            Assertions.assertEquals(1, userPage.getCurrentPage());
+            Assertions.assertEquals(5, userPage.getPageSize());
+            Assertions.assertEquals(3, userPage.getTotalPages());
+            Assertions.assertEquals(13, userPage.getTotalElements());
+
+            Assertions.assertFalse(userPage.isFirst());
+            Assertions.assertTrue( userPage.hasPrevious());
+
+            Assertions.assertTrue( userPage.hasNext());
+            Assertions.assertFalse(userPage.isLast());
+        }
+
+        {
+            PageByIdGreater pageByIdGreater = new PageByIdGreater();
+            pageByIdGreater.setStartId(0L);
+            Pageable pageable = new Pageable();
+            pageByIdGreater.setPageable(pageable);
+            pageable.setPageNo(2);
+            pageable.setPageSize(5);
+
+            Sort sort = new Sort();
+            pageByIdGreater.setSort(sort);
+            Sort.Order order = Sort.Order.<Orders>builder()
+                    .orderField(Orders.ID)
+                    .direction(Sort.Direction.ASC)
+                    .build();
+
+            sort.getOrders().add(order);
+
+            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+            Assertions.assertTrue(userPage.hasContent());
+            Assertions.assertEquals(3, userPage.getContent().size());
+
+            Assertions.assertEquals(2, userPage.getCurrentPage());
+            Assertions.assertEquals(5, userPage.getPageSize());
+            Assertions.assertEquals(3, userPage.getTotalPages());
+            Assertions.assertEquals(13, userPage.getTotalElements());
+
+            Assertions.assertFalse(userPage.isFirst());
+            Assertions.assertTrue( userPage.hasPrevious());
+
+            Assertions.assertFalse( userPage.hasNext());
+            Assertions.assertTrue(userPage.isLast());
+        }
     }
 }

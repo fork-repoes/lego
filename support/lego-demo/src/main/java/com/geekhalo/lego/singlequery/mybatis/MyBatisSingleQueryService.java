@@ -1,5 +1,6 @@
 package com.geekhalo.lego.singlequery.mybatis;
 
+import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.mybatis.support.AbstractReflectBasedExampleQueryRepository;
 import com.geekhalo.lego.singlequery.*;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
@@ -24,6 +25,11 @@ public class MyBatisSingleQueryService
     @Override
     public List<User> listOf(Object query) {
         return super.listOf(query);
+    }
+
+    @Override
+    public Page<User> pageOf(Object query) {
+        return super.pageOf(query);
     }
 
     @Override

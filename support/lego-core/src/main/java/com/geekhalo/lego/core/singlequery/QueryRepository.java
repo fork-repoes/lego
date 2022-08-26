@@ -18,6 +18,12 @@ public interface QueryRepository<E> {
         return get(request, e -> e);
     }
 
+    <R, V> Page<V> pageOf(R request, Function<E, V> converter);
+
+    default <R> Page<E> pageOf(R request){
+        return pageOf(request, e -> e);
+    }
+
 //    <R, V> Page<V> pageOf(R request, Function<V, E> converter);
 //
 //    default <R> Page<E> pageOf(R request){

@@ -64,6 +64,7 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
         return null;
     }
 
+
     private void bindSort(Object o, E example) {
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
         for (Field field : allFieldsList){
@@ -82,21 +83,36 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
     }
 
     private void bindPagable(Object o, E example) {
+        Pageable pageable = findPageable(o);
+        bindPageable(example, pageable);
+    }
+
+    public Pageable findPageable(Object o) {
+        Pageable pageable = null;
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
         for (Field field : allFieldsList){
             if (field.getType() == Pageable.class){
                 try {
-                    Pageable pageable = (Pageable) FieldUtils.readField(field, o, true);
-                    if (pageable != null){
-                        MethodUtils.invokeMethod(example, "setLimit", pageable.getLimit());
-                        MethodUtils.invokeMethod(example, "setOffset", pageable.getOffset());
-                    }
+                    pageable = (Pageable) FieldUtils.readField(field, o, true);
                 }catch (Exception e){
-                    log.error("failed to bind pageable to {} from {}", example, o);
+                    log.error("failed to find pageable  from {}", o);
                 }
                 break;
             }
         }
+        return pageable;
+    }
+
+    private void bindPageable(E example, Pageable pageable){
+        if (pageable != null){
+            try {
+                MethodUtils.invokeMethod(example, "setRows", pageable.getLimit());
+                MethodUtils.invokeMethod(example, "setOffset", pageable.getOffset());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void bindFilter(Object o, Object criteria){

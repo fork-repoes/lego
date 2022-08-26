@@ -1,9 +1,7 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
-import com.geekhalo.lego.core.singlequery.ManyResultException;
-import com.geekhalo.lego.core.singlequery.MaxResultConfig;
-import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.*;
 import com.geekhalo.lego.core.singlequery.mybatis.*;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -126,6 +124,18 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
         return entities.stream()
                 .filter(Objects::nonNull)
                 .map(converter).findAny().orElse(null);
+    }
+
+    @Override
+    public <R, V> Page<V> pageOf(R request, Function<E, V> converter) {
+        Pageable pageable = exampleConverter.findPageable(request);
+        if (pageable == null){
+            throw new IllegalArgumentException("Pageable Lost");
+        }
+        Long totalElement = countOf(request);
+        List<V> content =  listOf(request, converter);
+
+        return new Page<>(content, pageable, totalElement);
     }
 
     private List<E> doList(Object example){

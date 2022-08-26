@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class Pageable {
     private Integer pageNo;
-
     private Integer pageSize;
-
 
     public Integer getLimit(){
         return pageSize;
@@ -17,7 +15,7 @@ public class Pageable {
         if (pageNo == null || pageSize == null){
             return null;
         }
-        return (pageNo - 1) * pageSize;
+        return pageNo * pageSize;
     }
 
 }

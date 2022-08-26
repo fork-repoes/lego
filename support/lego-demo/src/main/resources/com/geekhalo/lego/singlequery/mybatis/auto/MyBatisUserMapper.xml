@@ -82,6 +82,14 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
+    <if test="rows != null">
+      <if test="offset != null">
+        limit ${offset}, ${rows}
+      </if>
+      <if test="offset == null">
+        limit ${rows}
+      </if>
+    </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -151,34 +159,34 @@
   <update id="updateByExampleSelective" parameterType="map">
     update t_user
     <set>
-      <if test="row.id != null">
-        id = #{row.id,jdbcType=BIGINT},
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="row.name != null">
-        name = #{row.name,jdbcType=VARCHAR},
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="row.status != null">
-        status = #{row.status,jdbcType=INTEGER},
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
       </if>
-      <if test="row.birthAt != null">
-        birth_at = #{row.birthAt,jdbcType=TIMESTAMP},
+      <if test="record.birthAt != null">
+        birth_at = #{record.birthAt,jdbcType=TIMESTAMP},
       </if>
-      <if test="row.mobile != null">
-        mobile = #{row.mobile,jdbcType=VARCHAR},
+      <if test="record.mobile != null">
+        mobile = #{record.mobile,jdbcType=VARCHAR},
       </if>
     </set>
-    <if test="example != null">
+    <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
     update t_user
-    set id = #{row.id,jdbcType=BIGINT},
-      name = #{row.name,jdbcType=VARCHAR},
-      status = #{row.status,jdbcType=INTEGER},
-      birth_at = #{row.birthAt,jdbcType=TIMESTAMP},
-      mobile = #{row.mobile,jdbcType=VARCHAR}
-    <if test="example != null">
+    set id = #{record.id,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER},
+      birth_at = #{record.birthAt,jdbcType=TIMESTAMP},
+      mobile = #{record.mobile,jdbcType=VARCHAR}
+    <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>

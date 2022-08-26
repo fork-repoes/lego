@@ -11,8 +11,12 @@ public class MyBatisUserExample {
 
     protected List<Criteria> oredCriteria;
 
+    protected Integer offset;
+
+    protected Integer rows;
+
     public MyBatisUserExample() {
-        oredCriteria = new ArrayList<>();
+        oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -62,6 +66,41 @@ public class MyBatisUserExample {
         oredCriteria.clear();
         orderByClause = null;
         distinct = false;
+        rows = null;
+        offset = null;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getOffset() {
+        return this.offset;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
+
+    public Integer getRows() {
+        return this.rows;
+    }
+
+    public MyBatisUserExample limit(Integer rows) {
+        this.rows = rows;
+        return this;
+    }
+
+    public MyBatisUserExample limit(Integer offset, Integer rows) {
+        this.offset = offset;
+        this.rows = rows;
+        return this;
+    }
+
+    public MyBatisUserExample page(Integer page, Integer pageSize) {
+        this.offset = page * pageSize;
+        this.rows = pageSize;
+        return this;
     }
 
     protected abstract static class GeneratedCriteria {
@@ -69,7 +108,7 @@ public class MyBatisUserExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<>();
+            criteria = new ArrayList<Criterion>();
         }
 
         public boolean isValid() {
@@ -427,6 +466,7 @@ public class MyBatisUserExample {
     }
 
     public static class Criteria extends GeneratedCriteria {
+
         protected Criteria() {
             super();
         }
