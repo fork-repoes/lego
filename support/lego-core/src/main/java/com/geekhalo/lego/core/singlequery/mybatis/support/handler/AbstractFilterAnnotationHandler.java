@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 abstract class AbstractFilterAnnotationHandler<A extends Annotation>
         implements FieldAnnotationHandler<A>{
@@ -18,6 +19,11 @@ abstract class AbstractFilterAnnotationHandler<A extends Annotation>
     protected void addCriteria(Object criteria, String fieldName, String operator, Object ... value) throws Exception{
         String methodName = createFilterMethodName(fieldName, operator);
         MethodUtils.invokeMethod(criteria, true, methodName, value);
+    }
+
+    protected Method getCriteriaMethod(Class criteriaCls, String fieldName, String operator, Class ... valueCls) throws Exception{
+        String methodName = createFilterMethodName(fieldName, operator);
+        return MethodUtils.getMatchingMethod(criteriaCls, methodName, valueCls);
     }
 
     private String createFilterMethodName(String fieldName, String operator){

@@ -17,5 +17,5 @@ public interface ExampleConverter<E> {
 
     Pageable findPageable(Object query);
 
-    void testInput(Class cls);
+    void validate(Class cls);
 }

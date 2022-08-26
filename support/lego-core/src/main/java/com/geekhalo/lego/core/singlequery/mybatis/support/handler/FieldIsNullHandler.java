@@ -3,6 +3,8 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 import com.geekhalo.lego.annotation.singlequery.FieldIsNull;
 
+import java.lang.reflect.Method;
+
 public class FieldIsNullHandler extends AbstractFilterAnnotationHandler<FieldIsNull>
     implements FieldAnnotationHandler<FieldIsNull>{
     public FieldIsNullHandler() {
@@ -18,5 +20,10 @@ public class FieldIsNullHandler extends AbstractFilterAnnotationHandler<FieldIsN
                 addCriteria(criteria, isNull.value(), "IsNotNull");
             }
         }
+    }
+
+    @Override
+    public Method getCriteriaMethod(Class criteriaCls, FieldIsNull isNull, Class valueCls) throws Exception {
+        return getCriteriaMethod(criteriaCls, isNull.value(), "IsNull");
     }
 }

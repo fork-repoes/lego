@@ -9,12 +9,14 @@ import com.geekhalo.lego.core.singlequery.mybatis.support.handler.FieldAnnotatio
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Slf4j
@@ -157,20 +159,6 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
                             handler.addCriteria(criteria, annotation, value);
                         }
                     }
-//                    if (filterAnnotationHandler != null){
-//                        String fieldName = filterAnnotationHandler.getFieldValue(annotation);
-//                        String operator = filterAnnotationHandler.getOperator();
-//                        String methodName = createFilterMethodName(fieldName, operator);
-//                        boolean hadParam = filterAnnotationHandler.hasParam();
-//                        if (hadParam) {
-//                            MethodUtils.invokeMethod(criteria, true, methodName, value);
-//                        }else {
-//                            if (value instanceof Boolean && (Boolean) value){
-//                                MethodUtils.invokeMethod(criteria, true, methodName);
-//                            }
-//                        }
-//                        continue;
-//                    }
 
                     if (annotation.annotationType() == EmbeddedFilter.class){
                         bindWhere(value, criteria);
@@ -182,54 +170,43 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
         }
     }
 
-    private String createFilterMethodName(String fieldName, String operator){
-        return "and" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length()) + operator;
-    }
-
     @Override
-    public void testInput(Class cls) {
+    public void validate(Class cls) {
         try {
             E example = instanceExample();
 
             Object criteria = instanceCriteria(example);
 
-//            testFilter(cls, criteria);
+            testFilter(cls, criteria);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-//    private void testFilter(Class cls, Object criteria){
-//        List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
-//        for (Field field : allFieldsList){
-//            Class fieldType = field.getType();
-//            Annotation[] annotations = field.getAnnotations();
-//            for (Annotation annotation : annotations){
-//                FilterAnnotationHandler filterAnnotationHandler = annotationHandlerMap.get(annotation.annotationType());
-//                if (filterAnnotationHandler != null){
-//                    String fieldName = filterAnnotationHandler.getFieldValue(annotation);
-//                    String operator = filterAnnotationHandler.getOperator();
-//                    String methodName = createFilterMethodName(fieldName, operator);
-//                    Method matchingMethod = null;
-//
-//                    boolean hadParam = filterAnnotationHandler.hasParam();
-//                    if (hadParam) {
-//                        matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName, fieldType);
-//                    }else {
-//                        if (fieldType == Boolean.class || fieldType == Boolean.TYPE){
-//                            matchingMethod = MethodUtils.getMatchingMethod(criteria.getClass(), methodName);
-//                        }
-//                    }
-//                    if (matchingMethod == null){
-//                        throw new RuntimeException("Can not find method " + methodName + " on class " + criteria.getClass());
-//                    }
-//                    continue;
-//                }
-//
-//                if (annotation.annotationType() == ExtFilter.class){
-//                    bindWhere(fieldType, criteria);
-//                }
-//            }
-//        }
-//    }
+    private void testFilter(Class cls, Object criteria) throws Exception{
+        List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
+        for (Field field : allFieldsList){
+            Class fieldType = field.getType();
+            Class valueType = fieldType;
+            if (ValueContainer.class.isAssignableFrom(fieldType)){
+                valueType = List.class;
+            }
+
+            Annotation[] annotations = field.getAnnotations();
+            for (Annotation annotation : annotations){
+                for (FieldAnnotationHandler handler : this.fieldAnnotationHandlers){
+                    if (handler.support(annotation)){
+                        Method criteriaMethod = handler.getCriteriaMethod(criteria.getClass(), annotation, valueType);
+                        if (criteriaMethod == null){
+                            throw new RuntimeException("Can not find method for " + field.getName() + " on class " + criteria.getClass());
+                        }
+                    }
+                }
+
+                if (annotation.annotationType() == EmbeddedFilter.class){
+                    testFilter(fieldType, criteria);
+                }
+            }
+        }
+    }
 }

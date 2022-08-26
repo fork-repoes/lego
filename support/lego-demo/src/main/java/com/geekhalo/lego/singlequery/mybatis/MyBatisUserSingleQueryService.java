@@ -34,6 +34,11 @@ public class MyBatisUserSingleQueryService
     }
 
     @Override
+    public void checkFor(Class cls) {
+        getExampleConverter().validate(cls);
+    }
+
+    @Override
     public User oneOf(Object query){
         return (MyBatisUser) get(query);
     }

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface UserSingleQueryService {
 
+    void checkFor(Class cls);
+
     User oneOf(Object query);
 
     List<User> listOf(Object query);

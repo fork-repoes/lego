@@ -6,6 +6,8 @@ import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
 import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractReflectBasedExampleQueryRepository<E> implements ExampleQueryRepository<E> {
     private final Object mapper;
     private final Class exampleCls;
+    @Getter(AccessLevel.PROTECTED)
     private ExampleConverter exampleConverter;
     private MaxResultConfigResolver maxResultConfigResolver;
 
@@ -48,16 +51,6 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
         Preconditions.checkArgument(this.maxResultConfigResolver != null);
     }
 
-//    public AbstractReflectBasedExampleQueryRepository(Object mapper,
-//                                                      ExampleConverter exampleConverter,
-//                                                      MaxResultConfigResolver maxResultConfigResolver) {
-//        Preconditions.checkArgument(mapper != null);
-//        Preconditions.checkArgument(exampleConverter != null);
-//        Preconditions.checkArgument(maxResultConfigResolver != null);
-//        this.exampleConverter = exampleConverter;
-//        this.mapper = mapper;
-//        this.maxResultConfigResolver = maxResultConfigResolver;
-//    }
 
     @Override
     public <Q, R> List<R> listOf(Q query, Function<E, R> converter) {

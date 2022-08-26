@@ -1,14 +1,17 @@
 package com.geekhalo.lego.singlequery;
 
+import com.geekhalo.lego.annotation.singlequery.FieldEqualTo;
 import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.Sort;
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +23,35 @@ import java.util.List;
 abstract class BaseUserSingleQueryServiceTest {
 
     abstract UserSingleQueryService getSingleQueryService();
+
+    @Test
+    void checkQuery(){
+        getSingleQueryService().checkFor(PageByIdGreater.class);
+        getSingleQueryService().checkFor(QueryByIdGreater.class);
+        getSingleQueryService().checkFor(QueryByIdEq.class);
+        getSingleQueryService().checkFor(QueryByIdGreaterOrEquals.class);
+        getSingleQueryService().checkFor(QueryByIdIn.class);
+        getSingleQueryService().checkFor(QueryByIdLess.class);
+        getSingleQueryService().checkFor(QueryByIdLessOrEqual.class);
+        getSingleQueryService().checkFor(QueryByIdNotIn.class);
+        getSingleQueryService().checkFor(QueryByNameIsNull.class);
+        getSingleQueryService().checkFor(QueryByNameNotEqual.class);
+        getSingleQueryService().checkFor(QueryByStatusAndMobile.class);
+
+    }
+
+    @Test
+    void checkQuery2(){
+        Assertions.assertThrowsExactly(RuntimeException.class, ()->{
+            getSingleQueryService().checkFor(ErrorQuery.class);
+        });
+    }
+
+    @Data
+    static class ErrorQuery{
+        @FieldEqualTo("uid")
+        private Long id;
+    }
 
     @Test
     void getById() {
