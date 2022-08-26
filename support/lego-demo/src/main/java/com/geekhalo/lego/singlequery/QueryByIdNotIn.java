@@ -1,7 +1,9 @@
 package com.geekhalo.lego.singlequery;
 
-import com.geekhalo.lego.annotation.singlequery.FieldLessThan;
+import com.geekhalo.lego.annotation.singlequery.FieldNotIn;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Created by taoli on 2022/8/23.
@@ -9,7 +11,7 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryByLess {
-    @FieldLessThan("id")
-    private Long maxId;
+public class QueryByIdNotIn {
+    @FieldNotIn(value = "id")
+    private List<Long> ids;
 }

@@ -16,10 +16,10 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Repository
-public class MyBatisSingleQueryService
+public class MyBatisUserSingleQueryService
         extends AbstractReflectBasedExampleQueryRepository
-        implements SingleQueryService {
-    public MyBatisSingleQueryService(MyBatisUserMapper mapper){
+        implements UserSingleQueryService {
+    public MyBatisUserSingleQueryService(MyBatisUserMapper mapper){
         super(mapper, MyBatisUserExample.class);
     }
     @Override

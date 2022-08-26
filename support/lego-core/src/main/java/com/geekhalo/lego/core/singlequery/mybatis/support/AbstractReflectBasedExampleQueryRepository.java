@@ -7,7 +7,9 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -17,23 +19,43 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractReflectBasedExampleQueryRepository<E> implements ExampleQueryRepository<E> {
     private final Object mapper;
-    private final ExampleConverter exampleConverter;
-    private final MaxResultConfigResolver maxResultConfigResolver;
+    private final Class exampleCls;
+    private ExampleConverter exampleConverter;
+    private MaxResultConfigResolver maxResultConfigResolver;
+
+    @Autowired
+    private ExampleConverterFactory exampleConverterFactory;
 
     public AbstractReflectBasedExampleQueryRepository(Object mapper, Class exampleClass){
-        this(mapper, new ReflectBasedExampleConverter<>(exampleClass), new AnnoBasedMaxResultConfigResolver());
+        Preconditions.checkArgument(mapper != null);
+        Preconditions.checkArgument(exampleClass != null);
+        this.mapper = mapper;
+        this.exampleCls = exampleClass;
     }
 
-    public AbstractReflectBasedExampleQueryRepository(Object mapper,
-                                                      ExampleConverter exampleConverter,
-                                                      MaxResultConfigResolver maxResultConfigResolver) {
-        Preconditions.checkArgument(mapper != null);
-        Preconditions.checkArgument(exampleConverter != null);
-        Preconditions.checkArgument(maxResultConfigResolver != null);
-        this.exampleConverter = exampleConverter;
-        this.mapper = mapper;
-        this.maxResultConfigResolver = maxResultConfigResolver;
+    @PostConstruct
+    public void init(){
+        if (exampleConverter == null){
+            this.exampleConverter = exampleConverterFactory.createFor(this.exampleCls);
+        }
+        if (maxResultConfigResolver == null){
+            this.maxResultConfigResolver = new AnnoBasedMaxResultConfigResolver();
+        }
+
+        Preconditions.checkArgument(this.exampleConverter != null);
+        Preconditions.checkArgument(this.maxResultConfigResolver != null);
     }
+
+//    public AbstractReflectBasedExampleQueryRepository(Object mapper,
+//                                                      ExampleConverter exampleConverter,
+//                                                      MaxResultConfigResolver maxResultConfigResolver) {
+//        Preconditions.checkArgument(mapper != null);
+//        Preconditions.checkArgument(exampleConverter != null);
+//        Preconditions.checkArgument(maxResultConfigResolver != null);
+//        this.exampleConverter = exampleConverter;
+//        this.mapper = mapper;
+//        this.maxResultConfigResolver = maxResultConfigResolver;
+//    }
 
     @Override
     public <Q, R> List<R> listOf(Q query, Function<E, R> converter) {

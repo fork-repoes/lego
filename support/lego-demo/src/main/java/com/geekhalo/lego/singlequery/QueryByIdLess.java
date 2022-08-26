@@ -1,7 +1,6 @@
 package com.geekhalo.lego.singlequery;
 
 import com.geekhalo.lego.annotation.singlequery.FieldLessThan;
-import com.geekhalo.lego.annotation.singlequery.FieldLessThanOrEqualTo;
 import lombok.Data;
 
 /**
@@ -10,7 +9,7 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryByLessOrEqual {
-    @FieldLessThanOrEqualTo("id")
+public class QueryByIdLess {
+    @FieldLessThan("id")
     private Long maxId;
 }

@@ -6,6 +6,7 @@ import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.Sort;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.mybatis.support.handler.*;
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
@@ -20,19 +21,14 @@ import java.util.List;
 @Slf4j
 public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
     private final Class<E> eClass;
-    private final List<FieldAnnotationHandler> fieldAnnotationHandlers = new ArrayList<>();
+    private final List<FieldAnnotationHandler> fieldAnnotationHandlers;
 
-    public ReflectBasedExampleConverter(Class<E> eClass) {
+    public ReflectBasedExampleConverter(Class<E> eClass,
+                                        List<FieldAnnotationHandler> fieldAnnotationHandlers) {
+        Preconditions.checkArgument(eClass != null);
+        Preconditions.checkArgument(fieldAnnotationHandlers != null);
         this.eClass = eClass;
-        fieldAnnotationHandlers.add(new FieldEqualToHandlerFilter());
-        fieldAnnotationHandlers.add(new FieldGreaterThanHandler());
-        fieldAnnotationHandlers.add(new FieldGreaterThanOrEqualToHandler());
-        fieldAnnotationHandlers.add(new FieldInHandler());
-        fieldAnnotationHandlers.add(new FieldIsNullHandler());
-        fieldAnnotationHandlers.add(new FieldLessThanHandler());
-        fieldAnnotationHandlers.add(new FieldLessThanOrEqualToHandler());
-        fieldAnnotationHandlers.add(new FieldNotEqualToHandler());
-        fieldAnnotationHandlers.add(new FieldNotInHandler());
+        this.fieldAnnotationHandlers = fieldAnnotationHandlers;
     }
 
     @Override

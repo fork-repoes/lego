@@ -1,6 +1,6 @@
 package com.geekhalo.lego.singlequery;
 
-import com.geekhalo.lego.annotation.singlequery.FieldNotEqualTo;
+import com.geekhalo.lego.annotation.singlequery.FieldGreaterThan;
 import lombok.Data;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryByNotEqual {
-    @FieldNotEqualTo("name")
-    private String name;
+public class QueryByIdGreater {
+    @FieldGreaterThan(value = "id")
+    private Long startUserId;
 }

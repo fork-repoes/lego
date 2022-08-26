@@ -1,6 +1,5 @@
 package com.geekhalo.lego.singlequery;
 
-import com.geekhalo.lego.annotation.singlequery.FieldGreaterThan;
 import com.geekhalo.lego.annotation.singlequery.FieldGreaterThanOrEqualTo;
 import lombok.Data;
 
@@ -10,7 +9,7 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryUserByIdGreaterOrEquals {
+public class QueryByIdGreaterOrEquals {
     @FieldGreaterThanOrEqualTo(value = "id")
     private Long startUserId;
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryUserByIds {
+public class QueryByIdIn {
     @FieldIn(value = "id", fieldType = Long.class)
     private List<Long> ids;
 }

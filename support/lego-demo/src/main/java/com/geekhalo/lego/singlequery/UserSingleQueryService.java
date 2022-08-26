@@ -9,7 +9,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface SingleQueryService {
+public interface UserSingleQueryService {
 
     User oneOf(Object query);
 

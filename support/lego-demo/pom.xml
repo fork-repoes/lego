@@ -34,6 +34,11 @@
 			<version>0.1.2-single_query-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.geekhalo.lego</groupId>
+			<artifactId>lego-starter-singlequery</artifactId>
+			<version>0.1.2-single_query-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 		</dependency>

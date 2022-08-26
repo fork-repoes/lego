@@ -9,7 +9,7 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class QueryUserById {
+public class QueryByIdEq {
     @FieldEqualTo("id")
     private Long id;
 }

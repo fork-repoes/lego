@@ -1,7 +1,7 @@
 package com.geekhalo.lego.singlequery;
 
 import com.geekhalo.lego.DemoApplication;
-import com.geekhalo.lego.singlequery.mybatis.MyBatisSingleQueryService;
+import com.geekhalo.lego.singlequery.mybatis.MyBatisUserSingleQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -11,11 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-public class MyBatisSingeQueryServiceTest extends BaseSingleQueryServiceTest{
+public class MyBatisSingeQueryServiceTest extends BaseUserSingleQueryServiceTest {
     @Autowired
-    private MyBatisSingleQueryService singleQueryService;
+    private MyBatisUserSingleQueryService singleQueryService;
     @Override
-    SingleQueryService getSingleQueryService() {
+    UserSingleQueryService getSingleQueryService() {
         return singleQueryService;
     }
 }

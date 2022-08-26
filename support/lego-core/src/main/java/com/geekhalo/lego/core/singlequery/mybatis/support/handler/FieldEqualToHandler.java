@@ -3,11 +3,11 @@ package com.geekhalo.lego.core.singlequery.mybatis.support.handler;
 
 import com.geekhalo.lego.annotation.singlequery.FieldEqualTo;
 
-public class FieldEqualToHandlerFilter
+public class FieldEqualToHandler
         extends AbstractFilterAnnotationHandler<FieldEqualTo>
         implements FieldAnnotationHandler<FieldEqualTo> {
 
-    public FieldEqualToHandlerFilter() {
+    public FieldEqualToHandler() {
         super(FieldEqualTo.class);
     }
 
