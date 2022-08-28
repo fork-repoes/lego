@@ -25,15 +25,32 @@ class LazyLoadProxyFactoryTest {
     }
 
     @Test
-    void createProxyFor() {
+    void createProxyForV1() {
         CreateOrderCmd cmd = new CreateOrderCmd();
         cmd.setUserId(1L);
         cmd.setProductId(2L);
         cmd.setCount(2);
 
-        CreateOrderContext context = new CreateOrderContext();
+        CreateOrderContextV1 context = new CreateOrderContextV1();
         context.setCmd(cmd);
+        checkOrderContext(context);
 
+    }
+
+    @Test
+    void createProxyForV2() {
+        CreateOrderCmd cmd = new CreateOrderCmd();
+        cmd.setUserId(1L);
+        cmd.setProductId(2L);
+        cmd.setCount(2);
+
+        CreateOrderContextV2 context = new CreateOrderContextV2();
+        context.setCmd(cmd);
+        checkOrderContext(context);
+
+    }
+
+    private void checkOrderContext(CreateOrderContext context) {
         CreateOrderContext proxyContext = this.lazyLoadProxyFactory.createProxyFor(context);
 
         Assertions.assertNotNull(proxyContext);
@@ -54,6 +71,5 @@ class LazyLoadProxyFactoryTest {
 
         log.info("Get User");
         Assertions.assertNotNull(proxyContext.getUser());
-
     }
 }
