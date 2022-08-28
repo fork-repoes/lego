@@ -394,6 +394,20 @@ abstract class BaseUserSingleQueryServiceTest {
     }
 
     @Test
+    void queryByEmbeddedFilter() throws Exception{
+        QueryByEmbeddedFilter query = new QueryByEmbeddedFilter();
+        query.setId(0L);
+        QueryByStatusAndBirth queryByStatusAndBirth = new QueryByStatusAndBirth();
+        query.setStatusAndBirth(queryByStatusAndBirth);
+        queryByStatusAndBirth.setStatus(1);
+        queryByStatusAndBirth.setBirthAfter(DateUtils.parseDate("2018-10-01", "yyyy-MM-dd"));
+
+        List<User> users = getSingleQueryService().listOf(query);
+
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
+    }
+
+    @Test
     void pageOf(){
         {
             PageByIdGreater pageByIdGreater = new PageByIdGreater();
@@ -504,6 +518,15 @@ abstract class BaseUserSingleQueryServiceTest {
         query.setStatus(1);
         query.setMobile("18729901871");
         query.setBirthAfter(DateUtils.parseDate("2018-10-01", "yyyy-MM-dd"));
+
+        List<User> users = getSingleQueryService().listOf(query);
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
+    }
+
+    @Test
+    void queryByIdGreaterWithMaxResult(){
+        QueryByIdGreaterWithMaxResult query = new QueryByIdGreaterWithMaxResult();
+        query.setStartUserId(0L);
 
         List<User> users = getSingleQueryService().listOf(query);
         Assertions.assertTrue(CollectionUtils.isNotEmpty(users));

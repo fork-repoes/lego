@@ -18,5 +18,4 @@ public class PageByIdGreater {
     private Pageable pageable;
 
     private Sort sort;
-
 }
