@@ -4,7 +4,6 @@ import com.geekhalo.lego.annotation.loader.LazyLoadBy;
 import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.price.Price;
 import com.geekhalo.lego.service.product.Product;
-import com.geekhalo.lego.service.stock.LazyLoadStockByProductId;
 import com.geekhalo.lego.service.stock.Stock;
 import com.geekhalo.lego.service.user.User;
 import lombok.Data;
