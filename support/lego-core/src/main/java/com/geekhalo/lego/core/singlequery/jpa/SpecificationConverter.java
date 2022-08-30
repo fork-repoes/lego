@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.singlequery.jpa;
 
 import com.geekhalo.lego.core.singlequery.Pageable;
+import com.geekhalo.lego.core.singlequery.QueryConverter;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -8,12 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface SpecificationConverter<E> {
-    Specification<E> convertForQuery(Object query);
-
-    Specification<E> convertForCount(Object query);
-
-    Pageable findPageable(Object query);
-
-    void validate(Class cls);
+public interface SpecificationConverter<E>
+        extends QueryConverter<Specification<E>> {
 }

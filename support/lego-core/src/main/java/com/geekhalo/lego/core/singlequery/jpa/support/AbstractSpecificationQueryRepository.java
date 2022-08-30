@@ -1,9 +1,13 @@
 package com.geekhalo.lego.core.singlequery.jpa.support;
 
-import com.geekhalo.lego.core.singlequery.Page;
+import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
+import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryRepository;
+import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.google.common.collect.Lists;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,16 +29,38 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 public class AbstractSpecificationQueryRepository<E>
+    extends AbstractQueryRepository<E>
     implements SpecificationQueryRepository<E> {
 
     private final JpaSpecificationExecutor<E> specificationExecutor;
+    private final Class<E> entityCls;
 
     @Autowired
+    private SpecificationConverterFactory specificationConverterFactory;
+
     @Getter(AccessLevel.PROTECTED)
     private SpecificationConverter<E> specificationConverter;
+    private MaxResultConfigResolver maxResultConfigResolver;
 
-    public AbstractSpecificationQueryRepository(JpaSpecificationExecutor<E> specificationExecutor) {
+    public AbstractSpecificationQueryRepository(JpaSpecificationExecutor<E> specificationExecutor, Class<E> entityCls) {
+        Preconditions.checkArgument(specificationExecutor != null);
+        Preconditions.checkArgument(entityCls != null);
         this.specificationExecutor = specificationExecutor;
+        this.entityCls = entityCls;
+    }
+
+    @PostConstruct
+    public void init(){
+        if (this.specificationConverter == null) {
+            this.specificationConverter = this.specificationConverterFactory.createForEntity(entityCls);
+        }
+
+        if (maxResultConfigResolver == null){
+            this.maxResultConfigResolver = new AnnoBasedMaxResultConfigResolver();
+        }
+
+        Preconditions.checkArgument(this.specificationConverter != null);
+        Preconditions.checkArgument(this.maxResultConfigResolver != null);
     }
 
 
@@ -44,6 +71,7 @@ public class AbstractSpecificationQueryRepository<E>
             return Lists.newArrayList();
         }
         List<E> entities = this.specificationExecutor.findAll(specification);
+
         if (CollectionUtils.isEmpty(entities)){
             return null;
         }
@@ -57,9 +85,11 @@ public class AbstractSpecificationQueryRepository<E>
     @Override
     public <Q> Long countOf(Q query) {
         Specification<E> specification = this.specificationConverter.convertForCount(query);
+
         if (specification == null){
             return 0L;
         }
+
         return this.specificationExecutor.count(specification);
     }
 
@@ -75,18 +105,10 @@ public class AbstractSpecificationQueryRepository<E>
                 .orElse(null);
     }
 
-    @Override
-    public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
+
+
+    protected <Q> Pageable findPageable(Q query) {
         Pageable pageable = this.specificationConverter.findPageable(query);
-
-        if (pageable == null){
-            throw new IllegalArgumentException("Pageable Lost");
-        }
-
-        Long totalElement = countOf(query);
-
-        List<R> content =  listOf(query, converter);
-
-        return new Page<>(content, pageable, totalElement);
+        return pageable;
     }
 }

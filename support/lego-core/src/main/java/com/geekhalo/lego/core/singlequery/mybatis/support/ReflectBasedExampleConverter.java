@@ -6,10 +6,10 @@ import com.geekhalo.lego.core.singlequery.Sort;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.support.handler.FieldAnnotationHandler;
+import com.geekhalo.lego.core.singlequery.support.AbstractQueryConverter;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -20,7 +20,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Slf4j
-public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
+public class ReflectBasedExampleConverter<E>
+        extends AbstractQueryConverter<E>
+        implements ExampleConverter<E> {
+
     private final Class<E> eClass;
     private final List<FieldAnnotationHandler> fieldAnnotationHandlers;
 
@@ -88,41 +91,9 @@ public class ReflectBasedExampleConverter<E> implements ExampleConverter<E> {
         }
     }
 
-    private Sort findSort(Object o) {
-        Sort sort = null;
-        List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
-        for (Field field : allFieldsList){
-            if (field.getType() == Sort.class){
-                try {
-                    sort = (Sort) FieldUtils.readField(field, o, true);
-                }catch (Exception e){
-                    log.error("failed to bind sort from {}", o);
-                }
-                break;
-            }
-        }
-        return sort;
-    }
-
     private void bindPageable(Object o, E example) throws Exception{
         Pageable pageable = findPageable(o);
         bindPageable(example, pageable);
-    }
-
-    public Pageable findPageable(Object query) {
-        Pageable pageable = null;
-        List<Field> allFieldsList = FieldUtils.getAllFieldsList(query.getClass());
-        for (Field field : allFieldsList){
-            if (field.getType() == Pageable.class){
-                try {
-                    pageable = (Pageable) FieldUtils.readField(field, query, true);
-                }catch (Exception e){
-                    log.error("failed to find pageable  from {}", query);
-                }
-                break;
-            }
-        }
-        return pageable;
     }
 
     private void bindPageable(E example, Pageable pageable) throws Exception{

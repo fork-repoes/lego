@@ -19,7 +19,7 @@ public class JpaUserSingleQueryService
     implements UserSingleQueryService {
 
     public JpaUserSingleQueryService(JpaUserRepository specificationExecutor) {
-        super(specificationExecutor);
+        super(specificationExecutor, JpaUser.class);
     }
 
     @Override
