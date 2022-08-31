@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 /**
@@ -22,9 +23,19 @@ public class JpaFieldInHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldIn fieldIn, Object value) {
         if (value instanceof Collection) {
-
-            return criteriaBuilder.in(root.get(fieldIn.value())).value((Collection<?>) value);
+            return criteriaBuilder.in(root.get(fieldNameOf(fieldIn)))
+                    .value((Collection<?>) value);
         }
         return null;
+    }
+
+    @Override
+    protected boolean matchField(Field field, Class queryType) {
+        return Collection.class.isAssignableFrom(queryType);
+    }
+
+    @Override
+    protected String fieldNameOf(FieldIn fieldIn) {
+        return fieldIn.value();
     }
 }

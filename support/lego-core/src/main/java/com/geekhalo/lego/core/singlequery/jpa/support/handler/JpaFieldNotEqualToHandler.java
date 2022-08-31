@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
 
 /**
  * Created by taoli on 2022/8/31.
@@ -20,6 +21,16 @@ public class JpaFieldNotEqualToHandler
 
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldNotEqualTo fieldNotEqualTo, Object value) {
-        return criteriaBuilder.notEqual(root.get(fieldNotEqualTo.value()), value);
+        return criteriaBuilder.notEqual(root.get(fieldNameOf(fieldNotEqualTo)), value);
+    }
+
+    @Override
+    protected boolean matchField(Field field, Class queryType) {
+        return field.getType() == queryType;
+    }
+
+    @Override
+    protected String fieldNameOf(FieldNotEqualTo fieldNotEqualTo) {
+        return fieldNotEqualTo.value();
     }
 }

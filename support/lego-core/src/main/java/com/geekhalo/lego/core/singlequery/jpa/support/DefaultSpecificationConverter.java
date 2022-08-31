@@ -4,6 +4,7 @@ import com.geekhalo.lego.annotation.singlequery.EmbeddedFilter;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.support.handler.JpaAnnotationHandler;
+import com.geekhalo.lego.core.singlequery.mybatis.support.handler.FieldAnnotationHandler;
 import com.geekhalo.lego.core.singlequery.support.AbstractQueryConverter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -18,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,6 +117,29 @@ public class DefaultSpecificationConverter<E>
 
     @Override
     public void validate(Class cls) {
+        List<Field> allFieldsList = FieldUtils.getAllFieldsList(cls);
+        for (Field field : allFieldsList){
+            Class fieldType = field.getType();
+            Class valueType = fieldType;
+            if (ValueContainer.class.isAssignableFrom(fieldType)){
+                valueType = List.class;
+            }
 
+            Annotation[] annotations = field.getAnnotations();
+            for (Annotation annotation : annotations){
+                for (JpaAnnotationHandler handler : this.annotationHandlers){
+                    if (handler.support(annotation)){
+                        Field entityField = handler.findEntityField(this.entityCls, annotation, valueType);
+                        if (entityField == null){
+                            throw new RuntimeException("Can not find field for " + field.getName() + " on class " + cls);
+                        }
+                    }
+                }
+
+                if (annotation.annotationType() == EmbeddedFilter.class){
+                    validate(fieldType);
+                }
+            }
+        }
     }
 }

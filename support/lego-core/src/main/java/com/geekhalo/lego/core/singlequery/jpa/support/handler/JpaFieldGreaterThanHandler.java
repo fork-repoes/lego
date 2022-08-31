@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
 
 /**
  * Created by taoli on 2022/8/31.
@@ -21,9 +22,19 @@ public class JpaFieldGreaterThanHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldGreaterThan fieldGreaterThan, Object value) {
         if (value instanceof Comparable) {
-            return criteriaBuilder.greaterThan(root.get(fieldGreaterThan.value()), (Comparable) value);
+            return criteriaBuilder.greaterThan(root.get(fieldNameOf(fieldGreaterThan)), (Comparable) value);
         }else {
             return null;
         }
+    }
+
+    @Override
+    protected boolean matchField(Field field, Class queryType) {
+        return Comparable.class.isAssignableFrom(queryType);
+    }
+
+    @Override
+    protected String fieldNameOf(FieldGreaterThan fieldGreaterThan) {
+        return fieldGreaterThan.value();
     }
 }

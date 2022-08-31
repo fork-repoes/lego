@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 /**
  * Created by taoli on 2022/8/30.
@@ -23,6 +24,16 @@ public class JpaFieldEqualToHandler
 
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldEqualTo fieldEqualTo, Object value) {
-        return criteriaBuilder.equal(root.get(fieldEqualTo.value()), value);
+        return criteriaBuilder.equal(root.get(fieldNameOf(fieldEqualTo)), value);
+    }
+
+    @Override
+    protected boolean matchField(Field field, Class queryType) {
+        return queryType == field.getType();
+    }
+
+    @Override
+    protected String fieldNameOf(FieldEqualTo fieldEqualTo) {
+        return fieldEqualTo.value();
     }
 }
