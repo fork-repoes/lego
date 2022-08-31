@@ -1,15 +1,18 @@
 package com.geekhalo.lego.core.singlequery.jpa.support;
 
+import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
 import com.geekhalo.lego.core.singlequery.*;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryRepository;
+import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 public class AbstractSpecificationQueryRepository<E>
+    extends AbstractQueryRepository<E>
     implements SpecificationQueryRepository<E> {
 
     private final JpaSpecificationExecutor<E> specificationExecutor;
@@ -46,6 +50,11 @@ public class AbstractSpecificationQueryRepository<E>
         Preconditions.checkArgument(entityCls != null);
         this.specificationExecutor = specificationExecutor;
         this.entityCls = entityCls;
+    }
+
+    @Override
+    protected Object getDao() {
+        return this.specificationExecutor;
     }
 
     @PostConstruct
@@ -72,16 +81,31 @@ public class AbstractSpecificationQueryRepository<E>
 
         org.springframework.data.domain.Sort springSort = createSpringSort(query);
 
+        MaxResultConfig maxResultConfig = this.maxResultConfigResolver.maxResult(query);
+
+        org.springframework.data.domain.Pageable springPageable = null;
+        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.SET_LIMIT){
+            if (springSort != null) {
+                springPageable = PageRequest.of(0, maxResultConfig.getMaxResult(), springSort);
+            }else {
+                springPageable = PageRequest.of(0, maxResultConfig.getMaxResult());
+            }
+        }
+
         List<E> entities = null;
-        if (springSort == null) {
-            entities = this.specificationExecutor.findAll(specification);
-        }else {
+        if (springPageable != null){
+            entities = this.specificationExecutor.findAll(specification, springPageable).getContent();
+        }else if (springSort != null) {
             entities = this.specificationExecutor.findAll(specification, springSort);
+        }else {
+            entities = this.specificationExecutor.findAll(specification);
         }
 
         if (CollectionUtils.isEmpty(entities)){
             return Collections.emptyList();
         }
+
+        processForMaxResult(query, maxResultConfig, entities);
 
         return entities.stream()
                 .filter(Objects::nonNull)

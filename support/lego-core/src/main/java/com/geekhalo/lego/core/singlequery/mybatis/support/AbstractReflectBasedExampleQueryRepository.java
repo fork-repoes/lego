@@ -5,6 +5,7 @@ import com.geekhalo.lego.core.singlequery.*;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
+import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractReflectBasedExampleQueryRepository<E>
+        extends AbstractQueryRepository<E>
         implements ExampleQueryRepository<E> {
     private final Object mapper;
     private final Class exampleCls;
@@ -37,6 +39,11 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
         Preconditions.checkArgument(exampleClass != null);
         this.mapper = mapper;
         this.exampleCls = exampleClass;
+    }
+
+    @Override
+    protected Object getDao() {
+        return this.mapper;
     }
 
     @PostConstruct
@@ -81,38 +88,6 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
                 .filter(Objects::nonNull)
                 .map(converter)
                 .collect(Collectors.toList());
-    }
-
-    private void processForMaxResult(Object query, MaxResultConfig maxResultConfig, List<E> entities) {
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.LOG){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.warn("【LOG】result size is {} more than {}, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                return;
-            }
-        }
-
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.ERROR){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.error("【ERROR】result size is {} more than {}, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                throw new ManyResultException();
-            }
-        }
-
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.SET_LIMIT){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.error("【SET_LIMIT】result size is {} more than {}, please find and fix, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                return;
-            }
-        }
     }
 
     private void setLimitForExample(Integer maxResult, Object example) {
