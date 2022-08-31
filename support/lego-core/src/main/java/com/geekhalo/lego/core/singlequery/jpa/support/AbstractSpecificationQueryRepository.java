@@ -2,21 +2,20 @@ package com.geekhalo.lego.core.singlequery.jpa.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
 import com.geekhalo.lego.core.singlequery.*;
-import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
-import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
+import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryRepository;
+import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
 import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import com.google.common.collect.Lists;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;

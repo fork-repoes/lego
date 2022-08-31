@@ -2,7 +2,6 @@ package com.geekhalo.lego.singlequery;
 
 import com.geekhalo.lego.DemoApplication;
 import com.geekhalo.lego.singlequery.jpa.JpaUserSingleQueryService;
-import com.geekhalo.lego.singlequery.mybatis.MyBatisUserSingleQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

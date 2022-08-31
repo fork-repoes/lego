@@ -1,7 +1,5 @@
 package com.geekhalo.lego.core.singlequery.jpa;
 
-import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
-
 /**
  * Created by taoli on 2022/8/30.
  * gitee : https://gitee.com/litao851025/lego

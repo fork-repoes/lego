@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.singlequery.jpa;
 
-import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.QueryConverter;
 import org.springframework.data.jpa.domain.Specification;
 

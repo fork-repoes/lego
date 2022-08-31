@@ -4,7 +4,6 @@ import com.geekhalo.lego.annotation.singlequery.EmbeddedFilter;
 import com.geekhalo.lego.core.singlequery.ValueContainer;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.support.handler.JpaAnnotationHandler;
-import com.geekhalo.lego.core.singlequery.mybatis.support.handler.FieldAnnotationHandler;
 import com.geekhalo.lego.core.singlequery.support.AbstractQueryConverter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -19,7 +18,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 

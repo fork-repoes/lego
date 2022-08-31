@@ -3,7 +3,6 @@ package com.geekhalo.lego.core.singlequery.support;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.QueryConverter;
 import com.geekhalo.lego.core.singlequery.Sort;
-import com.geekhalo.lego.core.singlequery.mybatis.support.ReflectBasedExampleConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 

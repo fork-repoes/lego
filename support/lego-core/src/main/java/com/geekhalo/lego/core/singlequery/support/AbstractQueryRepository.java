@@ -3,7 +3,6 @@ package com.geekhalo.lego.core.singlequery.support;
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
 import com.geekhalo.lego.core.singlequery.ManyResultException;
 import com.geekhalo.lego.core.singlequery.MaxResultConfig;
-import com.geekhalo.lego.core.singlequery.mybatis.support.AbstractReflectBasedExampleQueryRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
