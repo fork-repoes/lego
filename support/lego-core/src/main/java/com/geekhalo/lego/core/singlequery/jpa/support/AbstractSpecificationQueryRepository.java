@@ -1,10 +1,8 @@
 package com.geekhalo.lego.core.singlequery.jpa.support;
 
-import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
-import com.geekhalo.lego.core.singlequery.Page;
+import com.geekhalo.lego.core.singlequery.*;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
-import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryRepository;
 import com.google.common.base.Preconditions;
@@ -72,11 +70,19 @@ public class AbstractSpecificationQueryRepository<E>
             return Lists.newArrayList();
         }
 
-        List<E> entities = this.specificationExecutor.findAll(specification);
+        org.springframework.data.domain.Sort springSort = createSpringSort(query);
+
+        List<E> entities = null;
+        if (springSort == null) {
+            entities = this.specificationExecutor.findAll(specification);
+        }else {
+            entities = this.specificationExecutor.findAll(specification, springSort);
+        }
 
         if (CollectionUtils.isEmpty(entities)){
             return Collections.emptyList();
         }
+
         return entities.stream()
                 .filter(Objects::nonNull)
                 .map(entity -> converter.apply(entity))
@@ -119,20 +125,14 @@ public class AbstractSpecificationQueryRepository<E>
             return Page.nullObject(pageable);
         }
 
-        // TODO 添加 sort 参数
-//        Sort sort = this.specificationConverter.findSort(query);
-//        org.springframework.data.domain.Sort springSort = null;
-//        if (sort != null && sort.getOrders() != null){
-//            List<org.springframework.data.domain.Sort.Order> orders = sort.getOrders().<Sort.Order>stream()
-//                    .map(s->{
-//                        s.
-//                    }).collect(Collectors.toList());
-//                        org.springframework.data.domain.Sort.Order order = new org.springframework.data.domain.Sort.Order.asc()
-//                    })
-//            springSort = org.springframework.data.domain.Sort.by(orders);
-//        }
-        org.springframework.data.domain.Pageable springPageable = PageRequest.of(pageable.getPageNo(), pageable.getPageSize());
+        org.springframework.data.domain.Sort springSort = createSpringSort(query);
 
+        org.springframework.data.domain.Pageable springPageable = null;
+        if (springSort != null) {
+            springPageable = PageRequest.of(pageable.getPageNo(), pageable.getPageSize(), springSort);
+        }else {
+            springPageable = PageRequest.of(pageable.getPageNo(), pageable.getPageSize());
+        }
 
         org.springframework.data.domain.Page<E> entityPage = this.specificationExecutor.findAll(specification, springPageable);
 
@@ -143,6 +143,36 @@ public class AbstractSpecificationQueryRepository<E>
                 .collect(Collectors.toList());
 
         return new Page(entities, pageable, entityPage.getTotalElements());
+    }
+
+    private <Q> org.springframework.data.domain.Sort createSpringSort(Q query) {
+        Sort sort = this.specificationConverter.findSort(query);
+        if (sort == null || CollectionUtils.isEmpty(sort.getOrders())){
+            return null;
+        }
+
+        List<org.springframework.data.domain.Sort.Order> springOrders = convertToSpringOrders(sort.getOrders());
+
+        return org.springframework.data.domain.Sort.by(springOrders);
+    }
+
+    private List<org.springframework.data.domain.Sort.Order> convertToSpringOrders(List<Sort.Order> orders) {
+        List<org.springframework.data.domain.Sort.Order> springOrders =
+                Lists.newArrayListWithCapacity(orders.size());
+        for (Sort.Order order : orders){
+            Sort.Direction direction = order.getDirection();
+            OrderField orderField = (OrderField)order.getOrderField();
+            if (direction == null || orderField == null){
+                continue;
+            }
+            if (direction == Sort.Direction.ASC) {
+                springOrders.add(org.springframework.data.domain.Sort.Order.asc(orderField.getColumnName()));
+            }
+            if (direction == Sort.Direction.DESC){
+                springOrders.add(org.springframework.data.domain.Sort.Order.desc(orderField.getColumnName()));
+            }
+        }
+        return springOrders;
     }
 
 
