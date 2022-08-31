@@ -3,6 +3,8 @@ package com.geekhalo.lego.core.singlequery;
 import com.google.common.base.Preconditions;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,6 +35,10 @@ public class Page<T> {
         this.content = content;
         this.pageable = pageable;
         this.totalElements = totalElements;
+    }
+
+    public static <R> Page<R> nullObject(Pageable pageable) {
+        return new Page(Collections.emptyList(), pageable, 0);
     }
 
     /**

@@ -5,7 +5,6 @@ import com.geekhalo.lego.core.singlequery.*;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
-import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractReflectBasedExampleQueryRepository<E>
-        extends AbstractQueryRepository<E>
         implements ExampleQueryRepository<E> {
     private final Object mapper;
     private final Class exampleCls;
@@ -153,9 +151,23 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
                 .orElse(null);
     }
 
-    @Override
-    protected <Q> Pageable findPageable(Q query){
+    private  <Q> Pageable findPageable(Q query){
         return exampleConverter.findPageable(query);
+    }
+
+    @Override
+    public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
+        Pageable pageable = findPageable(query);
+
+        if (pageable == null){
+            throw new IllegalArgumentException("Pageable Lost");
+        }
+
+        Long totalElement = countOf(query);
+
+        List<R> content =  listOf(query, converter);
+
+        return new Page<>(content, pageable, totalElement);
     }
 
     private List<E> doList(Object example){

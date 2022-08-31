@@ -8,18 +8,22 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 /**
- * Created by taoli on 2022/8/30.
+ * Created by taoli on 2022/8/31.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class JpaGreaterThanHandler
-    extends AbstractJpaAnnotationHandler<FieldGreaterThan>{
-    public JpaGreaterThanHandler() {
+public class JpaFieldGreaterThanHandler
+    extends AbstractJpaAnnotationHandler<FieldGreaterThan> {
+    public JpaFieldGreaterThanHandler() {
         super(FieldGreaterThan.class);
     }
 
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldGreaterThan fieldGreaterThan, Object value) {
-        return criteriaBuilder.greaterThan(root.get(fieldGreaterThan.value()), (Comparable) value);
+        if (value instanceof Comparable) {
+            return criteriaBuilder.greaterThan(root.get(fieldGreaterThan.value()), (Comparable) value);
+        }else {
+            return null;
+        }
     }
 }

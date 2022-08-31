@@ -1,9 +1,9 @@
 package com.geekhalo.lego.core.singlequery.jpa.support;
 
 import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.support.AnnoBasedMaxResultConfigResolver;
-import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryRepository;
@@ -12,11 +12,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.google.common.collect.Lists;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +31,6 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 public class AbstractSpecificationQueryRepository<E>
-    extends AbstractQueryRepository<E>
     implements SpecificationQueryRepository<E> {
 
     private final JpaSpecificationExecutor<E> specificationExecutor;
@@ -70,10 +71,11 @@ public class AbstractSpecificationQueryRepository<E>
         if (specification == null){
             return Lists.newArrayList();
         }
+
         List<E> entities = this.specificationExecutor.findAll(specification);
 
         if (CollectionUtils.isEmpty(entities)){
-            return null;
+            return Collections.emptyList();
         }
         return entities.stream()
                 .filter(Objects::nonNull)
@@ -105,10 +107,46 @@ public class AbstractSpecificationQueryRepository<E>
                 .orElse(null);
     }
 
+    @Override
+    public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
+        Pageable pageable = findPageable(query);
+        if (pageable == null){
+            throw new IllegalArgumentException("Pageable Lost");
+        }
+
+        Specification<E> specification = this.specificationConverter.convertForQuery(query);
+        if (specification == null){
+            return Page.nullObject(pageable);
+        }
+
+        // TODO 添加 sort 参数
+//        Sort sort = this.specificationConverter.findSort(query);
+//        org.springframework.data.domain.Sort springSort = null;
+//        if (sort != null && sort.getOrders() != null){
+//            List<org.springframework.data.domain.Sort.Order> orders = sort.getOrders().<Sort.Order>stream()
+//                    .map(s->{
+//                        s.
+//                    }).collect(Collectors.toList());
+//                        org.springframework.data.domain.Sort.Order order = new org.springframework.data.domain.Sort.Order.asc()
+//                    })
+//            springSort = org.springframework.data.domain.Sort.by(orders);
+//        }
+        org.springframework.data.domain.Pageable springPageable = PageRequest.of(pageable.getPageNo(), pageable.getPageSize());
 
 
-    protected <Q> Pageable findPageable(Q query) {
-        Pageable pageable = this.specificationConverter.findPageable(query);
-        return pageable;
+        org.springframework.data.domain.Page<E> entityPage = this.specificationExecutor.findAll(specification, springPageable);
+
+        List<R> entities = entityPage.getContent().stream()
+                .filter(Objects::nonNull)
+                .map(converter)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return new Page(entities, pageable, entityPage.getTotalElements());
+    }
+
+
+    private  <Q> Pageable findPageable(Q query) {
+        return this.specificationConverter.findPageable(query);
     }
 }

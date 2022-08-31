@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 public abstract class AbstractQueryConverter<E> implements QueryConverter<E> {
-    protected Sort findSort(Object o) {
+    public Sort findSort(Object o) {
         Sort sort = null;
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(o.getClass());
         for (Field field : allFieldsList){
@@ -34,6 +34,7 @@ public abstract class AbstractQueryConverter<E> implements QueryConverter<E> {
         return sort;
     }
 
+    @Override
     public Pageable findPageable(Object query) {
         Pageable pageable = null;
         List<Field> allFieldsList = FieldUtils.getAllFieldsList(query.getClass());

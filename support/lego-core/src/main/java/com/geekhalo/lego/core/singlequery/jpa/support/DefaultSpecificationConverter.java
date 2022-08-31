@@ -107,9 +107,9 @@ public class DefaultSpecificationConverter<E>
             return null;
         }
 
-        return (root, query1, criteriaBuilder) -> {
-            List<Predicate> ps = createPredicates(root, query1, criteriaBuilder, query1);
-            return query1.where(ps.toArray(new Predicate[ps.size()])).getRestriction();
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> ps = createPredicates(root, criteriaQuery, criteriaBuilder, query);
+            return criteriaQuery.where(ps.toArray(new Predicate[ps.size()])).getRestriction();
         };
     }
 

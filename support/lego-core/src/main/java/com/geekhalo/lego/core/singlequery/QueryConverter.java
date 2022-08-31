@@ -12,5 +12,7 @@ public interface QueryConverter<E> {
 
     Pageable findPageable(Object query);
 
+    Sort findSort(Object query);
+
     void validate(Class cls);
 }

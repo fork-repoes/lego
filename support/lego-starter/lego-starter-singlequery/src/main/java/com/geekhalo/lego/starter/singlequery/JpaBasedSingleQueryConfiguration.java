@@ -1,12 +1,8 @@
 package com.geekhalo.lego.starter.singlequery;
 
-import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
-import com.geekhalo.lego.core.singlequery.jpa.support.DefaultSpecificationConverter;
 import com.geekhalo.lego.core.singlequery.jpa.support.DefaultSpecificationConverterFactory;
-import com.geekhalo.lego.core.singlequery.jpa.support.handler.JpaAnnotationHandler;
-import com.geekhalo.lego.core.singlequery.jpa.support.handler.JpaFieldEqualToHandler;
-import com.geekhalo.lego.core.singlequery.jpa.support.handler.JpaGreaterThanHandler;
+import com.geekhalo.lego.core.singlequery.jpa.support.handler.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +29,42 @@ public class JpaBasedSingleQueryConfiguration {
     }
 
     @Bean
-    public JpaGreaterThanHandler jpaGreaterThanHandler(){
-        return new JpaGreaterThanHandler();
+    public JpaFieldGreaterThanHandler jpaGreaterThanHandler(){
+        return new JpaFieldGreaterThanHandler();
+    }
+
+    @Bean
+    public JpaFieldGreaterThanOrEqualToHandler jpaFieldGreaterThanOrEqualToHandler(){
+        return new JpaFieldGreaterThanOrEqualToHandler();
+    }
+
+    @Bean
+    public JpaFieldInHandler jpaFieldInHandler(){
+        return new JpaFieldInHandler();
+    }
+
+    @Bean
+    public JpaFieldIsNullHandler jpaFieldIsNullHandler(){
+        return new JpaFieldIsNullHandler();
+    }
+
+    @Bean
+    public JpaFieldLessThanHandler jpaFieldLessThanHandler(){
+        return new JpaFieldLessThanHandler();
+    }
+
+    @Bean
+    public JpaFieldLessThanOrEqualToHandler jpaFieldLessThanOrEqualToHandler(){
+        return new JpaFieldLessThanOrEqualToHandler();
+    }
+
+    @Bean
+    public JpaFieldNotEqualToHandler jpaFieldNotEqualToHandler(){
+        return new JpaFieldNotEqualToHandler();
+    }
+
+    @Bean
+    public JpaFieldNotInHandler jpaFieldNotInHandler(){
+        return new JpaFieldNotInHandler();
     }
 }
