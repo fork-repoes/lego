@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.singlequery.mybatis;
 
 
-import com.geekhalo.lego.core.singlequery.Pageable;
+import com.geekhalo.lego.core.singlequery.QueryConverter;
 
 /**
  * Created by taoli on 2022/8/26.
@@ -10,12 +10,5 @@ import com.geekhalo.lego.core.singlequery.Pageable;
  *
  * 将查询对象转换为 Example 对象
  */
-public interface ExampleConverter<E> {
-    E convertForQuery(Object query);
-
-    E convertForCount(Object query);
-
-    Pageable findPageable(Object query);
-
-    void validate(Class cls);
+public interface ExampleConverter<E> extends QueryConverter<E> {
 }

@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.singlequery;
 import com.google.common.base.Preconditions;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,10 +30,14 @@ public class Page<T> {
     public Page(List<T> content, Pageable pageable, long totalElements) {
         Preconditions.checkArgument(content != null);
         Preconditions.checkArgument(pageable != null);
-        Preconditions.checkArgument(totalElements > 0);
+        Preconditions.checkArgument(totalElements >= 0);
         this.content = content;
         this.pageable = pageable;
         this.totalElements = totalElements;
+    }
+
+    public static <R> Page<R> nullObject(Pageable pageable) {
+        return new Page(Collections.emptyList(), pageable, 0);
     }
 
     /**
