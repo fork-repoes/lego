@@ -1,10 +1,14 @@
 package com.geekhalo.lego.core.singlequery.mybatis.support;
 
 import com.geekhalo.lego.annotation.singlequery.MaxResultCheckStrategy;
-import com.geekhalo.lego.core.singlequery.*;
+import com.geekhalo.lego.core.singlequery.MaxResultConfig;
+import com.geekhalo.lego.core.singlequery.MaxResultConfigResolver;
+import com.geekhalo.lego.core.singlequery.Page;
+import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
+import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +25,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractReflectBasedExampleQueryRepository<E> implements ExampleQueryRepository<E> {
+public abstract class AbstractReflectBasedExampleQueryRepository<E>
+        extends AbstractQueryRepository<E>
+        implements ExampleQueryRepository<E> {
     private final Object mapper;
     private final Class exampleCls;
     @Getter(AccessLevel.PROTECTED)
@@ -36,6 +42,11 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
         Preconditions.checkArgument(exampleClass != null);
         this.mapper = mapper;
         this.exampleCls = exampleClass;
+    }
+
+    @Override
+    protected Object getDao() {
+        return this.mapper;
     }
 
     @PostConstruct
@@ -82,38 +93,6 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
                 .collect(Collectors.toList());
     }
 
-    private void processForMaxResult(Object query, MaxResultConfig maxResultConfig, List<E> entities) {
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.LOG){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.warn("【LOG】result size is {} more than {}, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                return;
-            }
-        }
-
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.ERROR){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.error("【ERROR】result size is {} more than {}, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                throw new ManyResultException();
-            }
-        }
-
-        if (maxResultConfig.getCheckStrategy() == MaxResultCheckStrategy.SET_LIMIT){
-            if (entities.size() >= maxResultConfig.getMaxResult()){
-                log.error("【SET_LIMIT】result size is {} more than {}, please find and fix, mapper is {} param is {}", entities.size(),
-                        maxResultConfig.getMaxResult(),
-                        this.mapper,
-                        query);
-                return;
-            }
-        }
-    }
-
     private void setLimitForExample(Integer maxResult, Object example) {
         try {
             MethodUtils.invokeMethod(example, true, "setRows", maxResult);
@@ -150,15 +129,20 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E> implements E
                 .orElse(null);
     }
 
+    private  <Q> Pageable findPageable(Q query){
+        return exampleConverter.findPageable(query);
+    }
+
     @Override
     public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
-        Pageable pageable = exampleConverter.findPageable(query);
+        Pageable pageable = findPageable(query);
 
         if (pageable == null){
             throw new IllegalArgumentException("Pageable Lost");
         }
 
         Long totalElement = countOf(query);
+
         List<R> content =  listOf(query, converter);
 
         return new Page<>(content, pageable, totalElement);
