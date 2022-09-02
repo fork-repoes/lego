@@ -15,27 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
-			<artifactId>lego-starter-splitter</artifactId>
-			<version>0.1.4-async_based_rocketmq-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.geekhalo.lego</groupId>
-			<artifactId>lego-starter-joininmemory</artifactId>
-			<version>0.1.4-async_based_rocketmq-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.geekhalo.lego</groupId>
-			<artifactId>lego-starter-excelasbean</artifactId>
-			<version>0.1.4-async_based_rocketmq-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.geekhalo.lego</groupId>
-			<artifactId>lego-starter-loader</artifactId>
-			<version>0.1.4-async_based_rocketmq-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.geekhalo.lego</groupId>
-			<artifactId>lego-starter-singlequery</artifactId>
+			<artifactId>lego-starter</artifactId>
 			<version>0.1.4-async_based_rocketmq-SNAPSHOT</version>
 		</dependency>
 		<dependency>
