@@ -19,5 +19,5 @@ public @interface AsyncBasedRocketMQ {
 
     String consumerGroup();
 
-    String instanceName() default "";
+    String nameServer() default "${rocketmq.name-server:}";
 }

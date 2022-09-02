@@ -4,6 +4,7 @@ import com.geekhalo.lego.DemoApplication;
 import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,31 +30,37 @@ import static org.junit.jupiter.api.Assertions.*;
 class AsyncServiceTest {
     @Autowired
     private AsyncService asyncService;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     @Test
     public void asyncTest() throws InterruptedException {
-        Long id = RandomUtils.nextLong();
-        String name = String.valueOf(RandomUtils.nextLong());
-        AsyncInputBean bean = createAsyncInputBean();
-        asyncService.asyncTest(id, name, bean);
+        for (int i=0; i<5; i++) {
+            asyncService.getCallDatas().clear();;
 
-        {
-            List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
-            Assertions.assertTrue(CollectionUtils.isEmpty(callDatas));
+            Long id = RandomUtils.nextLong();
+            String name = String.valueOf(RandomUtils.nextLong());
+            AsyncInputBean bean = createAsyncInputBean();
+            asyncService.asyncTest(id, name, bean);
+
+            {
+                List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+                Assertions.assertTrue(CollectionUtils.isEmpty(callDatas));
+            }
+
+            TimeUnit.SECONDS.sleep(2);
+
+            {
+                List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+                Assertions.assertFalse(CollectionUtils.isEmpty(callDatas));
+
+                AsyncService.CallData callData = callDatas.get(0);
+                Assertions.assertEquals(id, callData.getId());
+                Assertions.assertEquals(name, callData.getName());
+                Assertions.assertEquals(bean, callData.getBean());
+            }
+
         }
-
-        TimeUnit.SECONDS.sleep(10);
-
-        {
-            List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
-            Assertions.assertFalse(CollectionUtils.isEmpty(callDatas));
-
-            AsyncService.CallData callData = callDatas.get(0);
-            Assertions.assertEquals(id, callData.getId());
-            Assertions.assertEquals(name, callData.getName());
-            Assertions.assertEquals(bean, callData.getBean());
-        }
-
     }
 
     @Test
