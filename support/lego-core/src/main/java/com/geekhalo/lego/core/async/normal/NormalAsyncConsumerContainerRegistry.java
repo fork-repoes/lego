@@ -46,9 +46,16 @@ public class NormalAsyncConsumerContainerRegistry
         // 2. 为每个 @RocketMQBasedDelay 注解方法 注册 RocketMQConsumerContainer
         for(Method method : methodsListWithAnnotation){
             AsyncBasedRocketMQ annotation = method.getAnnotation(AsyncBasedRocketMQ.class);
+
+            String consumerProfile = annotation.consumerProfile();
+            if (!isActiveProfile(consumerProfile)){
+                continue;
+            }
+
             Object bean = AopProxyUtils.getSingletonTarget(proxy);
             NormalAsyncConsumerContainer asyncConsumerContainer = new NormalAsyncConsumerContainer(this.getEnvironment(), annotation, bean, method);
             asyncConsumerContainer.afterPropertiesSet();
+
             this.getConsumerContainers().add(asyncConsumerContainer);
         }
 

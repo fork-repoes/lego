@@ -33,6 +33,11 @@ public class OrderedAsyncConsumerContainerRegistry extends AbstractAsyncConsumer
         // 2. 为每个 @RocketMQBasedDelay 注解方法 注册 RocketMQConsumerContainer
         for(Method method : methodsListWithAnnotation){
             AsyncForOrderedBasedRocketMQ annotation = method.getAnnotation(AsyncForOrderedBasedRocketMQ.class);
+            String consumerProfile = annotation.consumerProfile();
+            if (!isActiveProfile(consumerProfile)){
+                continue;
+            }
+
             Object bean = AopProxyUtils.getSingletonTarget(proxy);
             OrderedAsyncConsumerContainer asyncConsumerContainer =
                     new OrderedAsyncConsumerContainer(this.getEnvironment(),

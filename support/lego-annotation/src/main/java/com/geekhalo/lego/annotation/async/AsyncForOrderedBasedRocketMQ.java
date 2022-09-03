@@ -22,5 +22,7 @@ public @interface AsyncForOrderedBasedRocketMQ {
     String consumerGroup();
 
     String nameServer() default "${rocketmq.name-server:}";
+
+    String consumerProfile() default "";
 }
 

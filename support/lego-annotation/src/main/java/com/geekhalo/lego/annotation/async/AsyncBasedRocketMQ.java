@@ -20,4 +20,6 @@ public @interface AsyncBasedRocketMQ {
     String consumerGroup();
 
     String nameServer() default "${rocketmq.name-server:}";
+
+    String consumerProfile() default "";
 }

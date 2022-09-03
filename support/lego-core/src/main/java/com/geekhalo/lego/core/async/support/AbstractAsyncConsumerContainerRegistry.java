@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.core.env.Environment;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,5 +74,10 @@ public class AbstractAsyncConsumerContainerRegistry implements BeanPostProcessor
     @Override
     public int getPhase() {
         return 0;
+    }
+
+    protected boolean isActiveProfile(String consumerProfile) {
+        return StringUtils.isEmpty(consumerProfile)
+                || Arrays.asList(getEnvironment().getActiveProfiles()).contains(consumerProfile);
     }
 }
