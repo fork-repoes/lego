@@ -17,9 +17,20 @@ public class AsyncService {
     private final List<CallData> callDatas = new ArrayList<>();
 
     @AsyncBasedRocketMQ(topic = "${async.test.normal.topic}",
-            tag = "asyncTest",
-            consumerGroup = "${async.test.normal.group}")
-    public void asyncTest(Long id, String name, AsyncInputBean bean){
+            tag = "asyncTest1",
+            consumerGroup = "${async.test.normal.group1}")
+    public void asyncTest1(Long id, String name, AsyncInputBean bean){
+        log.info("receive data id {}, name {}, bean", id, name, bean);
+
+        CallData callData = new CallData(id, name, bean);
+        this.callDatas.add(callData);
+    }
+
+
+    @AsyncBasedRocketMQ(topic = "${async.test.normal.topic}",
+            tag = "asyncTest2",
+            consumerGroup = "${async.test.normal.group2}")
+    public void asyncTest2(Long id, String name, AsyncInputBean bean){
         log.info("receive data id {}, name {}, bean", id, name, bean);
 
         CallData callData = new CallData(id, name, bean);

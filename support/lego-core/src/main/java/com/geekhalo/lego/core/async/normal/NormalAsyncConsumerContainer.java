@@ -102,6 +102,4 @@ public class NormalAsyncConsumerContainer
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         }
     }
-
-
 }

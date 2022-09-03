@@ -28,4 +28,5 @@ async:
   test:
     normal:
       topic: normal-async-test-topic
-      group: normal-async-test-group
+      group1: normal-async-test-group1
+      group2: normal-async-test-group2

@@ -5,9 +5,7 @@ import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/9/2.
@@ -34,14 +30,44 @@ class AsyncServiceTest {
     private RocketMQTemplate rocketMQTemplate;
 
     @Test
-    public void asyncTest() throws InterruptedException {
+    public void asyncTest1() throws InterruptedException {
         for (int i=0; i<5; i++) {
             asyncService.getCallDatas().clear();;
 
             Long id = RandomUtils.nextLong();
             String name = String.valueOf(RandomUtils.nextLong());
             AsyncInputBean bean = createAsyncInputBean();
-            asyncService.asyncTest(id, name, bean);
+            asyncService.asyncTest1(id, name, bean);
+
+            {
+                List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+                Assertions.assertTrue(CollectionUtils.isEmpty(callDatas));
+            }
+
+            TimeUnit.SECONDS.sleep(2);
+
+            {
+                List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+                Assertions.assertFalse(CollectionUtils.isEmpty(callDatas));
+
+                AsyncService.CallData callData = callDatas.get(0);
+                Assertions.assertEquals(id, callData.getId());
+                Assertions.assertEquals(name, callData.getName());
+                Assertions.assertEquals(bean, callData.getBean());
+            }
+
+        }
+    }
+
+    @Test
+    public void asyncTest2() throws InterruptedException {
+        for (int i=0; i<5; i++) {
+            asyncService.getCallDatas().clear();;
+
+            Long id = RandomUtils.nextLong();
+            String name = String.valueOf(RandomUtils.nextLong());
+            AsyncInputBean bean = createAsyncInputBean();
+            asyncService.asyncTest1(id, name, bean);
 
             {
                 List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
