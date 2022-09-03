@@ -18,3 +18,19 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+rocketmq:
+  name-server: http://127.0.0.1:9876
+  producer:
+    group: async-demo
+
+async:
+  test:
+    normal:
+      topic: normal-async-test-topic
+      group1: normal-async-test-group1
+      group2: normal-async-test-group2
+    order:
+      topic: order-async-test-topic
+      group1: order-async-test-group1
+      group2: order-async-test-group2
