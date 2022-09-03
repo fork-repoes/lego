@@ -1,9 +1,6 @@
 package com.geekhalo.lego.starter.async;
 
-import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.async.normal.NormalAsyncConsumerContainerRegistry;
-import com.geekhalo.lego.core.async.normal.NormalAsyncInterceptor;
 import com.geekhalo.lego.core.async.order.OrderedAsyncConsumerContainerRegistry;
 import com.geekhalo.lego.core.async.order.OrderedAsyncInterceptor;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
