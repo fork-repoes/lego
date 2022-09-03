@@ -1,0 +1,11 @@
+#-------自动装配---------
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.geekhalo.lego.starter.loader.LazyLoadAutoConfiguration,\
+    com.geekhalo.lego.starter.excelasbean.ExcelAsBeanAutoConfiguration,\
+    com.geekhalo.lego.starter.joininmemory.JoinInMemoryAutoConfiguration,\
+    com.geekhalo.lego.starter.loader.LazyLoadAutoConfiguration,\
+    com.geekhalo.lego.starter.singlequery.MyBatisBasedSingleQueryConfiguration,\
+    com.geekhalo.lego.starter.singlequery.JpaBasedSingleQueryConfiguration,\
+    com.geekhalo.lego.starter.splitter.SplitterAutoConfiguration,\
+  com.geekhalo.lego.starter.async.NormalAsyncAutoConfiguration,\
+  com.geekhalo.lego.starter.async.OrderedAsyncAutoConfiguration
