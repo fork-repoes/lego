@@ -19,6 +19,8 @@ import java.util.Map;
  * Created by taoli on 2022/9/2.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
+ *
+ * Consumer 封装，对声明周期进行管理
  */
 @Slf4j
 @Getter
@@ -39,7 +41,6 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
     }
 
     protected void invokeMethod(Message message) throws IllegalAccessException, InvocationTargetException {
-//        log.info("received msg: {}", message);
         long now = System.currentTimeMillis();
 
         // 从 Message 中反序列化数据，获得方法调用参数
@@ -53,9 +54,12 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
 
     private void invokeMethod(byte[] body) throws IllegalAccessException, InvocationTargetException {
         String bodyAsStr = new String(body, StandardCharsets.UTF_8);
+
+        // 先恢复 Map
         Map deserialize = SerializeUtil.deserialize(bodyAsStr, Map.class);
         Object[] params = new Object[getMethod().getParameterCount()];
 
+        // 根据类型对每个参数进行反序列化
         for (int i = 0; i < getMethod().getParameterCount(); i++) {
             String o = (String) deserialize.get(String.valueOf(i));
             if (o == null) {

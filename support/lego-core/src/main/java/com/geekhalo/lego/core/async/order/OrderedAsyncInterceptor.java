@@ -77,9 +77,9 @@ public class OrderedAsyncInterceptor
         Message<String> msg = MessageBuilder
                 .withPayload(argData)
                 .build();
-        String destination = createDestination(invokeCacheItem.getTopic(), invokeCacheItem.getTag());
 
         // 3. 发送 MQ
+        String destination = createDestination(invokeCacheItem.getTopic(), invokeCacheItem.getTag());
         SendResult sendResult = this.getRocketMQTemplate().syncSendOrderly(destination, msg, shardingKey, 2000);
 
         log.info("success to send orderly async Task to RocketMQ, args is {}, shardingKey is {}, msg is {}, result is {}",
@@ -94,11 +94,9 @@ public class OrderedAsyncInterceptor
         AsyncForOrderedBasedRocketMQ asyncForOrderedBasedRocketMQ = method.getAnnotation(AsyncForOrderedBasedRocketMQ.class);
 
         String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
-
         Expression expression = expressionParser.parseExpression(asyncForOrderedBasedRocketMQ.shardingKey());
 
         String topic = resolve(asyncForOrderedBasedRocketMQ.topic());
-
         String tag = resolve(asyncForOrderedBasedRocketMQ.tag());
 
         return new InvokeCacheItem(

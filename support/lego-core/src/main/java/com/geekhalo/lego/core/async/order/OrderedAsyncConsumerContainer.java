@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
 import com.geekhalo.lego.core.async.support.AbstractAsyncConsumerContainer;
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
@@ -32,6 +33,8 @@ public class OrderedAsyncConsumerContainer extends AbstractAsyncConsumerContaine
                                             Object bean,
                                             Method method) {
         super(environment, bean, method);
+
+        Preconditions.checkArgument(asyncForOrderedBasedRocketMQ != null);
         this.asyncForOrderedBasedRocketMQ = asyncForOrderedBasedRocketMQ;
     }
 
@@ -86,6 +89,11 @@ public class OrderedAsyncConsumerContainer extends AbstractAsyncConsumerContaine
                     log.debug("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
                 } catch (Exception e) {
                     log.warn("consume message failed. messageId:{}, topic:{}, reconsumeTimes:{}", messageExt.getMsgId(), messageExt.getTopic(), messageExt.getReconsumeTimes(), e);
+
+                    if (skipWhenException()){
+                        return ConsumeOrderlyStatus.SUCCESS;
+                    }
+
                     context.setSuspendCurrentQueueTimeMillis(suspendCurrentQueueTimeMillis);
                     return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
                 }

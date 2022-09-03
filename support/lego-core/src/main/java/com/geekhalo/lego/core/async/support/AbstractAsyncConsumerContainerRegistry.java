@@ -21,6 +21,7 @@ import java.util.List;
 public class AbstractAsyncConsumerContainerRegistry implements BeanPostProcessor, SmartLifecycle {
     @Getter(AccessLevel.PROTECTED)
     private final List<AbstractAsyncConsumerContainer> consumerContainers = Lists.newArrayList();
+
     @Getter(AccessLevel.PROTECTED)
     private final Environment environment;
 
@@ -76,6 +77,11 @@ public class AbstractAsyncConsumerContainerRegistry implements BeanPostProcessor
         return 0;
     }
 
+    /**
+     * 是否为 激活 的 Profile
+     * @param consumerProfile
+     * @return
+     */
     protected boolean isActiveProfile(String consumerProfile) {
         return StringUtils.isEmpty(consumerProfile)
                 || Arrays.asList(getEnvironment().getActiveProfiles()).contains(consumerProfile);

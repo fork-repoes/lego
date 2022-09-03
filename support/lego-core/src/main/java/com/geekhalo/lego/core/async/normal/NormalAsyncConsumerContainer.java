@@ -38,8 +38,8 @@ public class NormalAsyncConsumerContainer
                                      Object bean,
                                      Method method) {
         super(environment, bean, method);
-        Preconditions.checkArgument(asyncBasedRocketMQ != null);
 
+        Preconditions.checkArgument(asyncBasedRocketMQ != null);
         this.asyncBasedRocketMQ = asyncBasedRocketMQ;
     }
 
@@ -94,6 +94,11 @@ public class NormalAsyncConsumerContainer
                     log.debug("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
                 } catch (Exception e) {
                     log.warn("consume message failed. messageId:{}, topic:{}, reconsumeTimes:{}", messageExt.getMsgId(), messageExt.getTopic(), messageExt.getReconsumeTimes(), e);
+
+                    if (skipWhenException()){
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    }
+
                     context.setDelayLevelWhenNextConsume(delayLevelWhenNextConsume);
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                 }

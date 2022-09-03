@@ -11,9 +11,17 @@ import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
+/**
+ * Created by taoli on 2022/9/2.
+ * gitee : https://gitee.com/litao851025/lego
+ * 编程就像玩 Lego
+ *
+ * 异步拦截器，拦截方法调用，并将其发送至 MQ；
+ */
 public abstract class AbstractAsyncInterceptor {
     @Getter(AccessLevel.PROTECTED)
     private final RocketMQTemplate rocketMQTemplate;
+
     @Getter(AccessLevel.PROTECTED)
     private final Environment environment;
 
@@ -25,6 +33,11 @@ public abstract class AbstractAsyncInterceptor {
         this.rocketMQTemplate = rocketMQTemplate;
     }
 
+    /**
+     * 序列化操作
+     * @param arguments
+     * @return
+     */
     protected String serialize(Object[] arguments) {
         Map<String, String> result = Maps.newHashMapWithExpectedSize(arguments.length);
         for (int i = 0; i < arguments.length; i++){
@@ -33,6 +46,11 @@ public abstract class AbstractAsyncInterceptor {
         return SerializeUtil.serialize(result);
     }
 
+    /**
+     * 解析表达式，获取最终配置信息
+     * @param value
+     * @return
+     */
     protected String resolve(String value) {
         if (StringUtils.hasText(value)) {
             return this.environment.resolvePlaceholders(value);
@@ -40,6 +58,12 @@ public abstract class AbstractAsyncInterceptor {
         return value;
     }
 
+    /**
+     * 创建 destination
+     * @param topic
+     * @param tag
+     * @return
+     */
     protected String createDestination(String topic, String tag) {
         if (org.apache.commons.lang3.StringUtils.isNotEmpty(tag)){
             return topic + ":" + tag;
