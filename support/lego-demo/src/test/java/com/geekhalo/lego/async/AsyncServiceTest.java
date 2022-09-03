@@ -67,7 +67,7 @@ class AsyncServiceTest {
             Long id = RandomUtils.nextLong();
             String name = String.valueOf(RandomUtils.nextLong());
             AsyncInputBean bean = createAsyncInputBean();
-            asyncService.asyncTest1(id, name, bean);
+            asyncService.asyncTest2(id, name, bean);
 
             {
                 List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
@@ -90,7 +90,7 @@ class AsyncServiceTest {
     }
 
     @Test
-    public void asyncForOrderTest() throws InterruptedException {
+    public void asyncForOrderTest1() throws InterruptedException {
 
         List<InputData> inputDatas = new ArrayList<>();
         Long[] ids = new Long[]{RandomUtils.nextLong(), RandomUtils.nextLong(), RandomUtils.nextLong(), RandomUtils.nextLong()};
@@ -98,7 +98,7 @@ class AsyncServiceTest {
         AsyncInputBean bean = createAsyncInputBean();
 
         asyncService.getCallDatas().clear();
-        asyncService.asyncTestForOrder(ids[0], name, bean);
+        asyncService.asyncTestForOrder1(ids[0], name, bean);
         inputDatas.add(new InputData(ids[0], name, bean));
 
         {
@@ -110,7 +110,64 @@ class AsyncServiceTest {
         for (int i = 0; i< 100; i++) {
             name = String.valueOf(RandomUtils.nextLong());
             bean = createAsyncInputBean();
-            asyncService.asyncTestForOrder(ids[i%ids.length], name, bean);
+            asyncService.asyncTestForOrder1(ids[i%ids.length], name, bean);
+            inputDatas.add(new InputData(ids[i%ids.length], name, bean));
+        }
+
+
+
+        TimeUnit.SECONDS.sleep(10);
+
+        {
+            List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+            Assertions.assertFalse(CollectionUtils.isEmpty(callDatas));
+
+            Assertions.assertEquals(inputDatas.size(), callDatas.size());
+
+            Map<Long, List<AsyncService.CallData>> callDataMap = callDatas.stream().collect(Collectors.groupingBy(AsyncService.CallData::getId));
+            Map<Long, List<InputData>> inputDataMap = inputDatas.stream().collect(Collectors.groupingBy(InputData::getId));
+
+            for (Long id : ids){
+                List<AsyncService.CallData> callDataToCheck = callDataMap.get(id);
+                List<InputData> inputDataToCheck = inputDataMap.get(id);
+
+                Assertions.assertEquals(callDataToCheck.size(), inputDataToCheck.size());
+
+                for (int j = 0; j < callDataToCheck.size(); j++) {
+                    AsyncService.CallData callData = callDataToCheck.get(j);
+                    InputData inputData1 = inputDataToCheck.get(j);
+
+                    Assertions.assertEquals(inputData1.getId(), callData.getId());
+                    Assertions.assertEquals(inputData1.getName(), callData.getName());
+                    Assertions.assertEquals(inputData1.getBean(), callData.getBean());
+                }
+            }
+        }
+
+    }
+
+    @Test
+    public void asyncForOrderTest2() throws InterruptedException {
+
+        List<InputData> inputDatas = new ArrayList<>();
+        Long[] ids = new Long[]{RandomUtils.nextLong(), RandomUtils.nextLong(), RandomUtils.nextLong(), RandomUtils.nextLong()};
+        String name = String.valueOf(RandomUtils.nextLong());
+        AsyncInputBean bean = createAsyncInputBean();
+
+        asyncService.getCallDatas().clear();
+        asyncService.asyncTestForOrder2(ids[0], name, bean);
+        inputDatas.add(new InputData(ids[0], name, bean));
+
+        {
+            List<AsyncService.CallData> callDatas = this.asyncService.getCallDatas();
+            Assertions.assertTrue(CollectionUtils.isEmpty(callDatas));
+        }
+
+
+        for (int i = 0; i< 100; i++) {
+            name = String.valueOf(RandomUtils.nextLong());
+            bean = createAsyncInputBean();
+            asyncService.asyncTestForOrder2(ids[i%ids.length], name, bean);
             inputDatas.add(new InputData(ids[i%ids.length], name, bean));
         }
 

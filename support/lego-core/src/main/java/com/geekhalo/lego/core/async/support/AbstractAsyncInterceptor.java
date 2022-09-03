@@ -39,4 +39,12 @@ public abstract class AbstractAsyncInterceptor {
         }
         return value;
     }
+
+    protected String createDestination(String topic, String tag) {
+        if (org.apache.commons.lang3.StringUtils.isNotEmpty(tag)){
+            return topic + ":" + tag;
+        }else {
+            return topic;
+        }
+    }
 }

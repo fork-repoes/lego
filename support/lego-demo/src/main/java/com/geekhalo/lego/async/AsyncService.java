@@ -39,10 +39,21 @@ public class AsyncService {
 
 
     @AsyncForOrderedBasedRocketMQ(topic = "${async.test.order.topic}",
-            tag = "asyncTest",
+            tag = "asyncTest1",
             shardingKey = "#id",
-            consumerGroup = "${async.test.order.group}")
-    public void asyncTestForOrder(Long id, String name, AsyncInputBean bean){
+            consumerGroup = "${async.test.order.group1}")
+    public void asyncTestForOrder1(Long id, String name, AsyncInputBean bean){
+        log.info("receive data id {}, name {}, bean {}", id, name, bean);
+
+        CallData callData = new CallData(id, name, bean);
+        this.callDatas.add(callData);
+    }
+
+    @AsyncForOrderedBasedRocketMQ(topic = "${async.test.order.topic}",
+            tag = "asyncTest2",
+            shardingKey = "#id",
+            consumerGroup = "${async.test.order.group2}")
+    public void asyncTestForOrder2(Long id, String name, AsyncInputBean bean){
         log.info("receive data id {}, name {}, bean {}", id, name, bean);
 
         CallData callData = new CallData(id, name, bean);

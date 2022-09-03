@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.core.env.Environment;
@@ -58,21 +57,13 @@ public class NormalAsyncInterceptor extends AbstractAsyncInterceptor
         String destination = createDestination(invokeCacheItem.getTopic(), invokeCacheItem.getTag());
 
         // 3. 发送 MQ
-        SendResult sendResult = this.getRocketMQTemplate().syncSend(destination, msg, 200);
+        SendResult sendResult = this.getRocketMQTemplate().syncSend(destination, msg, 2000);
 
         log.info("success to send async Task to RocketMQ, args is {}, msg is {}, result is {}",
                 Arrays.toString(arguments),
                 msg,
                 sendResult);
         return null;
-    }
-
-    private String createDestination(String topic, String tag) {
-        if (StringUtils.isNotEmpty(tag)){
-            return topic + ":" + tag;
-        }else {
-            return topic;
-        }
     }
 
     private InvokeCacheItem parseMethod(Method method){

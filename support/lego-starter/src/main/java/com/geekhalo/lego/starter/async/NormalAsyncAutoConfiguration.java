@@ -32,8 +32,6 @@ public class NormalAsyncAutoConfiguration {
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
-    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-
     @Bean
     public NormalAsyncInterceptor asyncInterceptor(){
         return new NormalAsyncInterceptor(this.environment, this.rocketMQTemplate);
@@ -50,22 +48,4 @@ public class NormalAsyncAutoConfiguration {
                 new AnnotationMatchingPointcut(null, AsyncBasedRocketMQ.class),
                 sendMessageInterceptor);
     }
-
-//    @Bean
-//    public AsyncForOrderedInterceptor asyncForOrderedInterceptor(){
-//        return new AsyncForOrderedInterceptor(this.environment, producerRegistry(), parameterNameDiscoverer);
-//    }
-//
-//    @Bean
-//    public AsyncForOrderedConsumerContainerRegistry asyncForOrderConsumerContainerRegistry(){
-//        return new AsyncForOrderedConsumerContainerRegistry(this.environment, asyncConsumerFactory());
-//    }
-//    @Bean
-//    public PointcutAdvisor asyncForOrderPointcutAdvisor(@Autowired AsyncForOrderedInterceptor sendMessageInterceptor){
-//        return new DefaultPointcutAdvisor(new AnnotationMatchingPointcut(null, AsyncForOrderedBasedRocketMQ.class), sendMessageInterceptor);
-//    }
-//
-//    protected abstract ProducerRegistry producerRegistry();
-//
-//    protected abstract ConsumerFactory asyncConsumerFactory();
 }
