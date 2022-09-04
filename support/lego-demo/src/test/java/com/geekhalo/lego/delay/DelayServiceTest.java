@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
