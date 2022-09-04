@@ -26,11 +26,11 @@ public class OrderedAsyncConsumerContainerRegistry extends AbstractConsumerConta
     @SneakyThrows
     @Override
     public Object postProcessAfterInitialization(Object proxy, String s) throws BeansException {
-        // 1. 获取 @RocketMQBasedDelay 注解方法
+        // 1. 获取 @AsyncForOrderedBasedRocketMQ 注解方法
         Class targetCls = AopUtils.getTargetClass(proxy);
         List<Method> methodsListWithAnnotation = MethodUtils.getMethodsListWithAnnotation(targetCls, AsyncForOrderedBasedRocketMQ.class);
 
-        // 2. 为每个 @RocketMQBasedDelay 注解方法 注册 RocketMQConsumerContainer
+        // 2. 为每个 @AsyncForOrderedBasedRocketMQ 注解方法 注册 OrderedAsyncConsumerContainer
         for(Method method : methodsListWithAnnotation){
             AsyncForOrderedBasedRocketMQ annotation = method.getAnnotation(AsyncForOrderedBasedRocketMQ.class);
             String consumerProfile = annotation.consumerProfile();

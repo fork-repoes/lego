@@ -39,11 +39,11 @@ public class NormalAsyncConsumerContainerRegistry
     @SneakyThrows
     @Override
     public Object postProcessAfterInitialization(Object proxy, String beanName) throws BeansException {
-        // 1. 获取 @RocketMQBasedDelay 注解方法
+        // 1. 获取 @AsyncBasedRocketMQ 注解方法
         Class targetCls = AopUtils.getTargetClass(proxy);
         List<Method> methodsListWithAnnotation = MethodUtils.getMethodsListWithAnnotation(targetCls, AsyncBasedRocketMQ.class);
 
-        // 2. 为每个 @RocketMQBasedDelay 注解方法 注册 RocketMQConsumerContainer
+        // 2. 为每个 @AsyncBasedRocketMQ 注解方法 注册 NormalAsyncConsumerContainer
         for(Method method : methodsListWithAnnotation){
             AsyncBasedRocketMQ annotation = method.getAnnotation(AsyncBasedRocketMQ.class);
 
