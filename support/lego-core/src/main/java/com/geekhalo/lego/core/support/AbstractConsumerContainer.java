@@ -1,10 +1,14 @@
-package com.geekhalo.lego.core.async.support;
+package com.geekhalo.lego.core.support;
 
-import com.geekhalo.lego.core.async.SerializeUtil;
+import com.geekhalo.lego.core.utils.SerializeUtil;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.core.env.Environment;
@@ -16,21 +20,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by taoli on 2022/9/2.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
- *
- * Consumer 封装，对声明周期进行管理
  */
 @Slf4j
-@Getter
-public abstract class AbstractAsyncConsumerContainer implements InitializingBean, SmartLifecycle {
-    private final Environment environment;
-    private final Object bean;
-    private final Method method;
+public abstract class AbstractConsumerContainer implements InitializingBean, SmartLifecycle {
+    protected final Environment environment;
+    protected final Object bean;
+    protected final Method method;
     private boolean running;
+    private DefaultMQPushConsumer consumer;
+    @Getter
+    @Setter
+    private int delayLevelWhenNextConsume = 1;
 
-    protected AbstractAsyncConsumerContainer(Environment environment, Object bean, Method method) {
+    public AbstractConsumerContainer(Environment environment, Object bean, Method method) {
         Preconditions.checkArgument(environment != null);
         Preconditions.checkArgument(bean != null);
         Preconditions.checkArgument(method != null);
@@ -40,7 +45,7 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
         this.method = method;
     }
 
-    protected void invokeMethod(Message message) throws IllegalAccessException, InvocationTargetException {
+    protected void invokeMethod(MessageExt message) throws IllegalAccessException, InvocationTargetException {
         long now = System.currentTimeMillis();
 
         // 从 Message 中反序列化数据，获得方法调用参数
@@ -49,7 +54,7 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
         invokeMethod(body);
 
         long costTime = System.currentTimeMillis() - now;
-        log.info("consume data {}, cost: {} ms",  message, costTime);
+        log.info("consume message {}, cost: {} ms",  message.getMsgId(), costTime);
     }
 
     private void invokeMethod(byte[] body) throws IllegalAccessException, InvocationTargetException {
@@ -69,6 +74,7 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
             }
         }
 
+        log.debug("bean is {}, method is {}, param is {}", getBean(), getMethod(), params);
         // 执行业务方法
         getMethod().invoke(getBean(), params);
     }
@@ -82,6 +88,28 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
 
     protected boolean skipWhenException(){
         return this.environment.getProperty("async.consumer.skipWhenError", Boolean.TYPE, false);
+    }
+
+    protected void doStart() {
+        try {
+            this.consumer.start();
+            log.info("success to start consumer {}", this.consumer);
+        } catch (MQClientException e) {
+            log.error("failed to start rocketmq consumer {}", this.consumer);
+        }
+    }
+
+    protected void doShutdown() {
+        this.consumer.shutdown();
+        log.info("success to shutdown consumer {}", this.consumer);
+    }
+
+    protected abstract DefaultMQPushConsumer createConsumer() throws Exception;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // 构建 DefaultMQPushConsumer
+        this.consumer = createConsumer();
     }
 
     @Override
@@ -115,13 +143,20 @@ public abstract class AbstractAsyncConsumerContainer implements InitializingBean
         return running;
     }
 
-
     @Override
     public int getPhase() {
         return 0;
     }
 
-    protected abstract void doStart();
+    public Environment getEnvironment() {
+        return this.environment;
+    }
 
-    protected abstract void doShutdown();
+    public Object getBean() {
+        return this.bean;
+    }
+
+    public Method getMethod() {
+        return this.method;
+    }
 }

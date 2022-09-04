@@ -23,7 +23,7 @@ public @interface AsyncBasedRocketMQ {
      * MQ tag
      * @return
      */
-    String tag();
+    String tag() default "*";
 
     /**
      * 消费组

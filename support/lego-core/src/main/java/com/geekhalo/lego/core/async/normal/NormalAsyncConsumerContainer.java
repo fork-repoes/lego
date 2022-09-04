@@ -1,16 +1,13 @@
 package com.geekhalo.lego.core.async.normal;
 
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncConsumerContainer;
+import com.geekhalo.lego.core.support.AbstractConsumerContainer;
 import com.google.common.base.Preconditions;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.core.env.Environment;
 
@@ -24,14 +21,9 @@ import java.util.List;
  */
 @Slf4j
 public class NormalAsyncConsumerContainer
-        extends AbstractAsyncConsumerContainer {
+        extends AbstractConsumerContainer {
     private final AsyncBasedRocketMQ asyncBasedRocketMQ;
 
-    private DefaultMQPushConsumer consumer;
-
-    @Getter
-    @Setter
-    private int delayLevelWhenNextConsume = 0;
 
     protected NormalAsyncConsumerContainer(Environment environment,
                                      AsyncBasedRocketMQ asyncBasedRocketMQ,
@@ -43,27 +35,11 @@ public class NormalAsyncConsumerContainer
         this.asyncBasedRocketMQ = asyncBasedRocketMQ;
     }
 
-    @Override
-    protected void doStart() {
-        try {
-            this.consumer.start();
-            log.info("success to start consumer {}", this.consumer);
-        } catch (MQClientException e) {
-            log.error("Failed to start consumer {}", this.consumer);
-        }
-    }
 
     @Override
-    protected void doShutdown() {
-        this.consumer.shutdown();
-        log.info("success to shutdown consumer {}", this.consumer);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    protected DefaultMQPushConsumer createConsumer() throws Exception {
         // 构建 DefaultMQPushConsumer
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer();
-        this.consumer = consumer;
 
         String nameServer = resolve(this.asyncBasedRocketMQ.nameServer());
         consumer.setNamesrvAddr(nameServer);
@@ -73,12 +49,14 @@ public class NormalAsyncConsumerContainer
 
         String topic = resolve(this.asyncBasedRocketMQ.topic());
         String tag = resolve(this.asyncBasedRocketMQ.tag());
-        this.consumer.subscribe(topic, tag);
+        consumer.subscribe(topic, tag);
 
-        this.consumer.setMessageListener(new DefaultMessageListenerConcurrently());
+        consumer.setMessageListener(new DefaultMessageListenerConcurrently());
 
         log.info("success to subscribe  {}, topic {}, tag {}, group {}", nameServer, topic, tag, group);
+        return consumer;
     }
+
 
     public class DefaultMessageListenerConcurrently implements MessageListenerConcurrently {
 
@@ -99,7 +77,7 @@ public class NormalAsyncConsumerContainer
                         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                     }
 
-                    context.setDelayLevelWhenNextConsume(delayLevelWhenNextConsume);
+                    context.setDelayLevelWhenNextConsume(getDelayLevelWhenNextConsume());
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                 }
             }

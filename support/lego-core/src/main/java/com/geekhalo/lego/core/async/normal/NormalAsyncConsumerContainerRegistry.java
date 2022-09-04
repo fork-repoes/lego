@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.normal;
 
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncConsumerContainerRegistry;
+import com.geekhalo.lego.core.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -22,7 +22,7 @@ import java.util.List;
  * 以启动 DefaultMQPushConsumer
  */
 public class NormalAsyncConsumerContainerRegistry
-        extends AbstractAsyncConsumerContainerRegistry {
+        extends AbstractConsumerContainerRegistry {
 
 
     public NormalAsyncConsumerContainerRegistry(Environment environment) {

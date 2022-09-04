@@ -1,6 +1,6 @@
-package com.geekhalo.lego.core.async.order;
+package com.geekhalo.lego.core.delay;
 
-import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
+import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
 import com.geekhalo.lego.core.support.AbstractConsumerContainer;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -13,48 +13,52 @@ import org.springframework.core.env.Environment;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by taoli on 2022/9/3.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
 @Slf4j
-public class OrderedAsyncConsumerContainer extends AbstractConsumerContainer {
-    private final AsyncForOrderedBasedRocketMQ asyncForOrderedBasedRocketMQ;
+public class DelayConsumerContainer extends AbstractConsumerContainer {
+    private final DelayBasedRocketMQ delayBasedRocketMQ;
 
-    public OrderedAsyncConsumerContainer(Environment environment,
-                                            AsyncForOrderedBasedRocketMQ asyncForOrderedBasedRocketMQ,
-                                            Object bean,
-                                            Method method) {
+
+    public DelayConsumerContainer(Environment environment,DelayBasedRocketMQ delayBasedRocketMQ,Object bean, Method method) {
         super(environment, bean, method);
 
-        Preconditions.checkArgument(asyncForOrderedBasedRocketMQ != null);
-        this.asyncForOrderedBasedRocketMQ = asyncForOrderedBasedRocketMQ;
+        Preconditions.checkArgument(delayBasedRocketMQ != null);
+        this.delayBasedRocketMQ = delayBasedRocketMQ;
     }
 
     @Override
-    protected DefaultMQPushConsumer createConsumer() throws Exception{
+    protected DefaultMQPushConsumer createConsumer() throws Exception {
+        // 构建 DefaultMQPushConsumer
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer();
-        String nameServer = resolve(this.asyncForOrderedBasedRocketMQ.nameServer());
-        consumer.setNamesrvAddr(nameServer);
 
-        String group = resolve(this.asyncForOrderedBasedRocketMQ.consumerGroup());
-        consumer.setConsumerGroup(group);
+        String consumerGroup = resolve(this.delayBasedRocketMQ.consumerGroup());
+        String nameServerAddress = resolve(this.delayBasedRocketMQ.nameServer());
 
-        String topic = resolve(this.asyncForOrderedBasedRocketMQ.topic());
-        String tag = resolve(this.asyncForOrderedBasedRocketMQ.tag());
+        consumer.setConsumerGroup(consumerGroup);
+        consumer.setNamesrvAddr(nameServerAddress);
+
+
+        // 订阅 topic
+        String topic = resolve(this.delayBasedRocketMQ.topic());
+        String tag = resolve(this.delayBasedRocketMQ.tag());
         consumer.subscribe(topic, tag);
 
-        consumer.setMessageListener(new OrderedAsyncConsumerContainer.DefaultMessageListenerOrderly());
+        // 增加监听器
+        consumer.setMessageListener(new DefaultMessageListenerOrderly());
 
-        log.info("success to subscribe  {}, topic {}, tag {}, group {}", nameServer, topic, tag, group);
+        log.info("success to subscribe  {}, topic {}, tag {}, group {}", nameServerAddress, topic, tag, consumerGroup);
         return consumer;
     }
 
-    public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
 
-        @SuppressWarnings("unchecked")
+    private class DefaultMessageListenerOrderly implements MessageListenerOrderly {
+
         @Override
         public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
             for (MessageExt messageExt : msgs) {
@@ -70,7 +74,6 @@ public class OrderedAsyncConsumerContainer extends AbstractConsumerContainer {
                     if (skipWhenException()){
                         return ConsumeOrderlyStatus.SUCCESS;
                     }
-
                     context.setSuspendCurrentQueueTimeMillis(getDelayLevelWhenNextConsume());
                     return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
                 }

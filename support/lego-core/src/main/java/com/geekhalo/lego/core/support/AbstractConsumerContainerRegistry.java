@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.async.support;
+package com.geekhalo.lego.core.support;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -14,28 +14,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by taoli on 2022/9/2.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class AbstractAsyncConsumerContainerRegistry implements BeanPostProcessor, SmartLifecycle {
+public class AbstractConsumerContainerRegistry implements BeanPostProcessor, SmartLifecycle {
     @Getter(AccessLevel.PROTECTED)
-    private final List<AbstractAsyncConsumerContainer> consumerContainers = Lists.newArrayList();
+    private final List<AbstractConsumerContainer> consumerContainers = Lists.newArrayList();
 
     @Getter(AccessLevel.PROTECTED)
     private final Environment environment;
 
     private boolean running;
 
-    public AbstractAsyncConsumerContainerRegistry(Environment environment) {
+    public AbstractConsumerContainerRegistry(Environment environment) {
         Preconditions.checkArgument(environment != null);
-
         this.environment = environment;
-    }
-
-    @Override
-    public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
-        return o;
     }
 
     @Override
@@ -85,5 +79,13 @@ public class AbstractAsyncConsumerContainerRegistry implements BeanPostProcessor
     protected boolean isActiveProfile(String consumerProfile) {
         return StringUtils.isEmpty(consumerProfile)
                 || Arrays.asList(getEnvironment().getActiveProfiles()).contains(consumerProfile);
+    }
+
+    protected List<AbstractConsumerContainer> getConsumerContainers() {
+        return this.consumerContainers;
+    }
+
+    protected Environment getEnvironment() {
+        return this.environment;
     }
 }

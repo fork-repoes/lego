@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncConsumerContainerRegistry;
+import com.geekhalo.lego.core.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -17,7 +17,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class OrderedAsyncConsumerContainerRegistry extends AbstractAsyncConsumerContainerRegistry {
+public class OrderedAsyncConsumerContainerRegistry extends AbstractConsumerContainerRegistry {
 
     public OrderedAsyncConsumerContainerRegistry(Environment environment) {
         super(environment);
