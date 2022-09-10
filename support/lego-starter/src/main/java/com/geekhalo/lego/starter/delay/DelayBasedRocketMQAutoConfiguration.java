@@ -2,7 +2,7 @@ package com.geekhalo.lego.starter.delay;
 
 import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
 import com.geekhalo.lego.core.delay.DelayConsumerContainerRegistry;
-import com.geekhalo.lego.core.delay.DelayInterceptor;
+import com.geekhalo.lego.core.delay.DelayMethodInterceptor;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.aop.PointcutAdvisor;
@@ -35,8 +35,8 @@ public class DelayBasedRocketMQAutoConfiguration {
     private RocketMQTemplate rocketMQTemplate;
 
     @Bean
-    public DelayInterceptor delayInterceptor(){
-        return new DelayInterceptor(this.environment, this.rocketMQTemplate, parameterNameDiscoverer);
+    public DelayMethodInterceptor delayInterceptor(){
+        return new DelayMethodInterceptor(this.environment, this.rocketMQTemplate, parameterNameDiscoverer);
     }
 
     @Bean
@@ -44,8 +44,8 @@ public class DelayBasedRocketMQAutoConfiguration {
         return new DelayConsumerContainerRegistry(this.environment);
     }
     @Bean
-    public PointcutAdvisor delayPointcutAdvisor(@Autowired DelayInterceptor delayInterceptor){
+    public PointcutAdvisor delayPointcutAdvisor(@Autowired DelayMethodInterceptor delayMethodInterceptor){
         return new DefaultPointcutAdvisor(new AnnotationMatchingPointcut(null, DelayBasedRocketMQ.class),
-                delayInterceptor);
+                delayMethodInterceptor);
     }
 }

@@ -31,16 +31,16 @@ import java.util.Map;
  * 拦截方法调用，并将请求封装成 Message 发送至 RocketMQ 的 Topic
  */
 @Slf4j
-public class DelayInterceptor
+public class DelayMethodInterceptor
         extends AbstractRocketMQSendInterceptor
         implements MethodInterceptor {
     private final ExpressionParser expressionParser = new SpelExpressionParser();
     private final ParameterNameDiscoverer parameterNameDiscoverer;
     private final Map<Method, DelayCacheItem> configCache = Maps.newHashMap();
 
-    public DelayInterceptor(Environment environment,
-                            RocketMQTemplate rocketMQTemplate,
-                            ParameterNameDiscoverer parameterNameDiscoverer) {
+    public DelayMethodInterceptor(Environment environment,
+                                  RocketMQTemplate rocketMQTemplate,
+                                  ParameterNameDiscoverer parameterNameDiscoverer) {
         super(rocketMQTemplate, environment);
         this.parameterNameDiscoverer = parameterNameDiscoverer;
     }
