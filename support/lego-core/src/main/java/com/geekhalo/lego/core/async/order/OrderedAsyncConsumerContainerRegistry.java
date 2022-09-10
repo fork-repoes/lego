@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncConsumerContainerRegistry;
+import com.geekhalo.lego.core.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -17,7 +17,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class OrderedAsyncConsumerContainerRegistry extends AbstractAsyncConsumerContainerRegistry {
+public class OrderedAsyncConsumerContainerRegistry extends AbstractConsumerContainerRegistry {
 
     public OrderedAsyncConsumerContainerRegistry(Environment environment) {
         super(environment);
@@ -26,11 +26,11 @@ public class OrderedAsyncConsumerContainerRegistry extends AbstractAsyncConsumer
     @SneakyThrows
     @Override
     public Object postProcessAfterInitialization(Object proxy, String s) throws BeansException {
-        // 1. 获取 @RocketMQBasedDelay 注解方法
+        // 1. 获取 @AsyncForOrderedBasedRocketMQ 注解方法
         Class targetCls = AopUtils.getTargetClass(proxy);
         List<Method> methodsListWithAnnotation = MethodUtils.getMethodsListWithAnnotation(targetCls, AsyncForOrderedBasedRocketMQ.class);
 
-        // 2. 为每个 @RocketMQBasedDelay 注解方法 注册 RocketMQConsumerContainer
+        // 2. 为每个 @AsyncForOrderedBasedRocketMQ 注解方法 注册 OrderedAsyncConsumerContainer
         for(Method method : methodsListWithAnnotation){
             AsyncForOrderedBasedRocketMQ annotation = method.getAnnotation(AsyncForOrderedBasedRocketMQ.class);
             String consumerProfile = annotation.consumerProfile();

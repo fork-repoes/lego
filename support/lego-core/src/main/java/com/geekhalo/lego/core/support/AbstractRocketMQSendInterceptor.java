@@ -1,6 +1,6 @@
-package com.geekhalo.lego.core.async.support;
+package com.geekhalo.lego.core.support;
 
-import com.geekhalo.lego.core.async.SerializeUtil;
+import com.geekhalo.lego.core.utils.SerializeUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import lombok.AccessLevel;
@@ -12,25 +12,22 @@ import org.springframework.util.StringUtils;
 import java.util.Map;
 
 /**
- * Created by taoli on 2022/9/2.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
- *
- * 异步拦截器，拦截方法调用，并将其发送至 MQ；
  */
-public abstract class AbstractAsyncInterceptor {
+public class AbstractRocketMQSendInterceptor {
     @Getter(AccessLevel.PROTECTED)
-    private final RocketMQTemplate rocketMQTemplate;
-
+    protected final RocketMQTemplate rocketMQTemplate;
     @Getter(AccessLevel.PROTECTED)
-    private final Environment environment;
+    protected final Environment environment;
 
-    public AbstractAsyncInterceptor(Environment environment, RocketMQTemplate rocketMQTemplate) {
+    public AbstractRocketMQSendInterceptor(RocketMQTemplate rocketMQTemplate, Environment environment) {
         Preconditions.checkArgument(environment != null);
         Preconditions.checkArgument(rocketMQTemplate != null);
 
-        this.environment = environment;
         this.rocketMQTemplate = rocketMQTemplate;
+        this.environment = environment;
     }
 
     /**
@@ -70,5 +67,13 @@ public abstract class AbstractAsyncInterceptor {
         }else {
             return topic;
         }
+    }
+
+    protected RocketMQTemplate getRocketMQTemplate() {
+        return this.rocketMQTemplate;
+    }
+
+    protected Environment getEnvironment() {
+        return this.environment;
     }
 }

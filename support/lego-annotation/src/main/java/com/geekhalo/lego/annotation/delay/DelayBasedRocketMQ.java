@@ -1,4 +1,4 @@
-package com.geekhalo.lego.annotation.async;
+package com.geekhalo.lego.annotation.delay;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,36 +6,36 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by taoli on 2022/9/2.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AsyncForOrderedBasedRocketMQ {
+public @interface DelayBasedRocketMQ {
     /**
-     * MQ topic
+     * RocketMQ topic
      * @return
      */
     String topic();
 
     /**
-     * MQ tag
+     * Tag
      * @return
      */
     String tag() default "*";
 
     /**
-     * 顺序消费设置的 hashKey
+     * 延迟级别
      * @return
      */
-    String shardingKey();
+    int delayLevel() default -1;
 
     /**
-     * 消费组
+     * 延迟时间 SpEL 表达式
      * @return
      */
-    String consumerGroup();
+    String delayLevelSpEl() default "0";
 
     /**
      * nameServer 配置
@@ -44,10 +44,14 @@ public @interface AsyncForOrderedBasedRocketMQ {
     String nameServer() default "${rocketmq.name-server:}";
 
     /**
+     * 消费者组信息
+     * @return
+     */
+    String consumerGroup();
+
+    /**
      * 消费者运行的 profile，主要用于发送和消费分离的场景
      * @return
      */
     String consumerProfile() default "";
-
 }
-

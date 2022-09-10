@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.normal;
 
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncInterceptor;
+import com.geekhalo.lego.core.support.AbstractRocketMQSendInterceptor;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +29,12 @@ import java.util.Map;
  */
 
 @Slf4j
-public class NormalAsyncInterceptor extends AbstractAsyncInterceptor
+public class NormalAsyncInterceptor extends AbstractRocketMQSendInterceptor
         implements MethodInterceptor {
     private final Map<Method, InvokeCacheItem> invokeCache = Maps.newConcurrentMap();
 
     public NormalAsyncInterceptor(Environment environment, RocketMQTemplate rocketMQTemplate) {
-        super(environment, rocketMQTemplate);
+        super(rocketMQTemplate, environment);
     }
 
     @Override

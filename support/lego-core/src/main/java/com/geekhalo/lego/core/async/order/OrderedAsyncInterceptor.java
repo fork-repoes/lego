@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.async.support.AbstractAsyncInterceptor;
+import com.geekhalo.lego.core.support.AbstractRocketMQSendInterceptor;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import lombok.Value;
@@ -35,15 +35,15 @@ import java.util.Map;
  */
 @Slf4j
 public class OrderedAsyncInterceptor
-    extends AbstractAsyncInterceptor
-    implements MethodInterceptor {
+    extends AbstractRocketMQSendInterceptor
+        implements MethodInterceptor {
 
     private final ParameterNameDiscoverer parameterNameDiscoverer;
     private final ExpressionParser expressionParser = new SpelExpressionParser();
     private final Map<Method, InvokeCacheItem> invokeCache = Maps.newConcurrentMap();
 
     public OrderedAsyncInterceptor(Environment environment, RocketMQTemplate rocketMQTemplate, ParameterNameDiscoverer parameterNameDiscoverer) {
-        super(environment, rocketMQTemplate);
+        super(rocketMQTemplate, environment);
         Preconditions.checkArgument(parameterNameDiscoverer != null);
         this.parameterNameDiscoverer = parameterNameDiscoverer;
     }
