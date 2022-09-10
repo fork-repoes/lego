@@ -1,0 +1,31 @@
+package com.geekhalo.lego.validator;
+
+import com.geekhalo.lego.common.validator.ValidateErrors;
+import com.geekhalo.lego.common.validator.Validateable;
+import lombok.Data;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Created by taoli on 2022/9/10.
+ * gitee : https://gitee.com/litao851025/lego
+ * 编程就像玩 Lego
+ */
+@Data
+public class UserValidateForm implements Validateable {
+    @NotNull
+    @NotEmpty
+    private String name;
+
+    @NotNull
+    @NotEmpty
+    private String password;
+
+    @Override
+    public void validate(ValidateErrors validateErrors) {
+        if (getName().equals(getPassword())){
+            validateErrors.addError("user", "1", "用户名密码不能相同");
+        }
+    }
+}
