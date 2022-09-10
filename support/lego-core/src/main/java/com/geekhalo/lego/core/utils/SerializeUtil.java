@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.async;
+package com.geekhalo.lego.core.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -34,3 +34,8 @@ async:
       topic: order-async-test-topic
       group1: order-async-test-group1
       group2: order-async-test-group2
+cancelOrder:
+  delay:
+    topic: delay-task-test-topic
+    consumerGroup1: delay-cancel-order-group1
+    consumerGroup2: delay-cancel-order-group2

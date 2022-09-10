@@ -1,8 +1,8 @@
-package com.geekhalo.lego.starter.async;
+package com.geekhalo.lego.starter.delay;
 
-import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.async.order.OrderedAsyncConsumerContainerRegistry;
-import com.geekhalo.lego.core.async.order.OrderedAsyncInterceptor;
+import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
+import com.geekhalo.lego.core.delay.DelayConsumerContainerRegistry;
+import com.geekhalo.lego.core.delay.DelayMethodInterceptor;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.aop.PointcutAdvisor;
@@ -18,35 +18,34 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.env.Environment;
 
 /**
- * Created by taoli on 2022/9/2.
+ * Created by taoli on 2022/9/4.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
 @Configuration
 @AutoConfigureAfter(RocketMQAutoConfiguration.class)
 @ConditionalOnBean(RocketMQTemplate.class)
-public class OrderedAsyncAutoConfiguration {
+public class DelayBasedRocketMQAutoConfiguration {
+    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+
     @Autowired
     private Environment environment;
 
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
-    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-
-
     @Bean
-    public OrderedAsyncInterceptor orderedAsyncInterceptor(){
-        return new OrderedAsyncInterceptor(this.environment, this.rocketMQTemplate, parameterNameDiscoverer);
+    public DelayMethodInterceptor delayInterceptor(){
+        return new DelayMethodInterceptor(this.environment, this.rocketMQTemplate, parameterNameDiscoverer);
     }
 
     @Bean
-    public OrderedAsyncConsumerContainerRegistry orderedAsyncConsumerContainerRegistry(){
-        return new OrderedAsyncConsumerContainerRegistry(this.environment);
+    public DelayConsumerContainerRegistry delayConsumerContainerRegistry(){
+        return new DelayConsumerContainerRegistry(this.environment);
     }
     @Bean
-    public PointcutAdvisor orderedAsyncPointcutAdvisor(@Autowired OrderedAsyncInterceptor sendMessageInterceptor){
-        return new DefaultPointcutAdvisor(new AnnotationMatchingPointcut(null, AsyncForOrderedBasedRocketMQ.class),
-                sendMessageInterceptor);
+    public PointcutAdvisor delayPointcutAdvisor(@Autowired DelayMethodInterceptor delayMethodInterceptor){
+        return new DefaultPointcutAdvisor(new AnnotationMatchingPointcut(null, DelayBasedRocketMQ.class),
+                delayMethodInterceptor);
     }
 }
