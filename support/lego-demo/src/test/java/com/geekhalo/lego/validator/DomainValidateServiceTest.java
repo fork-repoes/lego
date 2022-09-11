@@ -1,6 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.DemoApplication;
+import com.geekhalo.lego.core.validator.ValidateException;
 import com.geekhalo.lego.loader.CreateOrderCmd;
 import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.stock.Stock;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.validation.ConstraintViolationException;
 
 /**
  * Created by taoli on 2022/9/11.
@@ -22,54 +25,80 @@ class DomainValidateServiceTest {
 
     @Test
     void createOrder_error1() {
-        Assertions.assertThrows(Exception.class, ()->{
-            this.domainValidateService.createOrder((CreateOrderContext) null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                this.domainValidateService.createOrder((CreateOrderContext) null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void createOrder_error2() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CreateOrderContext context = new CreateOrderContext();
-            this.domainValidateService.createOrder(context);
+        Assertions.assertThrows(ValidateException.class, ()->{
+            try {
+                CreateOrderContext context = new CreateOrderContext();
+                this.domainValidateService.createOrder(context);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void createOrder_error3() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CreateOrderContext context = new CreateOrderContext();
-            context.setUser(User.builder()
-                    .build());
-            this.domainValidateService.createOrder(context);
+        Assertions.assertThrows(ValidateException.class, ()->{
+            try {
+                CreateOrderContext context = new CreateOrderContext();
+                context.setUser(User.builder()
+                        .build());
+                this.domainValidateService.createOrder(context);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void createOrder_error4() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CreateOrderContext context = new CreateOrderContext();
-            context.setUser(User.builder()
-                    .build());
-            context.setProduct(Product.builder()
-                    .build());
-            this.domainValidateService.createOrder(context);
+        Assertions.assertThrows(ValidateException.class, ()->{
+            try {
+                CreateOrderContext context = new CreateOrderContext();
+                context.setUser(User.builder()
+                        .build());
+                context.setProduct(Product.builder()
+                        .build());
+                this.domainValidateService.createOrder(context);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
+
         });
     }
 
     @Test
     void createOrder_error5() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CreateOrderContext context = new CreateOrderContext();
-            context.setUser(User.builder()
-                    .build());
-            context.setProduct(Product.builder()
-                    .build());
-            context.setStock(Stock.builder()
-                            .count(0)
-                    .build());
-            context.setCount(1);
-            this.domainValidateService.createOrder(context);
+        Assertions.assertThrows(ValidateException.class, ()->{
+            try {
+                CreateOrderContext context = new CreateOrderContext();
+                context.setUser(User.builder()
+                        .build());
+                context.setProduct(Product.builder()
+                        .build());
+                context.setStock(Stock.builder()
+                        .count(0)
+                        .build());
+                context.setCount(1);
+                this.domainValidateService.createOrder(context);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
@@ -91,19 +120,29 @@ class DomainValidateServiceTest {
 
     @Test
     void createOrderCmd_error1() {
-        Assertions.assertThrows(Exception.class, ()->{
-            this.domainValidateService.createOrder((CreateOrderCmd) null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                this.domainValidateService.createOrder((CreateOrderCmd) null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void createOrderCmd_error2() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CreateOrderCmd cmd = new CreateOrderCmd();
-            cmd.setCount(10000);
-            cmd.setProductId(100L);
-            cmd.setUserId(100L);
-            this.domainValidateService.createOrder(cmd);
+        Assertions.assertThrows(ValidateException.class, ()->{
+            try {
+                CreateOrderCmd cmd = new CreateOrderCmd();
+                cmd.setCount(10000);
+                cmd.setProductId(100L);
+                cmd.setUserId(100L);
+                this.domainValidateService.createOrder(cmd);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 

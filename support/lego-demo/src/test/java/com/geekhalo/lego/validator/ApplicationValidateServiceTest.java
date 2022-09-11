@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * Created by taoli on 2022/9/10.
  * gitee : https://gitee.com/litao851025/lego
@@ -19,8 +21,13 @@ class ApplicationValidateServiceTest {
 
     @Test
     void singleValidate_error() {
-        Assertions.assertThrows(Exception.class, ()->{
-            applicationValidateService.singleValidate((Long) null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                applicationValidateService.singleValidate((Long) null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
@@ -31,44 +38,69 @@ class ApplicationValidateServiceTest {
 
     @Test
     void testSingleValidate_error1() {
-        Assertions.assertThrows(Exception.class, ()->{
-            this.applicationValidateService.singleValidate((SingleForm) null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                this.applicationValidateService.singleValidate((SingleForm) null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
 
     }
 
     @Test
     void testSingleValidate_error2() {
-        Assertions.assertThrows(Exception.class, ()->{
-            SingleForm singleForm = new SingleForm();
-            this.applicationValidateService.singleValidate(singleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                SingleForm singleForm = new SingleForm();
+                this.applicationValidateService.singleValidate(singleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void testSingleValidate_error3() {
-        Assertions.assertThrows(Exception.class, ()->{
-            SingleForm singleForm = new SingleForm();
-            singleForm.setId(1L);
-            this.applicationValidateService.singleValidate(singleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                SingleForm singleForm = new SingleForm();
+                singleForm.setId(1L);
+                this.applicationValidateService.singleValidate(singleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void testSingleValidate_error4() {
-        Assertions.assertThrows(Exception.class, ()->{
-            SingleForm singleForm = new SingleForm();
-            singleForm.setName("");
-            this.applicationValidateService.singleValidate(singleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                SingleForm singleForm = new SingleForm();
+                singleForm.setName("");
+                this.applicationValidateService.singleValidate(singleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void testSingleValidate_error5() {
-        Assertions.assertThrows(Exception.class, ()->{
-            SingleForm singleForm = new SingleForm();
-            singleForm.setName("name");
-            this.applicationValidateService.singleValidate(singleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                SingleForm singleForm = new SingleForm();
+                singleForm.setName("name");
+                this.applicationValidateService.singleValidate(singleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
@@ -82,61 +114,92 @@ class ApplicationValidateServiceTest {
 
     @Test
     void customSingleValidate_error1() {
-        Assertions.assertThrows(Exception.class, ()->{
-            this.applicationValidateService.customSingleValidate(null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                this.applicationValidateService.customSingleValidate(null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void customSingleValidate_error2() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CustomSingleForm customSingleForm = new CustomSingleForm();
-            this.applicationValidateService.customSingleValidate(customSingleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                CustomSingleForm customSingleForm = new CustomSingleForm();
+                this.applicationValidateService.customSingleValidate(customSingleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void customSingleValidate_error3() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CustomSingleForm customSingleForm = new CustomSingleForm();
-            customSingleForm.setId(1L);
-            this.applicationValidateService.customSingleValidate(customSingleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                CustomSingleForm customSingleForm = new CustomSingleForm();
+                customSingleForm.setId(1L);
+                this.applicationValidateService.customSingleValidate(customSingleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void customSingleValidate_error4() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CustomSingleForm customSingleForm = new CustomSingleForm();
-            customSingleForm.setId(1L);
-            customSingleForm.setName("name");
-            this.applicationValidateService.customSingleValidate(customSingleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                CustomSingleForm customSingleForm = new CustomSingleForm();
+                customSingleForm.setId(1L);
+                customSingleForm.setName("name");
+                this.applicationValidateService.customSingleValidate(customSingleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
+
         });
     }
 
     @Test
     void customSingleValidate_error5() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CustomSingleForm customSingleForm = new CustomSingleForm();
-            customSingleForm.setId(1L);
-            customSingleForm.setName("name");
-            Address address = new Address();
-            customSingleForm.setAddress(address);
-            this.applicationValidateService.customSingleValidate(customSingleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                CustomSingleForm customSingleForm = new CustomSingleForm();
+                customSingleForm.setId(1L);
+                customSingleForm.setName("name");
+                Address address = new Address();
+                customSingleForm.setAddress(address);
+                this.applicationValidateService.customSingleValidate(customSingleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void customSingleValidate_error6() {
-        Assertions.assertThrows(Exception.class, ()->{
-            CustomSingleForm customSingleForm = new CustomSingleForm();
-            customSingleForm.setId(1L);
-            customSingleForm.setName("name");
-            Address address = new Address();
-            address.setCity("北京");
-            address.setDetail("朝阳");
-            customSingleForm.setAddress(address);
-            this.applicationValidateService.customSingleValidate(customSingleForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                CustomSingleForm customSingleForm = new CustomSingleForm();
+                customSingleForm.setId(1L);
+                customSingleForm.setName("name");
+                Address address = new Address();
+                address.setCity("北京");
+                address.setDetail("朝阳");
+                customSingleForm.setAddress(address);
+                this.applicationValidateService.customSingleValidate(customSingleForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
@@ -164,64 +227,99 @@ class ApplicationValidateServiceTest {
 
     @Test
     void validateForm_error1() {
-        Assertions.assertThrows(Exception.class, ()->{
-            this.applicationValidateService.validateForm(null);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                this.applicationValidateService.validateForm(null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error2() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error3() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            userValidateForm.setName(null);
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                userValidateForm.setName(null);
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error4() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            userValidateForm.setName("");
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                userValidateForm.setName("");
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error5() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            userValidateForm.setName("name");
-            userValidateForm.setPassword(null);
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                userValidateForm.setName("name");
+                userValidateForm.setPassword(null);
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error6() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            userValidateForm.setName("name");
-            userValidateForm.setPassword("");
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                userValidateForm.setName("name");
+                userValidateForm.setPassword("");
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void validateForm_error7() {
-        Assertions.assertThrows(Exception.class, ()->{
-            UserValidateForm userValidateForm = new UserValidateForm();
-            userValidateForm.setName("name");
-            userValidateForm.setPassword("name");
-            this.applicationValidateService.validateForm(userValidateForm);
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            try {
+                UserValidateForm userValidateForm = new UserValidateForm();
+                userValidateForm.setName("name");
+                userValidateForm.setPassword("name");
+                this.applicationValidateService.validateForm(userValidateForm);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 

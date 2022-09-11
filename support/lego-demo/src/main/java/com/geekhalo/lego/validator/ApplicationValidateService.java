@@ -16,14 +16,14 @@ public interface ApplicationValidateService {
      * 简单参数
      * @param id
      */
-    void singleValidate(@NotNull Long id);
+    void singleValidate(@NotNull(message = "id 不能为null") Long id);
 
     /**
      * 1. 简单参数
      * 2. Bean 中的简单属性
      * @param singleForm
      */
-    void singleValidate(@Valid @NotNull SingleForm singleForm);
+    void singleValidate(@Valid @NotNull(message = "form 不能为 null") SingleForm singleForm);
 
     void customSingleValidate(@Valid @NotNull CustomSingleForm customSingleForm);
 

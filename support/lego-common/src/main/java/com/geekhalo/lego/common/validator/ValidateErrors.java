@@ -14,7 +14,7 @@ import java.util.List;
 public class ValidateErrors {
     private List<Error> errors = new ArrayList<>();
     public void addError(String name, String code, String msg){
-        Error error = new Error(name, code, name);
+        Error error = new Error(name, code, msg);
         this.errors.add(error);
     }
 
@@ -23,7 +23,7 @@ public class ValidateErrors {
     }
 
     @Value
-    static class Error {
+    public static class Error {
         private String name;
         private String code;
         private String msg;

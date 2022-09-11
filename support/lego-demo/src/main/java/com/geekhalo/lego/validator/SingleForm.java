@@ -12,9 +12,9 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class SingleForm {
-    @NotNull
+    @NotNull(message = "id不能为null")
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "name不能为空")
     private String name;
 }

@@ -14,7 +14,7 @@ public interface BeanValidator<A> extends SmartComponent<A> {
 
     default void validate(A a){
         validate(a, ((name, code, msg) -> {
-            throw new ValidateException();
+            throw new ValidateException(name, code, msg);
         }));
     }
 }

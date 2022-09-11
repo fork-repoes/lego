@@ -13,6 +13,9 @@ import javax.validation.ConstraintValidatorContext;
 public class AddressValidator implements ConstraintValidator<MustAddress, Address> {
     @Override
     public boolean isValid(Address address, ConstraintValidatorContext constraintValidatorContext) {
+        if (address == null){
+            return false;
+        }
         boolean cityEmpty = StringUtils.isEmpty(address.getCity());
         boolean detailEmpty = StringUtils.isEmpty(address.getDetail());
 

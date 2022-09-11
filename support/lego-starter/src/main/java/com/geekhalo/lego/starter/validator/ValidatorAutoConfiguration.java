@@ -5,6 +5,7 @@ import com.geekhalo.lego.common.validator.Validateable;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.geekhalo.lego.core.validator.ValidateableBasedValidator;
 import com.geekhalo.lego.core.validator.ValidateableMethodValidationInterceptor;
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
@@ -19,7 +20,11 @@ import org.springframework.core.Ordered;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/9/10.
@@ -47,7 +52,13 @@ public class ValidatorAutoConfiguration {
     @ConditionalOnMissingBean
     public ValidateErrorsHandler validateErrorReporter(){
         return errors -> {
-            throw new RuntimeException(errors.getErrors().toString());
+            Set<? extends ConstraintViolation<?>> collect = errors.getErrors().stream()
+                    .map(error -> {
+                        return ConstraintViolationImpl.forBeanValidation("",null,null,
+                                error.getMsg(), null, null, null,
+                                null, null, null, error.getCode());
+                    }).collect(Collectors.toSet());
+            throw new ConstraintViolationException(collect);
         };
     }
 
