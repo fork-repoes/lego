@@ -1,7 +1,6 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
-import com.geekhalo.lego.core.validator.BeanValidator;
 import com.geekhalo.lego.core.validator.FixTypeBeanValidator;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

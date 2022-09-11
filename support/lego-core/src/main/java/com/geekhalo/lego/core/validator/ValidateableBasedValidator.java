@@ -1,7 +1,6 @@
 package com.geekhalo.lego.core.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
-import com.geekhalo.lego.common.validator.ValidateErrors;
 import com.geekhalo.lego.common.validator.Validateable;
 
 /**
