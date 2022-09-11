@@ -6,5 +6,18 @@ package com.geekhalo.lego.core;
  * 编程就像玩 Lego
  */
 public interface SmartComponent<D> {
+    /**
+     * 组件唯一标识
+     * @return
+     */
+    default String id(){
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * 是否能够处理
+     * @param d
+     * @return
+     */
     boolean support(D d);
 }

@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-class ApplicationValidateTestService {
+class ApplicationValidateServiceTest {
     @Autowired
-    private ApplicationValidateServiceImpl applicationValidateService;
+    private ApplicationValidateService applicationValidateService;
 
     @Test
     void singleValidate_error() {

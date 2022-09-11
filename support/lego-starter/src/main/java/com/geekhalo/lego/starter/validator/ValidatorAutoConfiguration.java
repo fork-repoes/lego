@@ -3,6 +3,7 @@ package com.geekhalo.lego.starter.validator;
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
 import com.geekhalo.lego.common.validator.ValidateErrorsHandler;
 import com.geekhalo.lego.common.validator.Validateable;
+import com.geekhalo.lego.core.validator.ValidateService;
 import com.geekhalo.lego.core.validator.ValidateableBasedValidator;
 import com.geekhalo.lego.core.validator.ValidateableMethodValidationInterceptor;
 import org.springframework.aop.PointcutAdvisor;
@@ -64,6 +65,12 @@ public class ValidatorAutoConfiguration {
     public void configMethodValidationOrder(List<MethodValidationPostProcessor> methodValidationPostProcessors){
         methodValidationPostProcessors.forEach(methodValidationPostProcessor ->
                 methodValidationPostProcessor.setBeforeExistingAdvisors(true));
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ValidateService validateService(){
+        return new ValidateService();
     }
 
 }
