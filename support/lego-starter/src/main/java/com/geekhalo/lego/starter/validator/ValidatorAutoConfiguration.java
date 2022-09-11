@@ -1,6 +1,7 @@
 package com.geekhalo.lego.starter.validator;
 
-import com.geekhalo.lego.common.validator.ValidateErrorReporter;
+import com.geekhalo.lego.common.validator.ValidateErrorHandler;
+import com.geekhalo.lego.common.validator.ValidateErrorsHandler;
 import com.geekhalo.lego.common.validator.Validateable;
 import com.geekhalo.lego.core.validator.ValidateableBasedValidator;
 import com.geekhalo.lego.core.validator.ValidateableMethodValidationInterceptor;
@@ -15,7 +16,6 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
@@ -45,7 +45,7 @@ public class ValidatorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ValidateErrorReporter validateErrorReporter(){
+    public ValidateErrorsHandler validateErrorReporter(){
         return errors -> {
             throw new RuntimeException(errors.getErrors().toString());
         };

@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.validator;
 
+import com.geekhalo.lego.common.validator.ValidateErrorHandler;
 import com.geekhalo.lego.common.validator.ValidateErrors;
 import com.geekhalo.lego.common.validator.Validateable;
 
@@ -10,10 +11,9 @@ import com.geekhalo.lego.common.validator.Validateable;
  */
 public class ValidateableBasedValidator{
 
-    public void validate(Object target, ValidateErrors errorReporter) {
+    public void validate(Object target, ValidateErrorHandler validateErrorHandler) {
         if (target instanceof Validateable){
-            Validateable validateable = (Validateable) target;
-            validateable.validate(errorReporter);
+            ((Validateable) target).validate(validateErrorHandler);
         }
     }
 }

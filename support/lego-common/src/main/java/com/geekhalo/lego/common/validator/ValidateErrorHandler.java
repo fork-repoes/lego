@@ -5,6 +5,6 @@ package com.geekhalo.lego.common.validator;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface Validateable {
-    void validate(ValidateErrorHandler validateErrorHandler);
+public interface ValidateErrorHandler {
+    void handleError(String name, String code, String msg);
 }

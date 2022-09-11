@@ -1,8 +1,10 @@
 package com.geekhalo.lego.core.validator;
 
-import com.geekhalo.lego.common.validator.ValidateErrorReporter;
+import com.geekhalo.lego.common.validator.ValidateErrorHandler;
 import com.geekhalo.lego.common.validator.ValidateErrors;
+import com.geekhalo.lego.common.validator.ValidateErrorsHandler;
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -13,27 +15,47 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class ValidateableMethodValidationInterceptor implements MethodInterceptor {
     private final ValidateableBasedValidator validator;
-    private final ValidateErrorReporter errorReporter;
+    private final ValidateErrorsHandler errorsHandler;
 
     public ValidateableMethodValidationInterceptor(ValidateableBasedValidator validator,
-                                                   ValidateErrorReporter errorReporter) {
+                                                   ValidateErrorsHandler errorsHandler) {
         Preconditions.checkArgument(validator != null);
-        Preconditions.checkArgument(errorReporter != null);
+        Preconditions.checkArgument(errorsHandler != null);
 
         this.validator = validator;
-        this.errorReporter = errorReporter;
+        this.errorsHandler = errorsHandler;
     }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Object[] arguments = invocation.getArguments();
-        ValidateErrors errors = new ValidateErrors();
-        for (Object argument : arguments){
-            validator.validate(argument, errors);
-        }
-        if (errors.hasError()){
-            this.errorReporter.onError(errors);
+        if (arguments.length > 0) {
+            ErrorsCollector errorsCollector = new ErrorsCollector();
+            for (Object argument : arguments) {
+                validator.validate(argument, errorsCollector);
+            }
+            ValidateErrors errors = errorsCollector.getValidateErrors();
+            if (errors != null && errors.hasError()) {
+                this.errorsHandler.handleErrors(errors);
+            }
         }
         return invocation.proceed();
+    }
+
+    static class ErrorsCollector implements ValidateErrorHandler{
+        @Getter
+        private ValidateErrors validateErrors;
+
+        @Override
+        public void handleError(String name, String code, String msg) {
+            getOrCreateValidateErrors().addError(name, code, msg);
+        }
+
+        private ValidateErrors getOrCreateValidateErrors(){
+            if (this.validateErrors == null){
+                this.validateErrors = new ValidateErrors();
+            }
+            return this.validateErrors;
+        }
     }
 }

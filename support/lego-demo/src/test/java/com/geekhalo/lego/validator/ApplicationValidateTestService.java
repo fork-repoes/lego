@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-
 @SpringBootTest(classes = DemoApplication.class)
 class ApplicationValidateTestService {
     @Autowired

@@ -1,5 +1,6 @@
 package com.geekhalo.lego.validator;
 
+import com.geekhalo.lego.common.validator.ValidateErrorHandler;
 import com.geekhalo.lego.common.validator.ValidateErrors;
 import com.geekhalo.lego.common.validator.Validateable;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class UserValidateForm implements Validateable {
     private String password;
 
     @Override
-    public void validate(ValidateErrors validateErrors) {
+    public void validate(ValidateErrorHandler validateErrorHandler) {
         if (getName().equals(getPassword())){
-            validateErrors.addError("user", "1", "用户名密码不能相同");
+            validateErrorHandler.handleError("user", "1", "用户名密码不能相同");
         }
     }
 }
