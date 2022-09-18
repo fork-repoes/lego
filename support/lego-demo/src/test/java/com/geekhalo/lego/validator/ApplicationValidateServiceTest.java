@@ -1,7 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.DemoApplication;
-import com.geekhalo.lego.validator.address.Address;
+import com.geekhalo.lego.validator.pwd.Password;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,8 +128,8 @@ class ApplicationValidateServiceTest {
     void customSingleValidate_error2() {
         Assertions.assertThrows(ConstraintViolationException.class, ()->{
             try {
-                CustomSingleForm customSingleForm = new CustomSingleForm();
-                this.applicationValidateService.customSingleValidate(customSingleForm);
+                Password password = new Password();
+                this.applicationValidateService.customSingleValidate(password);
             }catch (RuntimeException e){
                 e.printStackTrace();
                 throw e;
@@ -141,61 +141,10 @@ class ApplicationValidateServiceTest {
     void customSingleValidate_error3() {
         Assertions.assertThrows(ConstraintViolationException.class, ()->{
             try {
-                CustomSingleForm customSingleForm = new CustomSingleForm();
-                customSingleForm.setId(1L);
-                this.applicationValidateService.customSingleValidate(customSingleForm);
-            }catch (RuntimeException e){
-                e.printStackTrace();
-                throw e;
-            }
-        });
-    }
-
-    @Test
-    void customSingleValidate_error4() {
-        Assertions.assertThrows(ConstraintViolationException.class, ()->{
-            try {
-                CustomSingleForm customSingleForm = new CustomSingleForm();
-                customSingleForm.setId(1L);
-                customSingleForm.setName("name");
-                this.applicationValidateService.customSingleValidate(customSingleForm);
-            }catch (RuntimeException e){
-                e.printStackTrace();
-                throw e;
-            }
-
-        });
-    }
-
-    @Test
-    void customSingleValidate_error5() {
-        Assertions.assertThrows(ConstraintViolationException.class, ()->{
-            try {
-                CustomSingleForm customSingleForm = new CustomSingleForm();
-                customSingleForm.setId(1L);
-                customSingleForm.setName("name");
-                Address address = new Address();
-                customSingleForm.setAddress(address);
-                this.applicationValidateService.customSingleValidate(customSingleForm);
-            }catch (RuntimeException e){
-                e.printStackTrace();
-                throw e;
-            }
-        });
-    }
-
-    @Test
-    void customSingleValidate_error6() {
-        Assertions.assertThrows(ConstraintViolationException.class, ()->{
-            try {
-                CustomSingleForm customSingleForm = new CustomSingleForm();
-                customSingleForm.setId(1L);
-                customSingleForm.setName("name");
-                Address address = new Address();
-                address.setCity("北京");
-                address.setDetail("朝阳");
-                customSingleForm.setAddress(address);
-                this.applicationValidateService.customSingleValidate(customSingleForm);
+                Password password = new Password();
+                password.setInput1("123");
+                password.setInput2("456");
+                this.applicationValidateService.customSingleValidate(password);
             }catch (RuntimeException e){
                 e.printStackTrace();
                 throw e;
@@ -205,25 +154,12 @@ class ApplicationValidateServiceTest {
 
     @Test
     void customSingleValidate_success1() {
-        CustomSingleForm customSingleForm = new CustomSingleForm();
-        customSingleForm.setId(1L);
-        customSingleForm.setName("name");
-        Address address = new Address();
-        address.setCity("北京");
-        customSingleForm.setAddress(address);
-        this.applicationValidateService.customSingleValidate(customSingleForm);
+        Password password = new Password();
+        password.setInput1("123");
+        password.setInput2("123");
+        this.applicationValidateService.customSingleValidate(password);
     }
 
-    @Test
-    void customSingleValidate_success2() {
-        CustomSingleForm customSingleForm = new CustomSingleForm();
-        customSingleForm.setId(1L);
-        customSingleForm.setName("name");
-        Address address = new Address();
-        address.setDetail("朝阳");
-        customSingleForm.setAddress(address);
-        this.applicationValidateService.customSingleValidate(customSingleForm);
-    }
 
     @Test
     void validateForm_error1() {

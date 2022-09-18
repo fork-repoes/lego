@@ -1,5 +1,6 @@
 package com.geekhalo.lego.validator;
 
+import com.geekhalo.lego.validator.pwd.Password;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +22,7 @@ public class ApplicationValidateServiceImpl implements ApplicationValidateServic
     }
 
     @Override
-    public void customSingleValidate(CustomSingleForm customSingleForm){
+    public void customSingleValidate(Password password){
 
     }
 

@@ -1,11 +1,11 @@
-package com.geekhalo.lego.validator.address;
+package com.geekhalo.lego.validator.pwd;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * Created by taoli on 2022/9/10.
+ * Created by taoli on 2022/9/17.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
@@ -13,10 +13,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = AddressValidator.class
+        validatedBy = PasswordValidator.class
 )
-public @interface MustAddress {
-    String message() default "{javax.validation.constraints.MustAddress.message}";
+public @interface PasswordConsistency {
+    String message() default "{javax.validation.constraints.password.consistency.message}";
 
     Class<?>[] groups() default {};
 

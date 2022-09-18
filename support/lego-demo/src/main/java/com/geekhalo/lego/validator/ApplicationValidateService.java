@@ -1,5 +1,7 @@
 package com.geekhalo.lego.validator;
 
+import com.geekhalo.lego.validator.pwd.Password;
+import com.geekhalo.lego.validator.pwd.PasswordConsistency;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -25,7 +27,7 @@ public interface ApplicationValidateService {
      */
     void singleValidate(@Valid @NotNull(message = "form 不能为 null") SingleForm singleForm);
 
-    void customSingleValidate(@Valid @NotNull CustomSingleForm customSingleForm);
+    void customSingleValidate(@Valid @PasswordConsistency(message = "两次密码不相同") @NotNull Password password);
 
     void validateForm(@NotNull @Valid UserValidateForm userValidateForm);
 }

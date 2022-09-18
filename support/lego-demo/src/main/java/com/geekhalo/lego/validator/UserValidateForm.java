@@ -14,11 +14,9 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class UserValidateForm implements Validateable {
-    @NotNull
     @NotEmpty
     private String name;
 
-    @NotNull
     @NotEmpty
     private String password;
 
