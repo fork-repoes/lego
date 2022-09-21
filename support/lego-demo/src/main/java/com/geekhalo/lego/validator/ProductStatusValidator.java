@@ -12,13 +12,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(2)
-public class ProductExistValidator
+public class ProductStatusValidator
         extends FixTypeBeanValidator<CreateOrderContext> {
 
     @Override
     public void validate(CreateOrderContext context, ValidateErrorHandler validateErrorHandler) {
         if(context.getProduct() == null){
             validateErrorHandler.handleError("product", "2", "商品不存在");
+        }
+        if (!context.getProduct().isSaleable()){
+            validateErrorHandler.handleError("product", "3", "商品不可售卖");
         }
     }
 }

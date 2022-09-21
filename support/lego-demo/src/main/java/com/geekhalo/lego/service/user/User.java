@@ -13,4 +13,8 @@ import lombok.Data;
 public class User {
     private Long id;
     private String name;
+
+    public boolean isEnable() {
+        return true;
+    }
 }

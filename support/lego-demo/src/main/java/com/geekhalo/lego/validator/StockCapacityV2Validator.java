@@ -2,6 +2,7 @@ package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
 import com.geekhalo.lego.core.validator.FixTypeBeanValidator;
+import com.geekhalo.lego.loader.CreateOrderContextV2;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -12,15 +13,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(3)
-public class StockValidator
-        extends FixTypeBeanValidator<CreateOrderContext> {
+public class StockCapacityV2Validator
+        extends FixTypeBeanValidator<CreateOrderContextV2> {
 
     @Override
-    public void validate(CreateOrderContext context, ValidateErrorHandler validateErrorHandler) {
+    public void validate(CreateOrderContextV2 context, ValidateErrorHandler validateErrorHandler) {
         if (context.getStock() == null){
             validateErrorHandler.handleError("stock", "3", "库存不存在");
         }
-        if (context.getStock().getCount() < context.getCount()){
+        if (context.getStock().getCount() < context.getCmd().getCount()){
             validateErrorHandler.handleError("stock", "4", "库存不足");
         }
     }

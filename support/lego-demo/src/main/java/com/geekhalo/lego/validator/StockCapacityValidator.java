@@ -10,15 +10,18 @@ import org.springframework.stereotype.Component;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Order(1)
 @Component
-public class UserExistValidator
+@Order(3)
+public class StockCapacityValidator
         extends FixTypeBeanValidator<CreateOrderContext> {
 
     @Override
     public void validate(CreateOrderContext context, ValidateErrorHandler validateErrorHandler) {
-        if (context.getUser() == null){
-            validateErrorHandler.handleError("user", "1", "用户不存在");
+        if (context.getStock() == null){
+            validateErrorHandler.handleError("stock", "3", "库存不存在");
+        }
+        if (context.getStock().getCount() < context.getCount()){
+            validateErrorHandler.handleError("stock", "4", "库存不足");
         }
     }
 }

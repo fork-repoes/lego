@@ -1,6 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.core.validator.ValidateException;
+import lombok.Data;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "validate_order")
-@Setter
+@Data
 public class ValidateableOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

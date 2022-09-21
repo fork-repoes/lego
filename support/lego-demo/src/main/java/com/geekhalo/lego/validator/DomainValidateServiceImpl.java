@@ -4,6 +4,7 @@ import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.geekhalo.lego.loader.CreateOrderCmd;
 import com.geekhalo.lego.loader.CreateOrderContextV2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * 编程就像玩 Lego
  */
 @Service
+@Slf4j
 public class DomainValidateServiceImpl
     implements DomainValidateService{
     @Autowired
@@ -33,5 +35,6 @@ public class DomainValidateServiceImpl
         context.setCmd(cmd);
         CreateOrderContextV2 contextProxy = this.lazyLoadProxyFactory.createProxyFor(context);
         this.validateService.validate(contextProxy);
+        log.info("context is {}", contextProxy);
     }
 }
