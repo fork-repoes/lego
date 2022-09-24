@@ -1,7 +1,8 @@
 package com.geekhalo.lego.singlequery.jpa;
 
 import com.geekhalo.lego.core.singlequery.Page;
-import com.geekhalo.lego.core.singlequery.jpa.support.AbstractSpecificationQueryRepository;
+import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
+import com.geekhalo.lego.core.singlequery.jpa.support.BaseSpecificationQueryObjectRepository;
 import com.geekhalo.lego.singlequery.User;
 import com.geekhalo.lego.singlequery.UserSingleQueryService;
 import org.springframework.stereotype.Repository;
@@ -15,11 +16,12 @@ import java.util.List;
  */
 @Repository
 public class JpaUserSingleQueryService
-    extends AbstractSpecificationQueryRepository
+    extends BaseSpecificationQueryObjectRepository
     implements UserSingleQueryService {
 
-    public JpaUserSingleQueryService(JpaUserRepository specificationExecutor) {
-        super(specificationExecutor, JpaUser.class);
+    public JpaUserSingleQueryService(JpaUserRepository specificationExecutor,
+                                     SpecificationConverterFactory specificationConverterFactory) {
+        super(specificationExecutor, JpaUser.class, specificationConverterFactory);
     }
 
     @Override

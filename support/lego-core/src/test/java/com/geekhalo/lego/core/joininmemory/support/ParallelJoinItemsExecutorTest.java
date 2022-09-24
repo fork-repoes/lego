@@ -31,7 +31,7 @@ class ParallelJoinItemsExecutorTest {
                 .keyFromSourceData(order->order.getOrder().getUserId())
                 .keyFromJoinData(user -> user.getId())
                 .joinDataConverter(user -> user)
-                .foundCallback((orderDetail, user) -> orderDetail.setUser(user))
+                .foundCallback((orderDetail, user) -> orderDetail.setUser(user.get(0)))
                 .joinDataLoader(userIds -> createUser(userIds))
                 .runLevel(1)
                 .build();
@@ -41,7 +41,7 @@ class ParallelJoinItemsExecutorTest {
                 .keyFromSourceData(order->order.getOrder().getProductId())
                 .keyFromJoinData(product -> product.getId())
                 .joinDataConverter(product -> product)
-                .foundCallback((orderDetail, product) -> orderDetail.setProduct(product))
+                .foundCallback((orderDetail, product) -> orderDetail.setProduct(product.get(0)))
                 .joinDataLoader(productIds -> createProduct(productIds))
                 .runLevel(1)
                 .build();
@@ -51,7 +51,7 @@ class ParallelJoinItemsExecutorTest {
                 .keyFromSourceData(orderDetail -> orderDetail.getProduct().getShopId())
                 .keyFromJoinData(shop -> shop.getId())
                 .joinDataConverter(shop -> shop)
-                .foundCallback((orderDetail, shop) -> orderDetail.setShop(shop))
+                .foundCallback((orderDetail, shop) -> orderDetail.setShop(shop.get(0)))
                 .joinDataLoader(shopIds -> createShop(shopIds))
                 .runLevel(3)
                 .build();
