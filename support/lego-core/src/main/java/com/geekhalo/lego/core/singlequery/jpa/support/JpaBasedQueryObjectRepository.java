@@ -38,6 +38,11 @@ public class JpaBasedQueryObjectRepository<E, ID>
     }
 
     @Override
+    public void checkForQueryObject(Class cls) {
+        this.specificationQueryObjectRepository.checkForQueryObject(cls);
+    }
+
+    @Override
     public <Q> List<E> listOf(Q query) {
         return this.specificationQueryObjectRepository.listOf(query);
     }

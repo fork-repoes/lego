@@ -35,7 +35,7 @@ public class JpaUserSingleQueryService
     }
 
     @Override
-    public List<User> listOf(Object query) {
+    public List<? extends User> listOf(Object query) {
         return super.listOf(query);
     }
 
@@ -45,7 +45,7 @@ public class JpaUserSingleQueryService
     }
 
     @Override
-    public Page<User> pageOf(Object query) {
+    public Page<? extends User> pageOf(Object query) {
         return super.pageOf(query);
     }
 }

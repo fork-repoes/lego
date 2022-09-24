@@ -68,6 +68,11 @@ public class BaseSpecificationQueryObjectRepository<E>
     }
 
     @Override
+    public void checkForQueryObject(Class cls) {
+        this.specificationConverter.validate(cls);
+    }
+
+    @Override
     public <Q> List<E> listOf(Q query) {
         Specification<E> specification = this.specificationConverter.convertForQuery(query);
         if (specification == null){

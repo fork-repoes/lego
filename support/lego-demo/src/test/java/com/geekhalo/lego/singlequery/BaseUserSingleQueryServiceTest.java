@@ -69,7 +69,7 @@ abstract class BaseUserSingleQueryServiceTest {
         QueryByIdIn queryByIdIn = new QueryByIdIn();
         queryByIdIn.setIds(ids);
         {
-            List<User> users = this.getSingleQueryService().listOf(queryByIdIn);
+            List<? extends User> users = this.getSingleQueryService().listOf(queryByIdIn);
             Assertions.assertNotNull(users);
             Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
             Assertions.assertEquals(10, users.size());
@@ -86,7 +86,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreater queryByIdGreater = new QueryByIdGreater();
             queryByIdGreater.setStartUserId(1L);
             {
-                List<User> users = this.getSingleQueryService().listOf(queryByIdGreater);
+                List<? extends User> users = this.getSingleQueryService().listOf(queryByIdGreater);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(12, users.size());
             }
@@ -100,7 +100,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreater queryByIdGreater = new QueryByIdGreater();
             queryByIdGreater.setStartUserId(10L);
             {
-                List<User> users = this.getSingleQueryService().listOf(queryByIdGreater);
+                List<? extends User> users = this.getSingleQueryService().listOf(queryByIdGreater);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(3, users.size());
             }
@@ -114,7 +114,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreater queryByIdGreater = new QueryByIdGreater();
             queryByIdGreater.setStartUserId(13L);
             {
-                List<User> users = this.getSingleQueryService().listOf(queryByIdGreater);
+                List<? extends User> users = this.getSingleQueryService().listOf(queryByIdGreater);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(0, users.size());
             }
@@ -133,7 +133,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreaterOrEquals query = new QueryByIdGreaterOrEquals();
             query.setStartUserId(1L);
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(13, users.size());
             }
@@ -149,7 +149,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreaterOrEquals query = new QueryByIdGreaterOrEquals();
             query.setStartUserId(10L);
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(4, users.size());
             }
@@ -163,7 +163,7 @@ abstract class BaseUserSingleQueryServiceTest {
             QueryByIdGreaterOrEquals query = new QueryByIdGreaterOrEquals();
             query.setStartUserId(13L);
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(1, users.size());
             }
@@ -182,7 +182,7 @@ abstract class BaseUserSingleQueryServiceTest {
             queryByNameIsNull.setNull(true);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
+                List<? extends User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(0, users.size());
             }
@@ -198,7 +198,7 @@ abstract class BaseUserSingleQueryServiceTest {
             queryByNameIsNull.setNull(false);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
+                List<? extends User> users = this.getSingleQueryService().listOf(queryByNameIsNull);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(13, users.size());
             }
@@ -216,7 +216,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(14L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(13, users.size());
             }
@@ -231,7 +231,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(10L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(9, users.size());
             }
@@ -247,7 +247,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(5L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(4, users.size());
             }
@@ -265,7 +265,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(13L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(13, users.size());
             }
@@ -280,7 +280,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(10L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(10, users.size());
             }
@@ -295,7 +295,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setMaxId(5L);
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(5, users.size());
             }
@@ -314,7 +314,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setName("李四");
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(13, users.size());
             }
@@ -330,7 +330,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setName("张三6");
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(12, users.size());
             }
@@ -344,7 +344,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setName("张三8");
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(12, users.size());
             }
@@ -363,7 +363,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setIds(Arrays.asList(1L, 2L));
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(11, users.size());
             }
@@ -380,7 +380,7 @@ abstract class BaseUserSingleQueryServiceTest {
             query.setIds(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
 
             {
-                List<User> users = this.getSingleQueryService().listOf(query);
+                List<? extends User> users = this.getSingleQueryService().listOf(query);
                 Assertions.assertNotNull(users);
                 Assertions.assertEquals(5, users.size());
             }
@@ -401,7 +401,7 @@ abstract class BaseUserSingleQueryServiceTest {
         queryByStatusAndBirth.setStatus(1);
         queryByStatusAndBirth.setBirthAfter(DateUtils.parseDate("2018-10-01", "yyyy-MM-dd"));
 
-        List<User> users = getSingleQueryService().listOf(query);
+        List<? extends User> users = getSingleQueryService().listOf(query);
 
         Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
     }
@@ -425,7 +425,7 @@ abstract class BaseUserSingleQueryServiceTest {
 
             sort.getOrders().add(order);
 
-            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+            Page<? extends User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
 
             Assertions.assertTrue(userPage.hasContent());
             Assertions.assertEquals(5, userPage.getContent().size());
@@ -461,7 +461,7 @@ abstract class BaseUserSingleQueryServiceTest {
 
             sort.getOrders().add(order);
 
-            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+            Page<? extends User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
             Assertions.assertTrue(userPage.hasContent());
             Assertions.assertEquals(5, userPage.getContent().size());
 
@@ -494,7 +494,7 @@ abstract class BaseUserSingleQueryServiceTest {
 
             sort.getOrders().add(order);
 
-            Page<User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
+            Page<? extends User> userPage = this.getSingleQueryService().pageOf(pageByIdGreater);
             Assertions.assertTrue(userPage.hasContent());
             Assertions.assertEquals(3, userPage.getContent().size());
 
@@ -518,7 +518,7 @@ abstract class BaseUserSingleQueryServiceTest {
         query.setMobile("18729901871");
         query.setBirthAfter(DateUtils.parseDate("2018-10-01", "yyyy-MM-dd"));
 
-        List<User> users = getSingleQueryService().listOf(query);
+        List<? extends User> users = getSingleQueryService().listOf(query);
         Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
     }
 
@@ -527,7 +527,7 @@ abstract class BaseUserSingleQueryServiceTest {
         QueryByIdGreaterWithMaxResult query = new QueryByIdGreaterWithMaxResult();
         query.setStartUserId(0L);
 
-        List<User> users = getSingleQueryService().listOf(query);
+        List<? extends User> users = getSingleQueryService().listOf(query);
         Assertions.assertTrue(CollectionUtils.isNotEmpty(users));
     }
 }

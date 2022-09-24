@@ -15,9 +15,9 @@ public interface UserSingleQueryService {
 
     User oneOf(Object query);
 
-    List<User> listOf(Object query);
+    List<? extends User> listOf(Object query);
 
     Long countOf(Object query);
 
-    Page<User> pageOf(Object query);
+    Page<? extends User> pageOf(Object query);
 }

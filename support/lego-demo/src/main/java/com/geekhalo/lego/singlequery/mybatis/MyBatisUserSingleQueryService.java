@@ -1,7 +1,7 @@
 package com.geekhalo.lego.singlequery.mybatis;
 
 import com.geekhalo.lego.core.singlequery.Page;
-import com.geekhalo.lego.core.singlequery.mybatis.support.AbstractReflectBasedExampleSingleQueryRepository;
+import com.geekhalo.lego.core.singlequery.mybatis.support.BaseReflectBasedExampleSingleQueryRepository;
 import com.geekhalo.lego.singlequery.User;
 import com.geekhalo.lego.singlequery.UserSingleQueryService;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Repository
 public class MyBatisUserSingleQueryService
-        extends AbstractReflectBasedExampleSingleQueryRepository
+        extends BaseReflectBasedExampleSingleQueryRepository
         implements UserSingleQueryService {
     public MyBatisUserSingleQueryService(MyBatisUserMapper mapper){
         super(mapper, MyBatisUserExample.class);

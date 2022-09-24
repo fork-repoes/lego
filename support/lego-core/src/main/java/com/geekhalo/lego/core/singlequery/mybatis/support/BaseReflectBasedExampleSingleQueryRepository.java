@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public abstract class AbstractReflectBasedExampleSingleQueryRepository<E, ID>
+public class BaseReflectBasedExampleSingleQueryRepository<E, ID>
         extends AbstractQueryRepository<E>
         implements ExampleSingleQueryRepository<E, ID> {
     private final Object mapper;
@@ -36,7 +36,7 @@ public abstract class AbstractReflectBasedExampleSingleQueryRepository<E, ID>
     @Autowired
     private ExampleConverterFactory exampleConverterFactory;
 
-    public AbstractReflectBasedExampleSingleQueryRepository(Object mapper, Class exampleClass){
+    public BaseReflectBasedExampleSingleQueryRepository(Object mapper, Class exampleClass){
         Preconditions.checkArgument(mapper != null);
         Preconditions.checkArgument(exampleClass != null);
         this.mapper = mapper;
@@ -72,6 +72,11 @@ public abstract class AbstractReflectBasedExampleSingleQueryRepository<E, ID>
     @Override
     public List<E> getByIds(List<ID> ids) {
         throw new NotImplementedException("Need Override");
+    }
+
+    @Override
+    public void checkForQueryObject(Class cls) {
+        this.exampleConverter.validate(cls);
     }
 
     @Override

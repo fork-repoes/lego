@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
  */
 public interface QueryObjectRepository<E> {
     /**
+     * 是否为有效的 查询对象
+     * @param cls
+     */
+    void checkForQueryObject(Class cls);
+    /**
      *
      * @param query 查询参数
      * @param converter 结果转化器
