@@ -7,9 +7,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by taoli on 2022/7/31.

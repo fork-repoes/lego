@@ -6,7 +6,6 @@ import com.geekhalo.lego.core.singlequery.jpa.SpecificationQueryObjectRepository
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.util.List;
 

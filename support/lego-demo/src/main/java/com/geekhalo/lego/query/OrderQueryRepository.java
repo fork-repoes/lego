@@ -2,7 +2,6 @@ package com.geekhalo.lego.query;
 
 import com.geekhalo.lego.core.singlequery.QueryObjectRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
