@@ -9,4 +9,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     com.geekhalo.lego.starter.splitter.SplitterAutoConfiguration,\
   com.geekhalo.lego.starter.async.NormalAsyncAutoConfiguration,\
   com.geekhalo.lego.starter.async.OrderedAsyncAutoConfiguration,\
-  com.geekhalo.lego.starter.delay.DelayBasedRocketMQAutoConfiguration
+  com.geekhalo.lego.starter.delay.DelayBasedRocketMQAutoConfiguration,\
+  com.geekhalo.lego.starter.validator.ValidatorAutoConfiguration
