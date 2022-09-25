@@ -2,6 +2,7 @@ package com.geekhalo.lego.query;
 
 import com.geekhalo.lego.core.singlequery.Page;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -11,14 +12,13 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 public interface OrderQueryService extends CustomOrderQueryService{
-//    Order getOrderById(@NotNull(message = "订单号不能为null") Long id);
 
-    OrderDetail getById(@NotNull(message = "订单号不能为null") Long id);
+    OrderDetail getById(@Valid @NotNull(message = "订单号不能为null") Long id);
 
-    Page<OrderDetail> pageByUserId(@NotNull(message = "查询参数不能为 null") PageByUserId query);
+    Page<OrderDetail> pageByUserId(@Valid @NotNull(message = "查询参数不能为 null") PageByUserId query);
 
-    List<OrderDetail> getByUserId(@NotNull(message = "查询参数不能为 null") GetByUserId getByUserId);
+    List<OrderDetail> getByUserId(@Valid @NotNull(message = "查询参数不能为 null") GetByUserId getByUserId);
 
-    Long countByUser(@NotNull(message = "查询参数不能为 null") CountByUserId countByUserId);
+    Long countByUser(@Valid @NotNull(message = "查询参数不能为 null") CountByUserId countByUserId);
 
 }
