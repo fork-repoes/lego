@@ -10,6 +10,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +51,15 @@ abstract class BaseUserSingleQueryServiceTest {
     static class ErrorQuery{
         @FieldEqualTo("uid")
         private Long id;
+    }
+
+
+    @Test
+    void getById_error() {
+        Assertions.assertThrows(ConstraintViolationException.class, ()->{
+            QueryByIdEq byId = new QueryByIdEq();
+            this.getSingleQueryService().oneOf(byId);
+        });
     }
 
     @Test

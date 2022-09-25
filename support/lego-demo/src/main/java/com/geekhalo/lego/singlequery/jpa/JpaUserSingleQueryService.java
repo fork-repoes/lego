@@ -7,6 +7,7 @@ import com.geekhalo.lego.singlequery.User;
 import com.geekhalo.lego.singlequery.UserSingleQueryService;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**

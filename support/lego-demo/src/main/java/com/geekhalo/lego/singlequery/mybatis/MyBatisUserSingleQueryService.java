@@ -8,7 +8,9 @@ import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserExample;
 import com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
