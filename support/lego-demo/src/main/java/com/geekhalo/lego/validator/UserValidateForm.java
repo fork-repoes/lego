@@ -5,7 +5,6 @@ import com.geekhalo.lego.common.validator.Validateable;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by taoli on 2022/9/10.

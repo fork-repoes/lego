@@ -2,7 +2,6 @@ package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.core.validator.ValidateException;
 import lombok.Data;
-import lombok.Setter;
 
 import javax.persistence.*;
 

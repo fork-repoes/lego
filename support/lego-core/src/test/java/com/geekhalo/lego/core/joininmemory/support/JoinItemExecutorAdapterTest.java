@@ -26,7 +26,7 @@ class JoinItemExecutorAdapterTest {
                 .keyFromSourceData(order->order.getOrder().getUserId())
                 .keyFromJoinData(user -> user.getId())
                 .joinDataConverter(user -> user)
-                .foundCallback((orderDetail, user) -> orderDetail.setUser(user))
+                .foundCallback((orderDetail, user) -> orderDetail.setUser(user.get(0)))
                 .joinDataLoader(userIds -> createUser(userIds))
                 .build();
     }

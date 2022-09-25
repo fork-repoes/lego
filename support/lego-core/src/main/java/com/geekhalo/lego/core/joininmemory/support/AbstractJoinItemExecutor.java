@@ -2,14 +2,14 @@ package com.geekhalo.lego.core.joininmemory.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinItemExecutor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Created by taoli on 2022/7/31.
@@ -55,9 +55,9 @@ abstract class AbstractJoinItemExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_R
     /**
      * 将 JoinResult 写回至 SourceData
      * @param data
-     * @param JoinResult
+     * @param JoinResults
      */
-    protected abstract void onFound(SOURCE_DATA data, JOIN_RESULT JoinResult);
+    protected abstract void onFound(SOURCE_DATA data, List<JOIN_RESULT> JoinResults);
 
     /**
      * 未找到对应的 JoinData
@@ -78,13 +78,13 @@ abstract class AbstractJoinItemExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_R
         log.debug("get join key {} from source data {}", joinKeys, sourceDatas);
 
         // 根据 JoinKey 获取 JoinData
-        List<JOIN_DATA> joinDatas = getJoinDataByJoinKeys(joinKeys);
-        log.debug("get join data {} by join key {}", joinDatas, joinKeys);
+        List<JOIN_DATA> allJoinDatas = getJoinDataByJoinKeys(joinKeys);
+        log.debug("get join data {} by join key {}", allJoinDatas, joinKeys);
 
         // 将 JoinData 以 Map 形式进行组织
-        Map<JOIN_KEY, JOIN_DATA> joinDataMap = joinDatas.stream()
+        Map<JOIN_KEY, List<JOIN_DATA>> joinDataMap = allJoinDatas.stream()
                 .filter(Objects::nonNull)
-                .collect(toMap(this::createJoinKeyFromJoinData, Function.identity(), (a, b) -> a));
+                .collect(groupingBy(this::createJoinKeyFromJoinData));
         log.debug("group by join key, result is {}", joinDataMap);
 
         // 处理每一条 SourceData
@@ -96,15 +96,19 @@ abstract class AbstractJoinItemExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_R
                 continue;
             }
             // 根据 JoinKey 获取 JoinData
-            JOIN_DATA joinData = joinDataMap.get(joinKey);
-            if (joinData != null){
+            List<JOIN_DATA> joinDatasByKey = joinDataMap.get(joinKey);
+            if (CollectionUtils.isNotEmpty(joinDatasByKey)){
                 // 获取到 JoinData， 转换为 JoinResult，进行数据写回
-                JOIN_RESULT joinResult = convertToResult(joinData);
-                log.debug("success to convert join data {} to join result {}", joinData, joinResult);
-                onFound(data, joinResult);
-                log.debug("success to write join result {} to source data {}", joinResult, data);
+                List<JOIN_RESULT> joinResults = joinDatasByKey.stream()
+                        .filter(Objects::nonNull)
+                        .map(joinData -> convertToResult(joinData))
+                        .collect(toList());
+
+                log.debug("success to convert join data {} to join result {}", joinDatasByKey, joinResults);
+                onFound(data, joinResults);
+                log.debug("success to write join result {} to source data {}", joinResults, data);
             }else {
-                log.warn("join data lost by join key {} for source data {}", joinData, data);
+                log.warn("join data lost by join key {} for source data {}", joinKey, data);
                 // 为获取到 JoinData，进行 notFound 回调
                 onNotFound(data, joinKey);
             }

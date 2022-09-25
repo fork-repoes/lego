@@ -1,11 +1,13 @@
 package com.geekhalo.lego.singlequery.jpa;
 
 import com.geekhalo.lego.core.singlequery.Page;
-import com.geekhalo.lego.core.singlequery.jpa.support.AbstractSpecificationQueryRepository;
+import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
+import com.geekhalo.lego.core.singlequery.jpa.support.BaseSpecificationQueryObjectRepository;
 import com.geekhalo.lego.singlequery.User;
 import com.geekhalo.lego.singlequery.UserSingleQueryService;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,11 +17,12 @@ import java.util.List;
  */
 @Repository
 public class JpaUserSingleQueryService
-    extends AbstractSpecificationQueryRepository
+    extends BaseSpecificationQueryObjectRepository
     implements UserSingleQueryService {
 
-    public JpaUserSingleQueryService(JpaUserRepository specificationExecutor) {
-        super(specificationExecutor, JpaUser.class);
+    public JpaUserSingleQueryService(JpaUserRepository specificationExecutor,
+                                     SpecificationConverterFactory specificationConverterFactory) {
+        super(specificationExecutor, JpaUser.class, specificationConverterFactory);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class JpaUserSingleQueryService
     }
 
     @Override
-    public List<User> listOf(Object query) {
+    public List<? extends User> listOf(Object query) {
         return super.listOf(query);
     }
 
@@ -43,7 +46,7 @@ public class JpaUserSingleQueryService
     }
 
     @Override
-    public Page<User> pageOf(Object query) {
+    public Page<? extends User> pageOf(Object query) {
         return super.pageOf(query);
     }
 }

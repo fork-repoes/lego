@@ -26,7 +26,7 @@ public class JoinItemExecutorAdapter<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT>
     private final Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader;
     private final Function<JOIN_DATA, JOIN_KEY> keyFromJoinData;
     private final Function<JOIN_DATA, RESULT> joinDataConverter;
-    private final BiConsumer<SOURCE_DATA, RESULT> foundCallback;
+    private final BiConsumer<SOURCE_DATA, List<RESULT>> foundCallback;
     private final BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback;
 
 
@@ -36,7 +36,7 @@ public class JoinItemExecutorAdapter<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT>
                                    Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader,
                                    Function<JOIN_DATA, JOIN_KEY> keyFromJoinData,
                                    Function<JOIN_DATA, RESULT> joinDataConverter,
-                                   BiConsumer<SOURCE_DATA, RESULT> foundCallback,
+                                   BiConsumer<SOURCE_DATA, List<RESULT>> foundCallback,
                                    BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback) {
 
         Preconditions.checkArgument(keyFromSourceData != null);
@@ -86,8 +86,8 @@ public class JoinItemExecutorAdapter<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT>
     }
 
     @Override
-    protected void onFound(SOURCE_DATA data, RESULT JoinResult) {
-        this.foundCallback.accept(data, JoinResult);
+    protected void onFound(SOURCE_DATA data, List<RESULT> JoinResults) {
+        this.foundCallback.accept(data, JoinResults);
     }
 
     @Override

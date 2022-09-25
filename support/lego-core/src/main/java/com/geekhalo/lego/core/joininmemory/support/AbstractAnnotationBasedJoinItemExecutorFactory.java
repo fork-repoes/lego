@@ -61,7 +61,7 @@ abstract class AbstractAnnotationBasedJoinItemExecutorFactory<A extends Annotati
         return null;
     }
 
-    protected abstract <DATA> BiConsumer<Object, Object> createFoundFunction(Class<DATA> cls, Field field, A ann);
+    protected abstract <DATA> BiConsumer<Object, List<Object>> createFoundFunction(Class<DATA> cls, Field field, A ann);
 
     protected abstract <DATA> Function<Object, Object> createDataConverter(Class<DATA> cls, Field field, A ann);
 
