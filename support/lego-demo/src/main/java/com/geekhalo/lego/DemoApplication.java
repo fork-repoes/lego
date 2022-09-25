@@ -1,6 +1,7 @@
 package com.geekhalo.lego;
 
 
+import com.geekhalo.lego.core.query.EnableQueryService;
 import com.geekhalo.lego.core.singlequery.jpa.support.JpaBasedQueryObjectRepositoryFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.geekhalo.lego.validator",
         "com.geekhalo.lego.query"
 }, repositoryFactoryBeanClass = JpaBasedQueryObjectRepositoryFactoryBean.class)
+@EnableQueryService
 public class DemoApplication {
     public static void main(String[] args){
         SpringApplication.run(DemoApplication.class, args);

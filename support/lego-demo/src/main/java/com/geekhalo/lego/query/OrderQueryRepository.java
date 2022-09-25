@@ -12,7 +12,8 @@ import java.util.List;
  */
 public interface OrderQueryRepository
         extends JpaRepository<Order, Long>,
-        QueryObjectRepository<Order>{
+        QueryObjectRepository<Order>,
+        CustomOrderQueryRepository{
 
     List<Order> getByUserIdAndStatus(Long id, OrderStatus paid);
 }
