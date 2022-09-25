@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.validator;
 
-import lombok.Data;
 import lombok.Value;
 
 /**

@@ -11,4 +11,5 @@ import com.geekhalo.lego.core.singlequery.QueryConverter;
  * 将查询对象转换为 Example 对象
  */
 public interface ExampleConverter<E> extends QueryConverter<E> {
+
 }

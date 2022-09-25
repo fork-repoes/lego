@@ -1,10 +1,14 @@
 package com.geekhalo.lego.core.singlequery;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/8/26.
@@ -21,6 +25,7 @@ public class Page<T> {
     /**
      * 分页信息
      */
+    @Getter
     private final Pageable pageable;
     /**
      * 总的元素数量
@@ -118,5 +123,20 @@ public class Page<T> {
      */
     public boolean hasPrevious(){
         return getCurrentPage() > 0;
+    }
+
+    public <R> Page<R> convert(Function<T, R> converter){
+        if (CollectionUtils.isEmpty(getContent())){
+            return new Page<>(Collections.emptyList(),
+                    getPageable(),
+                    getTotalElements());
+        }
+
+        List<R> results = content.stream()
+                .filter(Objects::nonNull)
+                .map(converter)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return new Page<>(results, getPageable(), getTotalElements());
     }
 }

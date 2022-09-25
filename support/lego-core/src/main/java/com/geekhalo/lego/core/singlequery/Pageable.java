@@ -1,6 +1,9 @@
 package com.geekhalo.lego.core.singlequery;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by taoli on 2022/7/26.
@@ -10,6 +13,9 @@ import lombok.Data;
  * 分页参数
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pageable {
     /**
      * 页号

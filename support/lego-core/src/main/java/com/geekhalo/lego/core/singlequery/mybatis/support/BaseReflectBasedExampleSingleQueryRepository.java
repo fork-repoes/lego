@@ -7,13 +7,14 @@ import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverter;
 import com.geekhalo.lego.core.singlequery.mybatis.ExampleConverterFactory;
-import com.geekhalo.lego.core.singlequery.mybatis.ExampleQueryRepository;
+import com.geekhalo.lego.core.singlequery.mybatis.ExampleSingleQueryRepository;
 import com.geekhalo.lego.core.singlequery.support.AbstractQueryRepository;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,13 +22,11 @@ import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractReflectBasedExampleQueryRepository<E>
+public class BaseReflectBasedExampleSingleQueryRepository<E, ID>
         extends AbstractQueryRepository<E>
-        implements ExampleQueryRepository<E> {
+        implements ExampleSingleQueryRepository<E, ID> {
     private final Object mapper;
     private final Class exampleCls;
     @Getter(AccessLevel.PROTECTED)
@@ -37,7 +36,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
     @Autowired
     private ExampleConverterFactory exampleConverterFactory;
 
-    public AbstractReflectBasedExampleQueryRepository(Object mapper, Class exampleClass){
+    public BaseReflectBasedExampleSingleQueryRepository(Object mapper, Class exampleClass){
         Preconditions.checkArgument(mapper != null);
         Preconditions.checkArgument(exampleClass != null);
         this.mapper = mapper;
@@ -62,11 +61,26 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
         Preconditions.checkArgument(this.maxResultConfigResolver != null);
     }
 
+    @Override
+    public E getById(ID id) {
+        if (id == null){
+            return null;
+        }
+        return doSelectByPrimaryKey(id);
+    }
 
     @Override
-    public <Q, R> List<R> listOf(Q query, Function<E, R> converter) {
-        Preconditions.checkArgument(converter != null);
+    public List<E> getByIds(List<ID> ids) {
+        throw new NotImplementedException("Need Override");
+    }
 
+    @Override
+    public void checkForQueryObject(Class cls) {
+        this.exampleConverter.validate(cls);
+    }
+
+    @Override
+    public <Q> List<E> listOf(Q query) {
         if (query == null){
             return Collections.emptyList();
         }
@@ -87,10 +101,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
 
         processForMaxResult(query, maxResultConfig, entities);
 
-        return entities.stream()
-                .filter(Objects::nonNull)
-                .map(converter)
-                .collect(Collectors.toList());
+        return entities;
     }
 
     private void setLimitForExample(Integer maxResult, Object example) {
@@ -108,9 +119,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
 
 
     @Override
-    public <Q, R> R get(Q query, Function<E, R> converter) {
-        Preconditions.checkArgument(converter != null);
-
+    public <Q> E get(Q query) {
         if (query == null){
             return null;
         }
@@ -124,7 +133,6 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
         }
         return entities.stream()
                 .filter(Objects::nonNull)
-                .map(converter)
                 .findAny()
                 .orElse(null);
     }
@@ -134,7 +142,7 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
     }
 
     @Override
-    public <Q, R> Page<R> pageOf(Q query, Function<E, R> converter) {
+    public <Q> Page<E> pageOf(Q query) {
         Pageable pageable = findPageable(query);
 
         if (pageable == null){
@@ -143,9 +151,22 @@ public abstract class AbstractReflectBasedExampleQueryRepository<E>
 
         Long totalElement = countOf(query);
 
-        List<R> content =  listOf(query, converter);
+        List<E> content =  listOf(query);
 
         return new Page<>(content, pageable, totalElement);
+    }
+
+    private E doSelectByPrimaryKey(ID id){
+        try {
+            return (E) MethodUtils.invokeMethod(this.mapper, true, "selectByPrimaryKey", id);
+        } catch (Exception e) {
+            log.error("failed to invoke method {} of {} ", "selectByExample", this.mapper);
+            if (e instanceof RuntimeException){
+                throw (RuntimeException) e;
+            }else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private List<E> doList(Object example){
