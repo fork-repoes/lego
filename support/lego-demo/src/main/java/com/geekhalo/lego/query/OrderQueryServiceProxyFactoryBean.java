@@ -1,9 +1,12 @@
 package com.geekhalo.lego.query;
 
 import com.geekhalo.lego.core.query.QueryServiceFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,10 +18,13 @@ import org.springframework.stereotype.Component;
 public class OrderQueryServiceProxyFactoryBean
         implements FactoryBean<OrderQueryServiceProxy>,
         InitializingBean,
+        ApplicationContextAware,
         BeanClassLoaderAware {
     private final Class queryService = OrderQueryServiceProxy.class;
 
     private final QueryServiceFactory queryServiceFactory = new QueryServiceFactory();
+
+    private ApplicationContext applicationContext;
 
     private ClassLoader classLoader;
 
@@ -41,5 +47,11 @@ public class OrderQueryServiceProxyFactoryBean
     public void afterPropertiesSet() throws Exception {
         queryServiceFactory.setQueryService(this.queryService);
         queryServiceFactory.setClassLoader(this.classLoader);
+        queryServiceFactory.setApplicationContext(this.applicationContext);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

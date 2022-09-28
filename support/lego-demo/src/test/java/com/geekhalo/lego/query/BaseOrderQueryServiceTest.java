@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -58,6 +59,13 @@ abstract class BaseOrderQueryServiceTest {
     @AfterEach
     void tearDown() {
     }
+
+    @Test
+    void toStringTest(){
+        String toString = this.getQueryService().toString();
+        Assertions.assertTrue(StringUtils.isNotBlank(toString));
+    }
+
 
     @Test
     void getById() {
@@ -148,5 +156,13 @@ abstract class BaseOrderQueryServiceTest {
             Long count = this.getQueryService().countByUser(countByUserId);
             Assertions.assertTrue(count == 0);
         }
+    }
+
+    @Test
+    public void getPaidByUserId(){
+        List<OrderDetail> paidByUserId = this.getQueryService().getPaidByUserId(userId);
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(paidByUserId));
+        paidByUserId.forEach(orderDetail -> checkForOrderDetail(orderDetail.getOrder().getId(), orderDetail));
+
     }
 }

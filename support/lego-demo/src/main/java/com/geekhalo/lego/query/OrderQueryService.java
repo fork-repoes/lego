@@ -1,5 +1,6 @@
 package com.geekhalo.lego.query;
 
+import com.geekhalo.lego.core.query.NoQueryService;
 import com.geekhalo.lego.core.singlequery.Page;
 
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@NoQueryService
 public interface OrderQueryService extends CustomOrderQueryService{
 
     OrderDetail getById(@Valid @NotNull(message = "订单号不能为null") Long id);
