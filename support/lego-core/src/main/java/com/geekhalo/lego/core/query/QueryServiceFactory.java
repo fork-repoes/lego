@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.query;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -15,6 +16,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,9 +32,8 @@ public class QueryServiceFactory {
     @Setter
     private ApplicationContext applicationContext;
     @Setter
-    private Object repository;
-    @Setter
     private JoinService joinService;
+
 
     public <T> T createQueryService(){
         QueryServiceMetadata metadata = QueryServiceMetadata.fromQueryService(queryService);
@@ -68,7 +69,9 @@ public class QueryServiceFactory {
         }
 
         // 3. 自动解析方法封装
-        QueryServiceMethodDispatcherInterceptor methodDispatcher = createDiatcherInterceptor(methods);
+        Class repositoryClass = metadata.getRepositoryClass();
+        Object repository = this.applicationContext.getBean(repositoryClass);
+        QueryServiceMethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
 
         if (CollectionUtils.isNotEmpty(methods)){
             throw new QueryServiceMethodLostException(methods);
@@ -79,9 +82,13 @@ public class QueryServiceFactory {
         return proxy;
     }
 
-    private QueryServiceMethodDispatcherInterceptor createDiatcherInterceptor(Set<Method> methods) {
+    private QueryServiceMethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
         QueryServiceMethodDispatcherInterceptor methodDispatcher = new QueryServiceMethodDispatcherInterceptor();
-        QueryServiceMethodAdapterFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterFactory(this.repository, this.joinService);
+        Map<String, ResultConverter> beansOfType = this.applicationContext.getBeansOfType(ResultConverter.class);
+        QueryServiceMethodAdapterFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterFactory(repository,
+                this.joinService,
+                metadata,
+                Lists.newArrayList(beansOfType.values()));
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();

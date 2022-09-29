@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 @Transactional
 class OrderQueryServiceTest extends BaseOrderQueryServiceTest{
     @Autowired
-    private OrderQueryService queryService;
+    private OrderQueryServiceImpl queryService;
 
     @Override
     OrderQueryService getQueryService() {

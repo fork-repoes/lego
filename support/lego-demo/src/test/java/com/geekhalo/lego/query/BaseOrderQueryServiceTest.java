@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Slf4j
+@Transactional
 abstract class BaseOrderQueryServiceTest {
     @Autowired
     private OrderQueryRepository orderQueryRepository;

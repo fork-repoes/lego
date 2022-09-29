@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(QueryServiceRegistrar.class)
+@Import(QueryServiceBeanDefinitionRegistrar.class)
 public @interface EnableQueryService {
     String[] basePackages() default {};
 
