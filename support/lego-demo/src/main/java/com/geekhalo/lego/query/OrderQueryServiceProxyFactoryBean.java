@@ -1,5 +1,6 @@
 package com.geekhalo.lego.query;
 
+import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.QueryServiceFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -28,6 +29,8 @@ public class OrderQueryServiceProxyFactoryBean
 
     private ClassLoader classLoader;
 
+    private JoinService joinService;
+
     @Override
     public OrderQueryServiceProxy getObject() throws Exception {
         return this.queryServiceFactory.createQueryService();
@@ -48,6 +51,7 @@ public class OrderQueryServiceProxyFactoryBean
         queryServiceFactory.setQueryService(this.queryService);
         queryServiceFactory.setClassLoader(this.classLoader);
         queryServiceFactory.setApplicationContext(this.applicationContext);
+        queryServiceFactory.setJoinService(this.joinService);
     }
 
     @Override
