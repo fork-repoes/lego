@@ -1,8 +1,6 @@
 package com.geekhalo.lego.query;
 
 import com.geekhalo.lego.core.query.QueryRepository;
-import com.geekhalo.lego.core.singlequery.QueryObjectRepository;
-import org.assertj.core.util.Lists;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
