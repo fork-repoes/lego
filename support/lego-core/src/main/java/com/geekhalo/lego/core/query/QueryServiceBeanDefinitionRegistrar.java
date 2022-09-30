@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.query;
 
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
@@ -53,9 +54,17 @@ public class QueryServiceBeanDefinitionRegistrar
         for (String path : paths){
             Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(path);
             candidateComponents.forEach(beanDefinition -> {
+                BeanDefinition beanDefinitionToUse = buildFactoryBean(beanDefinition);
                 String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry);
-                registry.registerBeanDefinition(beanName, beanDefinition);
+                registry.registerBeanDefinition(beanName, beanDefinitionToUse);
             });
         }
+    }
+
+    private BeanDefinition buildFactoryBean(BeanDefinition beanDefinition) {
+        BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
+                .rootBeanDefinition(OrderQueryServiceProxyFactoryBean.class);
+        definitionBuilder.addConstructorArgValue(beanDefinition.getBeanClassName());
+        return definitionBuilder.getBeanDefinition();
     }
 }

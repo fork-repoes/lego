@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.geekhalo.lego.validator",
         "com.geekhalo.lego.query"
 }, repositoryFactoryBeanClass = JpaBasedQueryObjectRepositoryFactoryBean.class)
-@EnableQueryService
+@EnableQueryService(basePackages = "com.geekhalo.lego.query")
 public class DemoApplication {
     public static void main(String[] args){
         SpringApplication.run(DemoApplication.class, args);

@@ -1,10 +1,12 @@
 package com.geekhalo.lego.core.query;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -34,16 +36,6 @@ public class QueryServiceBeanDefinitionScanner extends ClassPathScanningCandidat
         addExcludeFilter(new AnnotationTypeFilter(NoQueryService.class));
     }
 
-
-//    @Override
-//    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-//
-//        boolean isNonRepositoryInterface = !ClassUtils.isGenericRepositoryInterface(beanDefinition.getBeanClassName());
-//        boolean isTopLevelType = !beanDefinition.getMetadata().hasEnclosingClass();
-//
-//        return isNonRepositoryInterface && (isTopLevelType || isConsiderNestedRepositories);
-//    }
-
     @Override
     public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 
@@ -56,6 +48,13 @@ public class QueryServiceBeanDefinitionScanner extends ClassPathScanningCandidat
         }
 
         return candidates;
+    }
+
+    @Override
+    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+        boolean isInterface = beanDefinition.getMetadata().isInterface();
+        boolean isTopLevelType = !beanDefinition.getMetadata().hasEnclosingClass();
+        return isInterface && isTopLevelType;
     }
 
     @NonNull
