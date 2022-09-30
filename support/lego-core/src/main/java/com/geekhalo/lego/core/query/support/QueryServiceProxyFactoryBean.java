@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
 import org.springframework.beans.BeansException;
@@ -14,14 +14,14 @@ import org.springframework.context.ApplicationContextAware;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class OrderQueryServiceProxyFactoryBean<B>
+public class QueryServiceProxyFactoryBean<B>
         implements FactoryBean<B>,
         InitializingBean,
         ApplicationContextAware,
         BeanClassLoaderAware {
     private final Class queryService;
 
-    private final QueryServiceFactory queryServiceFactory = new QueryServiceFactory();
+    private final QueryServiceProxyFactory queryServiceFactory = new QueryServiceProxyFactory();
 
     private ApplicationContext applicationContext;
 
@@ -30,13 +30,9 @@ public class OrderQueryServiceProxyFactoryBean<B>
     @Autowired
     private JoinService joinService;
 
-    public OrderQueryServiceProxyFactoryBean(Class queryService) {
+    public QueryServiceProxyFactoryBean(Class queryService) {
         this.queryService = queryService;
     }
-
-//    @Autowired(required = false)
-//    private ValidateableMethodValidationInterceptor validateableMethodValidationInterceptor;
-//
 
     @Override
     public B getObject() throws Exception {

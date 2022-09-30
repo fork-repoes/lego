@@ -1,5 +1,6 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
+import com.geekhalo.lego.core.query.QueryServiceDefinition;
 import com.google.common.base.Preconditions;
 import lombok.Value;
 import org.springframework.core.annotation.AnnotatedElementUtils;

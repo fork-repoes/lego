@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support.method;
 
 import java.lang.reflect.Method;
 
@@ -7,6 +7,6 @@ import java.lang.reflect.Method;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface QueryServiceMethodFactory {
-    QueryServiceMethod createForMethod(Method method);
+public interface QueryServiceMethod {
+    Object invoke(Method method, Object[] arguments) ;
 }

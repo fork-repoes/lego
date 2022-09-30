@@ -1,10 +1,15 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
+import com.geekhalo.lego.core.query.NoQueryService;
+import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
+import com.geekhalo.lego.core.query.ResultConverter;
+import com.geekhalo.lego.core.query.support.method.QueryServiceMethod;
+import com.geekhalo.lego.core.query.support.method.QueryServiceMethodAdapterFactory;
+import com.geekhalo.lego.core.query.support.method.TargetBasedQueryServiceMethodFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.aop.framework.ProxyFactory;
@@ -24,7 +29,7 @@ import java.util.Set;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class QueryServiceFactory {
+public class QueryServiceProxyFactory {
     @Setter
     private ClassLoader classLoader;
     @Setter

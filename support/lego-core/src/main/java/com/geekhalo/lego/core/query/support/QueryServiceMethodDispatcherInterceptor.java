@@ -1,5 +1,6 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
+import com.geekhalo.lego.core.query.support.method.QueryServiceMethod;
 import com.google.common.collect.Maps;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

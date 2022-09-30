@@ -1,6 +1,8 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support.method;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
+import com.geekhalo.lego.core.query.ResultConverter;
+import com.geekhalo.lego.core.query.support.QueryServiceMetadata;
 import com.geekhalo.lego.core.singlequery.Page;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;

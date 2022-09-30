@@ -1,5 +1,6 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
+import com.geekhalo.lego.core.query.EnableQueryService;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -63,7 +64,7 @@ public class QueryServiceBeanDefinitionRegistrar
 
     private BeanDefinition buildFactoryBean(BeanDefinition beanDefinition) {
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
-                .rootBeanDefinition(OrderQueryServiceProxyFactoryBean.class);
+                .rootBeanDefinition(QueryServiceProxyFactoryBean.class);
         definitionBuilder.addConstructorArgValue(beanDefinition.getBeanClassName());
         return definitionBuilder.getBeanDefinition();
     }

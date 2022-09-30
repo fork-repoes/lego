@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support.method;
 
 import java.lang.reflect.Method;
 

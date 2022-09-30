@@ -1,7 +1,7 @@
 //package com.geekhalo.lego.query;
 //
 //import com.geekhalo.lego.core.joininmemory.JoinService;
-//import com.geekhalo.lego.core.query.QueryServiceFactory;
+//import com.geekhalo.lego.core.query.support.QueryServiceFactory;
 //import com.geekhalo.lego.core.validator.ValidateableMethodValidationInterceptor;
 //import org.springframework.beans.BeansException;
 //import org.springframework.beans.factory.BeanClassLoaderAware;

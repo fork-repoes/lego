@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.query;
 
+import com.geekhalo.lego.core.query.support.QueryServiceBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -15,9 +16,15 @@ import java.lang.annotation.*;
 @Inherited
 @Import(QueryServiceBeanDefinitionRegistrar.class)
 public @interface EnableQueryService {
+    /**
+     * 扫描包
+     * @return
+     */
     String[] basePackages() default {};
 
-    Class<?>[] basePackageClasses() default {};
-
+    /**
+     * 自定义实现Bean后缀
+     * @return
+     */
     String queryImplementationPostfix() default "Impl";
 }

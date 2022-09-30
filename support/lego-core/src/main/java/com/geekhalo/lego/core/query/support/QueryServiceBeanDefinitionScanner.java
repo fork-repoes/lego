@@ -1,5 +1,7 @@
-package com.geekhalo.lego.core.query;
+package com.geekhalo.lego.core.query.support;
 
+import com.geekhalo.lego.core.query.NoQueryService;
+import com.geekhalo.lego.core.query.QueryServiceDefinition;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.config.BeanDefinition;
