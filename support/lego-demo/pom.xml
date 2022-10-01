@@ -4,19 +4,19 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.9-query_proxy-SNAPSHOT</version>
+		<version>0.1.9-SNAPSHOT</version>
 		<relativePath>../lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-demo</artifactId>
-	<version>0.1.9-query_proxy-SNAPSHOT</version>
+	<version>0.1.9-SNAPSHOT</version>
 	<name>lego-demo</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
 			<artifactId>lego-starter</artifactId>
-			<version>0.1.9-query_proxy-SNAPSHOT</version>
+			<version>0.1.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
