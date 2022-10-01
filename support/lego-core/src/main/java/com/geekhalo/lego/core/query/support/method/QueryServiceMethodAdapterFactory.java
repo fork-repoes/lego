@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.query.support.method;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
-import com.geekhalo.lego.core.query.ResultConverter;
+import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.support.QueryServiceMetadata;
 import com.geekhalo.lego.core.singlequery.Page;
 import com.google.common.collect.Lists;
@@ -29,17 +29,17 @@ public class QueryServiceMethodAdapterFactory implements QueryServiceMethodFacto
     private final Object repository;
     private final JoinService joinService;
     private final QueryServiceMetadata metadata;
-    private final List<ResultConverter> resultConverters;
+    private final List<QueryResultConverter> queryResultConverters;
 
 
     public QueryServiceMethodAdapterFactory(Object repository,
                                             JoinService joinService,
                                             QueryServiceMetadata metadata,
-                                            List<ResultConverter> resultConverters) {
+                                            List<QueryResultConverter> queryResultConverters) {
         this.repository = repository;
         this.joinService = joinService;
         this.metadata = metadata;
-        this.resultConverters = resultConverters;
+        this.queryResultConverters = queryResultConverters;
     }
 
     @Override
@@ -175,9 +175,9 @@ public class QueryServiceMethodAdapterFactory implements QueryServiceMethodFacto
             };
         }
 
-        for (ResultConverter resultConverter : this.resultConverters){
-            if (resultConverter.support(entityClass, itemClass)){
-                return data -> resultConverter.convert(data);
+        for (QueryResultConverter queryResultConverter : this.queryResultConverters){
+            if (queryResultConverter.support(entityClass, itemClass)){
+                return data -> queryResultConverter.convert(data);
             }
         }
 

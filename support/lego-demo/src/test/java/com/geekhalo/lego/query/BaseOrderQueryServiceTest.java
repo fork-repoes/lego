@@ -109,14 +109,23 @@ abstract class BaseOrderQueryServiceTest {
     @Test
     void getByUserId_error1() {
         Assertions.assertThrows(Exception.class, ()->{
-            this.getQueryService().getByUserId(null);
+            try {
+                this.getQueryService().getByUserId(null);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         });
     }
 
     @Test
     void getByUserId_error2() {
         Assertions.assertThrows(Exception.class, ()->{
-            this.getQueryService().getByUserId(new GetByUserId());
+            try {
+                this.getQueryService().getByUserId(new GetByUserId());
+            }catch (RuntimeException e){
+                throw e;
+            }
         });
     }
 

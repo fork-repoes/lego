@@ -14,6 +14,7 @@ public interface OrderQueryRepository
         extends JpaRepository<Order, Long>,
         QueryRepository<Order, Long> {
 
+    Order getById(Long id);
 
     List<Order> getByUserIdAndStatus(Long id, OrderStatus paid);
 }

@@ -3,7 +3,7 @@ package com.geekhalo.lego.core.query.support;
 import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.NoQueryService;
 import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
-import com.geekhalo.lego.core.query.ResultConverter;
+import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.support.method.QueryServiceMethod;
 import com.geekhalo.lego.core.query.support.method.QueryServiceMethodAdapterFactory;
 import com.geekhalo.lego.core.query.support.method.TargetBasedQueryServiceMethodFactory;
@@ -89,7 +89,7 @@ public class QueryServiceProxyFactory {
 
     private QueryServiceMethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
         QueryServiceMethodDispatcherInterceptor methodDispatcher = new QueryServiceMethodDispatcherInterceptor();
-        Map<String, ResultConverter> beansOfType = this.applicationContext.getBeansOfType(ResultConverter.class);
+        Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
         QueryServiceMethodAdapterFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterFactory(repository,
                 this.joinService,
                 metadata,
