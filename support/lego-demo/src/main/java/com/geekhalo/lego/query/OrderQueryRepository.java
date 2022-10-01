@@ -1,6 +1,6 @@
 package com.geekhalo.lego.query;
 
-import com.geekhalo.lego.core.singlequery.QueryObjectRepository;
+import com.geekhalo.lego.core.query.QueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,7 +12,9 @@ import java.util.List;
  */
 public interface OrderQueryRepository
         extends JpaRepository<Order, Long>,
-        QueryObjectRepository<Order>{
+        QueryRepository<Order, Long> {
+
+    Order getById(Long id);
 
     List<Order> getByUserIdAndStatus(Long id, OrderStatus paid);
 }

@@ -15,9 +15,9 @@ import javax.transaction.Transactional;
 @SpringBootTest(classes = DemoApplication.class)
 @Slf4j
 @Transactional
-class OrderQueryServiceTest extends BaseOrderQueryServiceTest{
+class OrderQueryServiceProxyTest extends BaseOrderQueryServiceTest{
     @Autowired
-    private OrderQueryServiceImpl queryService;
+    private OrderQueryServiceProxy queryService;
 
     @Override
     OrderQueryService getQueryService() {
