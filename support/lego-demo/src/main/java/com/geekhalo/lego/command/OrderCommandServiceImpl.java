@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by taoli on 2022/10/2.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
 @Service
+@Transactional
 public class OrderCommandServiceImpl implements OrderCommandService{
     @Autowired
     private OrderRepository orderRepository;
@@ -33,7 +36,7 @@ public class OrderCommandServiceImpl implements OrderCommandService{
 
     @Override
     public void paySuccess(PaySuccessCommand command) {
-        Order order = this.orderRepository.getById(command.getOrderId());
+        Order order = this.orderRepository.findById(command.getOrderId()).orElse(null);
         order.paySuccess(command.getChanel(), command.getPrice());
         this.orderRepository.save(order);
         order.consumeAndClean(event -> eventPublisher.publishEvent(event));
