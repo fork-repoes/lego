@@ -13,8 +13,8 @@ import java.util.function.Function;
  */
 @Value
 @Builder
-public class QueryServiceMethodAdapter<Q, R>
-    extends AbstractQueryServiceMethod<Q, R>{
+public class QueryServiceMethodInvokerAdapter<Q, R>
+    extends AbstractQueryServiceMethodInvoker<Q, R> {
     private final Function<Object[], Q> queryExecutor;
     private final Function<Q, R> converter;
     private final Function<R, R> filler;

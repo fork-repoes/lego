@@ -13,9 +13,9 @@ import javax.transaction.Transactional;
  */
 @SpringBootTest(classes = DemoApplication.class)
 @Transactional
-class OrderCommandServiceTest extends BaseOrderCommandServiceTest{
+class OrderCommandServiceProxyTest extends BaseOrderCommandServiceTest{
     @Autowired
-    private OrderCommandServiceImpl orderCommandService;
+    private OrderCommandServiceProxy orderCommandService;
 
     @Override
     OrderCommandService orderCommandService() {

@@ -1,5 +1,7 @@
 package com.geekhalo.lego.core.query.support.method;
 
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
+
 import java.lang.reflect.Method;
 
 /**
@@ -7,7 +9,7 @@ import java.lang.reflect.Method;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-abstract class AbstractQueryServiceMethod<Q,R> implements QueryServiceMethod{
+abstract class AbstractQueryServiceMethodInvoker<Q,R> implements ServiceMethodInvoker {
     @Override
     public final Object invoke(Method method, Object[] arguments) {
         validate(method, arguments);

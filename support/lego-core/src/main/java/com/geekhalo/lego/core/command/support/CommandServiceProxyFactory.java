@@ -1,15 +1,13 @@
-package com.geekhalo.lego.core.query.support;
+package com.geekhalo.lego.core.command.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinService;
-import com.geekhalo.lego.core.query.NoQueryService;
-import com.geekhalo.lego.core.query.QueryResultConverter;
-import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
-import com.geekhalo.lego.core.query.support.method.QueryServiceMethodAdapterInvokerFactory;
+import com.geekhalo.lego.core.command.NoCommandService;
+import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
-import com.google.common.collect.Lists;
+import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.collect.Sets;
+import lombok.AccessLevel;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -22,7 +20,6 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,25 +27,27 @@ import java.util.Set;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class QueryServiceProxyFactory {
-    @Setter
+public class CommandServiceProxyFactory {
+    @Setter(AccessLevel.PROTECTED)
     private ClassLoader classLoader;
-    @Setter
+    @Setter(AccessLevel.PROTECTED)
     private Class queryService;
-    @Setter
+    @Setter(AccessLevel.PROTECTED)
     private ApplicationContext applicationContext;
-    @Setter
-    private JoinService joinService;
+    @Setter(AccessLevel.PROTECTED)
+    private LazyLoadProxyFactory lazyLoadProxyFactory;
+    @Setter(AccessLevel.PROTECTED)
+    private ValidateService validateService;
 
 
-    public <T> T createQueryService(){
-        QueryServiceMetadata metadata = QueryServiceMetadata.fromQueryService(queryService);
+    public <T> T createCommandService(){
+        CommandServiceMetadata metadata = CommandServiceMetadata.fromCommandService(queryService);
 
         Object target = createTargetQueryService(metadata);
         ProxyFactory result = new ProxyFactory();
 
         result.setTarget(target);
-        result.setInterfaces(metadata.getQueryServiceClass(), TransactionalProxy.class);
+        result.setInterfaces(metadata.getCommandServiceClass(), TransactionalProxy.class);
 
         if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
             result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
@@ -61,9 +60,9 @@ public class QueryServiceProxyFactory {
         result.addAdvice(createTargetDispatcherInterceptor(target, methods));
 
         // 2. 自定义实现类封装
-        List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(metadata.getQueryServiceClass());
+        List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(metadata.getCommandServiceClass());
         for (Class itfCls : allInterfaces){
-            if (itfCls.getAnnotation(NoQueryService.class) != null){
+            if (itfCls.getAnnotation(NoCommandService.class) != null){
                 continue;
             }
             String clsName = itfCls.getSimpleName();
@@ -80,31 +79,32 @@ public class QueryServiceProxyFactory {
         MethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
 
         if (CollectionUtils.isNotEmpty(methods)){
-            throw new QueryServiceMethodLostException(methods);
+//            throw new CommandServiceMethodLostException(methods);
         }
 
-        result.addAdvice(methodDispatcher);
+//        result.addAdvice(methodDispatcher);
         T proxy = (T) result.getProxy(classLoader);
         return proxy;
     }
 
-    private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
-        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
-        Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
-        QueryServiceMethodAdapterInvokerFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterInvokerFactory(repository,
-                this.joinService,
-                metadata,
-                Lists.newArrayList(beansOfType.values()));
-        Iterator<Method> iterator = methods.iterator();
-        while (iterator.hasNext()){
-            Method callMethod = iterator.next();
-            ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
-            if (exeMethod != null){
-                methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
-            }
-        }
-        return methodDispatcher;
+    private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, CommandServiceMetadata metadata) {
+//        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
+//        Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
+//        QueryServiceMethodAdapterInvokerFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterInvokerFactory(repository,
+//                this.joinService,
+//                metadata,
+//                Lists.newArrayList(beansOfType.values()));
+//        Iterator<Method> iterator = methods.iterator();
+//        while (iterator.hasNext()){
+//            Method callMethod = iterator.next();
+//            ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
+//            if (exeMethod != null){
+//                methodDispatcher.register(callMethod, exeMethod);
+//                iterator.remove();
+//            }
+//        }
+//        return methodDispatcher;
+        return null;
     }
 
     private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
@@ -123,7 +123,7 @@ public class QueryServiceProxyFactory {
         return targetMethodDispatcher;
     }
 
-    private Object createTargetQueryService(QueryServiceMetadata metadata) {
+    private Object createTargetQueryService(CommandServiceMetadata metadata) {
         return new Object();
     }
 }

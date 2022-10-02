@@ -1,8 +1,8 @@
-package com.geekhalo.lego.core.query.support;
+package com.geekhalo.lego.core.command.support;
 
-import com.geekhalo.lego.core.query.EnableQueryService;
-import com.geekhalo.lego.core.query.NoQueryService;
-import com.geekhalo.lego.core.query.QueryServiceDefinition;
+import com.geekhalo.lego.core.command.CommandServiceDefinition;
+import com.geekhalo.lego.core.command.EnableCommandService;
+import com.geekhalo.lego.core.command.NoCommandService;
 import com.geekhalo.lego.core.support.scan.InterfaceBeanDefinitionScanner;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -19,11 +19,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by taoli on 2022/9/25.
+ * Created by taoli on 2022/10/2.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class QueryServiceBeanDefinitionRegistrar
+public class CommandServiceBeanDefinitionRegistrar
         implements ImportBeanDefinitionRegistrar,
         ResourceLoaderAware,
         EnvironmentAware {
@@ -44,16 +44,16 @@ public class QueryServiceBeanDefinitionRegistrar
     public void registerBeanDefinitions(AnnotationMetadata metadata,
                                         BeanDefinitionRegistry registry,
                                         BeanNameGenerator beanNameGenerator) {
-        if (metadata.getAnnotationAttributes(EnableQueryService.class.getName()) == null) {
+        if (metadata.getAnnotationAttributes(EnableCommandService.class.getName()) == null) {
             return;
         }
 
-        Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(EnableQueryService.class.getName());
+        Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(EnableCommandService.class.getName());
         String[] paths = (String[]) annotationAttributes.get("basePackages");
 
         InterfaceBeanDefinitionScanner scanner = new InterfaceBeanDefinitionScanner(registry,
-                QueryServiceDefinition.class,
-                NoQueryService.class);
+                CommandServiceDefinition.class,
+                NoCommandService.class);
         scanner.setEnvironment(environment);
         scanner.setResourceLoader(resourceLoader);
         for (String path : paths){
@@ -68,7 +68,7 @@ public class QueryServiceBeanDefinitionRegistrar
 
     private BeanDefinition buildFactoryBean(BeanDefinition beanDefinition) {
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
-                .rootBeanDefinition(QueryServiceProxyFactoryBean.class);
+                .rootBeanDefinition(CommandServiceProxyFactoryBean.class);
         definitionBuilder.addConstructorArgValue(beanDefinition.getBeanClassName());
         return definitionBuilder.getBeanDefinition();
     }

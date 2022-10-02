@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.CommandRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +10,6 @@ import org.springframework.stereotype.Repository;
  * 编程就像玩 Lego
  */
 @Repository("orderRepositoryForCommand")
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>,
+        CommandRepository<Order, Long> {
 }

@@ -1,8 +1,6 @@
 package com.geekhalo.lego.command;
 
 import com.geekhalo.lego.loader.LazyLoadAddressById;
-import com.geekhalo.lego.loader.LazyLoadDefaultAddressByUserId;
-import com.geekhalo.lego.loader.LazyLoadProduceById;
 import com.geekhalo.lego.loader.LazyLoadProductsByIds;
 import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.product.Product;

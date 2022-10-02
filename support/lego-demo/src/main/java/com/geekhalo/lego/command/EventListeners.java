@@ -5,7 +5,6 @@ import org.assertj.core.util.Lists;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
 import java.util.List;
 
 /**

@@ -1,26 +1,27 @@
-package com.geekhalo.lego.core.query.support;
+package com.geekhalo.lego.core.support.scan;
 
-import com.geekhalo.lego.core.query.NoQueryService;
-import com.geekhalo.lego.core.query.QueryServiceDefinition;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.lang.NonNull;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
-public class QueryServiceBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
-    private BeanDefinitionRegistry registry;
+public class InterfaceBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
+    private final BeanDefinitionRegistry registry;
 
-    public QueryServiceBeanDefinitionScanner(BeanDefinitionRegistry registry) {
+    public InterfaceBeanDefinitionScanner(BeanDefinitionRegistry registry,
+                                          Class<? extends Annotation> scanClass,
+                                          Class<? extends Annotation> excludeClass) {
         super(false);
         this.registry = registry;
 
-        super.addIncludeFilter(new AnnotationTypeFilter(QueryServiceDefinition.class, true, true));
-        addExcludeFilter(new AnnotationTypeFilter(NoQueryService.class));
+        super.addIncludeFilter(new AnnotationTypeFilter(scanClass, true, true));
+        addExcludeFilter(new AnnotationTypeFilter(excludeClass));
     }
 
     @Override
