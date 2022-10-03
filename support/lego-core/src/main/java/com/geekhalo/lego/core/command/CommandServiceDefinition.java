@@ -17,7 +17,9 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface CommandServiceDefinition {
-    Class domainClass();
+    Class<? extends AggRoot> domainClass();
 
     Class<? extends CommandRepository> repositoryClass();
+
+    Class idClass();
 }

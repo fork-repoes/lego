@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.CommandForCreate;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Data
-public class CreateOrderCommand {
+public class CreateOrderCommand implements CommandForCreate {
     private Long userId;
     private Long userAddress;
     private List<ProductForBuy> products;

@@ -16,6 +16,8 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 public class CommandServiceMetadata {
     private Class domainClass;
 
+    private Class idClass;
+
     private Class repositoryClass;
 
     private Class commandServiceClass;
@@ -27,6 +29,7 @@ public class CommandServiceMetadata {
 
         return CommandServiceMetadata.builder()
                 .domainClass(mergedAnnotation.domainClass())
+                .idClass(mergedAnnotation.idClass())
                 .repositoryClass(mergedAnnotation.repositoryClass())
                 .commandServiceClass(commandService)
                 .build();

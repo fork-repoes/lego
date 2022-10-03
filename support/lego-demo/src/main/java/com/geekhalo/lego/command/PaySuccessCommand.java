@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.CommandForUpdate;
 import lombok.Data;
 
 /**
@@ -8,10 +9,15 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class PaySuccessCommand {
+public class PaySuccessCommand implements CommandForUpdate<Long> {
     private Long orderId;
 
     private String chanel;
 
     private Long price;
+
+    @Override
+    public Long getId() {
+        return orderId;
+    }
 }

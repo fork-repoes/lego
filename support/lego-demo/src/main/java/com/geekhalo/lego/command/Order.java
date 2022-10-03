@@ -1,5 +1,7 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.DomainEvent;
 import com.geekhalo.lego.query.OrderStatus;
 import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.product.Product;
@@ -24,9 +26,10 @@ import java.util.stream.Collectors;
 @Entity(name = "CommandOrder")
 @Table(name = "command_order")
 @Setter(AccessLevel.PRIVATE)
-public class Order{
+public class Order implements AggRoot<Long> {
+
     @Transient
-    private final List<Object> events = Lists.newArrayList();
+    private final List<DomainEvent> events = Lists.newArrayList();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,10 +92,8 @@ public class Order{
         this.items.add(orderItem);
     }
 
-
-    public void consumeAndClean(Consumer<Object> eventListener){
-        this.events.forEach(eventListener);
-        this.events.clear();
+    public void paySuccess(PaySuccessCommand paySuccessCommand){
+        paySuccess(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
     }
 
     public void paySuccess(String chanel, Long price) {
@@ -103,5 +104,11 @@ public class Order{
 
         OrderPaySuccessEvent event = new OrderPaySuccessEvent(this);
         this.events.add(event);
+    }
+
+    @Override
+    public void consumeAndClearEvent(Consumer<DomainEvent> eventConsumer) {
+        this.events.forEach(eventConsumer);
+        this.events.clear();
     }
 }

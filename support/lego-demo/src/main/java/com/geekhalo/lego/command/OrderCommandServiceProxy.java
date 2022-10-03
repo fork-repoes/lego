@@ -9,6 +9,7 @@ import com.geekhalo.lego.core.command.CommandServiceDefinition;
  */
 @CommandServiceDefinition(
         domainClass = Order.class,
+        idClass = Long.class,
         repositoryClass = OrderRepository.class)
 public interface OrderCommandServiceProxy extends OrderCommandService{
 }

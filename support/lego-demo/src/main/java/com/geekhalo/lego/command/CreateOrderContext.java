@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.ContextForCreate;
 import com.geekhalo.lego.loader.LazyLoadAddressById;
 import com.geekhalo.lego.loader.LazyLoadProductsByIds;
 import com.geekhalo.lego.service.address.Address;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 @Data
-public class CreateOrderContext {
+public class CreateOrderContext implements ContextForCreate<CreateOrderCommand> {
     private final CreateOrderCommand command;
 
     @LazyLoadAddressById(id = "command.userAddress")

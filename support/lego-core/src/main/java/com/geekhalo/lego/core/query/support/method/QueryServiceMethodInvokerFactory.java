@@ -27,17 +27,17 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class QueryServiceMethodAdapterInvokerFactory implements ServiceMethodInvokerFactory {
+public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFactory {
     private final Object repository;
     private final JoinService joinService;
     private final QueryServiceMetadata metadata;
     private final List<QueryResultConverter> queryResultConverters;
 
 
-    public QueryServiceMethodAdapterInvokerFactory(Object repository,
-                                                   JoinService joinService,
-                                                   QueryServiceMetadata metadata,
-                                                   List<QueryResultConverter> queryResultConverters) {
+    public QueryServiceMethodInvokerFactory(Object repository,
+                                            JoinService joinService,
+                                            QueryServiceMetadata metadata,
+                                            List<QueryResultConverter> queryResultConverters) {
         this.repository = repository;
         this.joinService = joinService;
         this.metadata = metadata;
@@ -57,7 +57,7 @@ public class QueryServiceMethodAdapterInvokerFactory implements ServiceMethodInv
 
         Function filler = createFiller(method.getReturnType());
 
-        return new QueryServiceMethodInvokerAdapter<>(queryExecutor, converter, filler);
+        return new QueryServiceMethodInvoker<>(queryExecutor, converter, filler);
     }
 
     private Function createFiller(Class<?> returnType) {

@@ -13,24 +13,33 @@ import java.util.function.Function;
  */
 @Value
 @Builder
-public class QueryServiceMethodInvokerAdapter<Q, R>
-    extends AbstractQueryServiceMethodInvoker<Q, R> {
+public class QueryServiceMethodInvoker<Q, R>
+        implements com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker {
     private final Function<Object[], Q> queryExecutor;
     private final Function<Q, R> converter;
     private final Function<R, R> filler;
-
     @Override
-    protected Q query(Method method, Object[] arguments) {
+    public final Object invoke(Method method, Object[] arguments) {
+        validate(method, arguments);
+        Q qResult = query(method, arguments);
+        R resultResult = convert(qResult);
+        fill(resultResult);
+        return resultResult;
+    }
+
+    private Q query(Method method, Object[] arguments) {
         return queryExecutor.apply(arguments);
     }
 
-    @Override
-    protected R convert(Q queryResult) {
+    private R convert(Q queryResult) {
         return converter.apply(queryResult);
     }
 
-    @Override
-    protected R fill(R queryResult) {
+    private R fill(R queryResult) {
         return filler.apply(queryResult);
+    }
+
+    protected void validate(Method method, Object[] arguments){
+        return;
     }
 }

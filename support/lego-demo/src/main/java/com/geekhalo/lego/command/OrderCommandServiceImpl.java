@@ -1,6 +1,7 @@
 package com.geekhalo.lego.command;
 
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
+import com.geekhalo.lego.core.validator.ValidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,20 @@ public class OrderCommandServiceImpl implements OrderCommandService{
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    private ValidateService validateService;
+
     @Override
     public Long create(CreateOrderCommand command) {
         CreateOrderContext context = new CreateOrderContext(command);
         CreateOrderContext contextProxy = this.lazyLoadProxyFactory.createProxyFor(context);
+
+        validateService.validate(contextProxy);
+
         Order order = Order.create(contextProxy);
+
         this.orderRepository.save(order);
-        order.consumeAndClean(event -> eventPublisher.publishEvent(event));
+        order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
         return order.getId();
     }
 
@@ -39,6 +47,6 @@ public class OrderCommandServiceImpl implements OrderCommandService{
         Order order = this.orderRepository.findById(command.getOrderId()).orElse(null);
         order.paySuccess(command.getChanel(), command.getPrice());
         this.orderRepository.save(order);
-        order.consumeAndClean(event -> eventPublisher.publishEvent(event));
+        order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
     }
 }

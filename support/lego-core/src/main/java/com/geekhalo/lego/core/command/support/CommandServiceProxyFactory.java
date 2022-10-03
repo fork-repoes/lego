@@ -1,6 +1,10 @@
 package com.geekhalo.lego.core.command.support;
 
+import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.CommandServiceMethodLostException;
 import com.geekhalo.lego.core.command.NoCommandService;
+import com.geekhalo.lego.core.command.support.method.CreateServiceMethodInvokerFactory;
+import com.geekhalo.lego.core.command.support.method.UpdateServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
@@ -75,36 +79,62 @@ public class CommandServiceProxyFactory {
 
         // 3. 自动解析方法封装
         Class repositoryClass = metadata.getRepositoryClass();
-        Object repository = this.applicationContext.getBean(repositoryClass);
-        MethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
+        CommandRepository repository = (CommandRepository) this.applicationContext.getBean(repositoryClass);
+
+        MethodDispatcherInterceptor createMethodDispatcher = createCreateMethodDispatcherInterceptor(methods, repository, metadata);
+        result.addAdvice(createMethodDispatcher);
+
+        MethodDispatcherInterceptor updateMethodDispatcher = createUpdateMethodDispatcherInterceptor(methods, repository, metadata);
+        result.addAdvice(updateMethodDispatcher);
+
 
         if (CollectionUtils.isNotEmpty(methods)){
-//            throw new CommandServiceMethodLostException(methods);
+            throw new CommandServiceMethodLostException(methods);
         }
 
-//        result.addAdvice(methodDispatcher);
+
         T proxy = (T) result.getProxy(classLoader);
         return proxy;
     }
 
-    private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, CommandServiceMetadata metadata) {
-//        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
-//        Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
-//        QueryServiceMethodAdapterInvokerFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterInvokerFactory(repository,
-//                this.joinService,
-//                metadata,
-//                Lists.newArrayList(beansOfType.values()));
-//        Iterator<Method> iterator = methods.iterator();
-//        while (iterator.hasNext()){
-//            Method callMethod = iterator.next();
-//            ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
-//            if (exeMethod != null){
-//                methodDispatcher.register(callMethod, exeMethod);
-//                iterator.remove();
-//            }
-//        }
-//        return methodDispatcher;
-        return null;
+    private MethodDispatcherInterceptor createCreateMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
+        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
+
+        CreateServiceMethodInvokerFactory methodInvokerFactory = new CreateServiceMethodInvokerFactory(metadata.getDomainClass(), metadata.getIdClass());
+        methodInvokerFactory.setLazyLoadProxyFactory(this.lazyLoadProxyFactory);
+        methodInvokerFactory.setValidateService(this.validateService);
+        methodInvokerFactory.setEventPublisher(this.applicationContext);
+        methodInvokerFactory.setCommandRepository(repository);
+        Iterator<Method> iterator = methods.iterator();
+        while (iterator.hasNext()){
+            Method callMethod = iterator.next();
+            ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
+            if (exeMethod != null){
+                methodDispatcher.register(callMethod, exeMethod);
+                iterator.remove();
+            }
+        }
+        return methodDispatcher;
+    }
+
+    private MethodDispatcherInterceptor createUpdateMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
+        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
+
+        UpdateServiceMethodInvokerFactory methodInvokerFactory = new UpdateServiceMethodInvokerFactory(metadata.getDomainClass(), metadata.getIdClass());
+        methodInvokerFactory.setLazyLoadProxyFactory(this.lazyLoadProxyFactory);
+        methodInvokerFactory.setValidateService(this.validateService);
+        methodInvokerFactory.setEventPublisher(this.applicationContext);
+        methodInvokerFactory.setCommandRepository(repository);
+        Iterator<Method> iterator = methods.iterator();
+        while (iterator.hasNext()){
+            Method callMethod = iterator.next();
+            ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
+            if (exeMethod != null){
+                methodDispatcher.register(callMethod, exeMethod);
+                iterator.remove();
+            }
+        }
+        return methodDispatcher;
     }
 
     private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
