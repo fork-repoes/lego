@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.support.AbstractRocketMQSendInterceptor;
+import com.geekhalo.lego.core.support.consumer.AbstractRocketMQSendInterceptor;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import lombok.Value;

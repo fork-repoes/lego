@@ -1,6 +1,9 @@
 package com.geekhalo.lego.core.query.support;
 
 import com.geekhalo.lego.core.query.EnableQueryService;
+import com.geekhalo.lego.core.query.NoQueryService;
+import com.geekhalo.lego.core.query.QueryServiceDefinition;
+import com.geekhalo.lego.core.support.scan.InterfaceBeanDefinitionScanner;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -48,7 +51,9 @@ public class QueryServiceBeanDefinitionRegistrar
         Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(EnableQueryService.class.getName());
         String[] paths = (String[]) annotationAttributes.get("basePackages");
 
-        QueryServiceBeanDefinitionScanner scanner = new QueryServiceBeanDefinitionScanner(registry);
+        InterfaceBeanDefinitionScanner scanner = new InterfaceBeanDefinitionScanner(registry,
+                QueryServiceDefinition.class,
+                NoQueryService.class);
         scanner.setEnvironment(environment);
         scanner.setResourceLoader(resourceLoader);
         for (String path : paths){

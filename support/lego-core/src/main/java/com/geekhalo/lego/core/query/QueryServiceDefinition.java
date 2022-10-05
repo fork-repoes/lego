@@ -20,5 +20,5 @@ public @interface QueryServiceDefinition {
 
     Class domainClass();
 
-    Class repositoryClass();
+    Class<? extends QueryRepository> repositoryClass();
 }

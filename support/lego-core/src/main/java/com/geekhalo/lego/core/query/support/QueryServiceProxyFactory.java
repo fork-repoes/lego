@@ -2,11 +2,12 @@ package com.geekhalo.lego.core.query.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.NoQueryService;
-import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
 import com.geekhalo.lego.core.query.QueryResultConverter;
-import com.geekhalo.lego.core.query.support.method.QueryServiceMethod;
-import com.geekhalo.lego.core.query.support.method.QueryServiceMethodAdapterFactory;
-import com.geekhalo.lego.core.query.support.method.TargetBasedQueryServiceMethodFactory;
+import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
+import com.geekhalo.lego.core.query.support.method.QueryServiceMethodInvokerFactory;
+import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
+import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
@@ -76,7 +77,7 @@ public class QueryServiceProxyFactory {
         // 3. 自动解析方法封装
         Class repositoryClass = metadata.getRepositoryClass();
         Object repository = this.applicationContext.getBean(repositoryClass);
-        QueryServiceMethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
+        MethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
 
         if (CollectionUtils.isNotEmpty(methods)){
             throw new QueryServiceMethodLostException(methods);
@@ -87,17 +88,17 @@ public class QueryServiceProxyFactory {
         return proxy;
     }
 
-    private QueryServiceMethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
-        QueryServiceMethodDispatcherInterceptor methodDispatcher = new QueryServiceMethodDispatcherInterceptor();
+    private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
+        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
         Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
-        QueryServiceMethodAdapterFactory queryServiceMethodAdapterFactory = new QueryServiceMethodAdapterFactory(repository,
+        QueryServiceMethodInvokerFactory queryServiceMethodAdapterFactory = new QueryServiceMethodInvokerFactory(repository,
                 this.joinService,
                 metadata,
                 Lists.newArrayList(beansOfType.values()));
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
-            QueryServiceMethod exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
+            ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 methodDispatcher.register(callMethod, exeMethod);
                 iterator.remove();
@@ -106,13 +107,13 @@ public class QueryServiceProxyFactory {
         return methodDispatcher;
     }
 
-    private QueryServiceMethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
-        QueryServiceMethodDispatcherInterceptor targetMethodDispatcher = new QueryServiceMethodDispatcherInterceptor();
-        TargetBasedQueryServiceMethodFactory targetBasedQueryServiceMethodFactory = new TargetBasedQueryServiceMethodFactory(target);
+    private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
+        MethodDispatcherInterceptor targetMethodDispatcher = new MethodDispatcherInterceptor();
+        TargetBasedServiceMethodInvokerFactory targetBasedQueryServiceMethodFactory = new TargetBasedServiceMethodInvokerFactory(target);
         Iterator<Method> targetIterator = methods.iterator();
         while (targetIterator.hasNext()){
             Method callMethod = targetIterator.next();
-            QueryServiceMethod exeMethod = targetBasedQueryServiceMethodFactory.createForMethod(callMethod);
+            ServiceMethodInvoker exeMethod = targetBasedQueryServiceMethodFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 targetMethodDispatcher.register(callMethod, exeMethod);
                 targetIterator.remove();

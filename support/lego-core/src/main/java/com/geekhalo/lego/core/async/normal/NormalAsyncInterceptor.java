@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.normal;
 
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.support.AbstractRocketMQSendInterceptor;
+import com.geekhalo.lego.core.support.consumer.AbstractRocketMQSendInterceptor;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
