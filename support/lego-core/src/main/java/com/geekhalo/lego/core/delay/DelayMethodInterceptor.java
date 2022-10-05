@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.delay;
 
 import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
-import com.geekhalo.lego.core.support.AbstractRocketMQSendInterceptor;
+import com.geekhalo.lego.core.support.consumer.AbstractRocketMQSendInterceptor;
 import com.google.common.collect.Maps;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;

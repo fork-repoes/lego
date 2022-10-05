@@ -4,6 +4,8 @@ import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.support.QueryServiceMetadata;
 import com.geekhalo.lego.core.singlequery.Page;
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +27,14 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class QueryServiceMethodAdapterFactory implements QueryServiceMethodFactory{
+public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFactory {
     private final Object repository;
     private final JoinService joinService;
     private final QueryServiceMetadata metadata;
     private final List<QueryResultConverter> queryResultConverters;
 
 
-    public QueryServiceMethodAdapterFactory(Object repository,
+    public QueryServiceMethodInvokerFactory(Object repository,
                                             JoinService joinService,
                                             QueryServiceMetadata metadata,
                                             List<QueryResultConverter> queryResultConverters) {
@@ -43,7 +45,7 @@ public class QueryServiceMethodAdapterFactory implements QueryServiceMethodFacto
     }
 
     @Override
-    public QueryServiceMethod createForMethod(Method method) {
+    public ServiceMethodInvoker createForMethod(Method method) {
         Method matchingMethod = findMatchMethodFromRepository(method);
         if (matchingMethod == null){
             return null;
@@ -55,7 +57,7 @@ public class QueryServiceMethodAdapterFactory implements QueryServiceMethodFacto
 
         Function filler = createFiller(method.getReturnType());
 
-        return new QueryServiceMethodAdapter<>(queryExecutor, converter, filler);
+        return new QueryServiceMethodInvoker<>(queryExecutor, converter, filler);
     }
 
     private Function createFiller(Class<?> returnType) {

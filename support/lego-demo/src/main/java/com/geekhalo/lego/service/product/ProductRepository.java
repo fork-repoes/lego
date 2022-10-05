@@ -34,7 +34,7 @@ public class ProductRepository {
         return Product.builder()
                 .id(id)
                 .name("商品-" + id)
-                .price(id.intValue() % 100)
+                .price(id.intValue() / 100)
                 .build();
     }
 }

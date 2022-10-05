@@ -26,5 +26,5 @@ public @interface EnableQueryService {
      * 自定义实现Bean后缀
      * @return
      */
-    String queryImplementationPostfix() default "Impl";
+    String customImplementationPostfix() default "Impl";
 }

@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.support;
+package com.geekhalo.lego.core.support.consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;

@@ -1,6 +1,6 @@
-package com.geekhalo.lego.core.query.support;
+package com.geekhalo.lego.core.support.intercepter;
 
-import com.geekhalo.lego.core.query.support.method.QueryServiceMethod;
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.google.common.collect.Maps;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -13,8 +13,8 @@ import java.util.Map;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-final class QueryServiceMethodDispatcherInterceptor implements MethodInterceptor {
-    protected final Map<Method, QueryServiceMethod> methodMap = Maps.newHashMap();
+public final class MethodDispatcherInterceptor implements MethodInterceptor {
+    protected final Map<Method, ServiceMethodInvoker> methodMap = Maps.newHashMap();
 
     public boolean support(Method method){
         return methodMap.containsKey(method);
@@ -23,14 +23,14 @@ final class QueryServiceMethodDispatcherInterceptor implements MethodInterceptor
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method callMethod = invocation.getMethod();
-        QueryServiceMethod queryServiceMethod = this.methodMap.get(callMethod);
-        if (queryServiceMethod != null){
-            return queryServiceMethod.invoke(invocation.getMethod(), invocation.getArguments());
+        ServiceMethodInvoker serviceMethodInvoker = this.methodMap.get(callMethod);
+        if (serviceMethodInvoker != null){
+            return serviceMethodInvoker.invoke(invocation.getMethod(), invocation.getArguments());
         }
         return invocation.proceed();
     }
 
-    public void register(Method callMethod, QueryServiceMethod executorMethod){
+    public void register(Method callMethod, ServiceMethodInvoker executorMethod){
         this.methodMap.put(callMethod, executorMethod);
     }
 }
