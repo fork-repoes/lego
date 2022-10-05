@@ -8,7 +8,7 @@ import com.geekhalo.lego.core.command.NoCommandService;
  * 编程就像玩 Lego
  */
 @NoCommandService
-public interface OrderCommandService {
+public interface OrderCommandService extends CustomOrderCommandService{
     Long create(CreateOrderCommand command);
 
     void paySuccess(PaySuccessCommand command);

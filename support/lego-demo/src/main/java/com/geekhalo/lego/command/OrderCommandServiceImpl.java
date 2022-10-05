@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.AggNotFoundException;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,12 @@ public class OrderCommandServiceImpl implements OrderCommandService{
         order.paySuccess(command.getChanel(), command.getPrice());
         this.orderRepository.save(order);
         order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
+    }
+
+    @Override
+    public void cancel(Long orderId) {
+        Order order = this.orderRepository.findById(orderId).orElseThrow(() -> new AggNotFoundException(orderId));
+        order.cancel();
+        this.orderRepository.save(order);
     }
 }

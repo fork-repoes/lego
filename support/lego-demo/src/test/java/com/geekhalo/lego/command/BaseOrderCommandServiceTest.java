@@ -92,6 +92,26 @@ abstract class BaseOrderCommandServiceTest {
         Assertions.assertTrue(event instanceof OrderCreatedEvent);
     }
 
+    @Test
+    void cancel() {
+
+        CreateOrderCommand command = getCreateOrderCommand();
+        Long orderId = this.orderCommandService().create(command);
+
+        {
+            Order order = this.orderRepository.findById(orderId).orElse(null);
+            Assertions.assertEquals(OrderStatus.NONE, order.getStatus());
+        }
+
+        this.orderCommandService().cancel(orderId);
+
+        {
+            Order order = this.orderRepository.findById(orderId).orElse(null);
+            Assertions.assertEquals(OrderStatus.CANCELLED, order.getStatus());
+
+        }
+    }
+
     private CreateOrderCommand getCreateOrderCommand() {
         CreateOrderCommand command = new CreateOrderCommand();
         command.setUserId(100L);

@@ -1,15 +1,37 @@
-logging:
-    level:
-      com.geekhalo.lego.singlequery: debug
-      com.geekhalo: info
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lego
+    url: jdbc:mysql://127.0.0.1:3306/lego
     username: root
     password: root
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    rest:
+      base-path: api/rest
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+rocketmq:
+  name-server: http://127.0.0.1:9876
+  producer:
+    group: async-demo
+
+async:
+  test:
+    normal:
+      topic: normal-async-test-topic
+      group1: normal-async-test-group1
+      group2: normal-async-test-group2
+    order:
+      topic: order-async-test-topic
+      group1: order-async-test-group1
+      group2: order-async-test-group2
+cancelOrder:
+  delay:
+    topic: delay-task-test-topic
+    consumerGroup1: delay-cancel-order-group1
+    consumerGroup2: delay-cancel-order-group2

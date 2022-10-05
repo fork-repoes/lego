@@ -111,4 +111,8 @@ public class Order implements AggRoot<Long> {
         this.events.forEach(eventConsumer);
         this.events.clear();
     }
+
+    public void cancel() {
+        setStatus(OrderStatus.CANCELLED);
+    }
 }
