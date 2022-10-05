@@ -45,15 +45,17 @@ public class OrderCommandServiceImpl implements OrderCommandService{
 
     @Override
     public void paySuccess(PaySuccessCommand command) {
-        Order order = this.orderRepository.findById(command.getOrderId()).orElse(null);
-        order.paySuccess(command.getChanel(), command.getPrice());
+        Order order = this.orderRepository.findById(command.getOrderId())
+                .orElseThrow(() -> new AggNotFoundException(command.getOrderId()));
+        order.paySuccess(command);
         this.orderRepository.save(order);
         order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
     }
 
     @Override
     public void cancel(Long orderId) {
-        Order order = this.orderRepository.findById(orderId).orElseThrow(() -> new AggNotFoundException(orderId));
+        Order order = this.orderRepository.findById(orderId)
+                .orElseThrow(() -> new AggNotFoundException(orderId));
         order.cancel();
         this.orderRepository.save(order);
     }

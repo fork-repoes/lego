@@ -93,11 +93,7 @@ public class Order implements AggRoot<Long> {
     }
 
     public void paySuccess(PaySuccessCommand paySuccessCommand){
-        paySuccess(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
-    }
-
-    public void paySuccess(String chanel, Long price) {
-        PayRecord payRecord = PayRecord.create(chanel, price);
+        PayRecord payRecord = PayRecord.create(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
         this.payRecords.add(payRecord);
 
         this.setStatus(OrderStatus.PAID);
