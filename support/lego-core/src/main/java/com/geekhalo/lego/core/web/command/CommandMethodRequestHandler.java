@@ -125,13 +125,6 @@ public class CommandMethodRequestHandler implements RequestHandler {
             }
         };
         annotations.add(requestBody);
-//        annotations.add(new Annotation() {
-//            @Override
-//            public Class<? extends Annotation> annotationType() {
-//                return RequestBody.class;
-//            }
-//        });
-
         ResolvedMethodParameter methodParameter = new ResolvedMethodParameter(
                 0,
                 "data",
@@ -142,7 +135,9 @@ public class CommandMethodRequestHandler implements RequestHandler {
 
     @Override
     public ResolvedType getReturnType() {
-        return TYPE_RESOLVER.resolve(RestResult.class, this.commandMethod.getReturnCls());
+        Class returnCls = this.commandMethod.getReturnCls();
+        returnCls = returnCls == Void.TYPE ? Void.class : returnCls;
+        return TYPE_RESOLVER.resolve(RestResult.class, returnCls);
     }
 
     @Override
