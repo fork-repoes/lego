@@ -1,7 +1,7 @@
-package com.geekhalo.lego.core.web.command;
+package com.geekhalo.lego.core.web.query;
 
-import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import com.geekhalo.lego.core.web.support.RestRequestBodyRequestHandler;
+import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,20 +12,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by taoli on 2022/10/11.
+ * Created by taoli on 2022/10/13.
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
 @Component
-public class CommandServicesProvider implements RequestHandlerProvider {
+public class QueryServicesProvider implements RequestHandlerProvider {
     @Autowired
-    private CommandMethodRegistry commandMethodRegistry;
-    private final String serviceType = "command";
+    private QueryMethodRegistry queryMethodRegistry;
+
+    private String serviceType = "query";
 
     @Override
     public List<RequestHandler> requestHandlers() {
         List<RequestHandler> requestHandlers = Lists.newArrayList();
-        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.commandMethodRegistry.getCommandServiceMap().entrySet()){
+        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.queryMethodRegistry.getQueryServiceMap().entrySet()){
             String serviceName = entry.getKey();
             for (Map.Entry<String, SingleParamMethod> methodEntry : entry.getValue().entrySet()){
                 String methodName = methodEntry.getKey();

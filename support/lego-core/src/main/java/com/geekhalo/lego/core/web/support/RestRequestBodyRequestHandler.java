@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.web.command;
+package com.geekhalo.lego.core.web.support;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
@@ -18,6 +18,7 @@ import springfox.documentation.spring.wrapper.PatternsRequestCondition;
 import springfox.documentation.spring.wrapper.RequestMappingInfo;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,21 +31,26 @@ import static java.util.Optional.ofNullable;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class CommandMethodRequestHandler implements RequestHandler {
+public class RestRequestBodyRequestHandler implements RequestHandler {
     private static final TypeResolver TYPE_RESOLVER = new TypeResolver();
     private final String serviceName;
+    private final String serviceType;
     private final String methodName;
-    private final CommandMethod commandMethod;
+    private final SingleParamMethod singleParamMethod;
 
-    public CommandMethodRequestHandler(String serviceName, String methodName, CommandMethod commandMethod) {
+    public RestRequestBodyRequestHandler(String serviceName,
+                                         String serviceType,
+                                         String methodName,
+                                         SingleParamMethod singleParamMethod) {
         this.serviceName = serviceName;
+        this.serviceType = serviceType;
         this.methodName = methodName;
-        this.commandMethod = commandMethod;
+        this.singleParamMethod = singleParamMethod;
     }
 
     @Override
     public Class<?> declaringClass() {
-        return commandMethod.getMethod().getDeclaringClass();
+        return singleParamMethod.getMethod().getDeclaringClass();
     }
 
     @Override
@@ -54,13 +60,13 @@ public class CommandMethodRequestHandler implements RequestHandler {
 
     @Override
     public PatternsRequestCondition getPatternsCondition() {
-        String url = String.format("command/%s/%s", serviceName, methodName);
+        String url = String.format("%s/%s/%s", serviceType, serviceName, methodName);
         return new FixPatternsRequestCondition(url);
     }
 
     @Override
     public String groupName() {
-        return this.serviceName;
+        return String.format("%s-%s", this.serviceName, this.serviceType);
     }
 
     @Override
@@ -129,15 +135,15 @@ public class CommandMethodRequestHandler implements RequestHandler {
                 0,
                 "data",
                 annotations,
-                TYPE_RESOLVER.resolve(this.commandMethod.getParamCls()));
+                TYPE_RESOLVER.resolve(this.singleParamMethod.getParamCls()));
         return Lists.newArrayList(methodParameter);
     }
 
     @Override
     public ResolvedType getReturnType() {
-        Class returnCls = this.commandMethod.getReturnCls();
-        returnCls = returnCls == Void.TYPE ? Void.class : returnCls;
-        return TYPE_RESOLVER.resolve(RestResult.class, returnCls);
+        Type genericReturnType = this.singleParamMethod.getMethod().getGenericReturnType();
+        genericReturnType = genericReturnType == Void.TYPE ? Void.class : genericReturnType;
+        return TYPE_RESOLVER.resolve(RestResult.class, genericReturnType);
     }
 
     @Override
@@ -152,7 +158,7 @@ public class CommandMethodRequestHandler implements RequestHandler {
 
     @Override
     public HandlerMethod getHandlerMethod() {
-        return new HandlerMethod(this.commandMethod.getBean(), this.commandMethod.getMethod());
+        return new HandlerMethod(this.singleParamMethod.getBean(), this.singleParamMethod.getMethod());
     }
 
     @Override
