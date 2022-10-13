@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.web.command;
 
-import lombok.Builder;
 import lombok.Value;
 import org.apache.commons.lang3.reflect.MethodUtils;
 

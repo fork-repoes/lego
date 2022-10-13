@@ -1,8 +1,8 @@
 package com.geekhalo.lego.starter.web;
 
 //import com.geekhalo.lego.core.web.WebMethodHandlerMapping;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**

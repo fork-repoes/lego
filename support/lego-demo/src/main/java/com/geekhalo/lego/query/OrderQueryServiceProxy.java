@@ -1,6 +1,5 @@
 package com.geekhalo.lego.query;
 
-import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.query.QueryServiceDefinition;
 import com.geekhalo.lego.core.singlequery.Page;
 import org.springframework.validation.annotation.Validated;

@@ -1,27 +1,10 @@
 package com.geekhalo.lego.core.web.command;
 
 import com.alibaba.fastjson.JSON;
-import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
-import com.geekhalo.lego.core.command.CommandServicesRegistry;
-import com.geekhalo.lego.core.support.proxy.ProxyObject;
 import com.geekhalo.lego.core.web.RestResult;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.commons.lang3.reflect.TypeUtils;
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.data.util.ProxyUtils;
-import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 /**
