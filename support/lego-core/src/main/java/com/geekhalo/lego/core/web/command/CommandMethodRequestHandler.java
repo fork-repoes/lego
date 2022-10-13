@@ -113,12 +113,24 @@ public class CommandMethodRequestHandler implements RequestHandler {
     @Override
     public List<ResolvedMethodParameter> getParameters() {
         List<Annotation> annotations = Lists.newArrayList();
-        annotations.add(new Annotation() {
+        RequestBody requestBody = new RequestBody() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return RequestBody.class;
             }
-        });
+
+            @Override
+            public boolean required() {
+                return true;
+            }
+        };
+        annotations.add(requestBody);
+//        annotations.add(new Annotation() {
+//            @Override
+//            public Class<? extends Annotation> annotationType() {
+//                return RequestBody.class;
+//            }
+//        });
 
         ResolvedMethodParameter methodParameter = new ResolvedMethodParameter(
                 0,
