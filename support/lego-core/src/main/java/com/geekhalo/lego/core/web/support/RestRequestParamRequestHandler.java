@@ -5,10 +5,13 @@ import com.fasterxml.classmate.TypeResolver;
 import com.geekhalo.lego.core.web.RestResult;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.HandlerMethod;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.RequestHandlerKey;
@@ -22,6 +25,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -31,29 +36,30 @@ import static java.util.Optional.ofNullable;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class RestRequestBodyRequestHandler implements RequestHandler {
+public class RestRequestParamRequestHandler implements RequestHandler {
     private static final TypeResolver TYPE_RESOLVER = new TypeResolver();
+    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
     private final String serviceName;
     private final String serviceType;
     private final String methodName;
     private final String basePath;
-    private final SingleParamMethod singleParamMethod;
+    private final MultiParamMethod multiParamMethod;
 
-    public RestRequestBodyRequestHandler(String serviceName,
-                                         String serviceType,
-                                         String methodName,
-                                         String basePath,
-                                         SingleParamMethod singleParamMethod) {
+    public RestRequestParamRequestHandler(String serviceName,
+                                          String serviceType,
+                                          String methodName,
+                                          String basePath,
+                                          MultiParamMethod multiParamMethod) {
         this.serviceName = serviceName;
         this.serviceType = serviceType;
         this.methodName = methodName;
         this.basePath = basePath;
-        this.singleParamMethod = singleParamMethod;
+        this.multiParamMethod = multiParamMethod;
     }
 
     @Override
     public Class<?> declaringClass() {
-        return singleParamMethod.getMethod().getDeclaringClass();
+        return multiParamMethod.getMethod().getDeclaringClass();
     }
 
     @Override
@@ -79,7 +85,7 @@ public class RestRequestBodyRequestHandler implements RequestHandler {
 
     @Override
     public Set<RequestMethod> supportedMethods() {
-        return Sets.newHashSet(RequestMethod.POST);
+        return Sets.newHashSet(RequestMethod.POST, RequestMethod.GET);
     }
 
     @Override
@@ -121,30 +127,56 @@ public class RestRequestBodyRequestHandler implements RequestHandler {
 
     @Override
     public List<ResolvedMethodParameter> getParameters() {
-        List<Annotation> annotations = Lists.newArrayList();
-        RequestBody requestBody = new RequestBody() {
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return RequestBody.class;
+        Type[] parameterTypes = this.multiParamMethod.getMethod().getGenericParameterTypes();
+        String[] parameterNames = PARAMETER_NAME_DISCOVERER.getParameterNames(this.multiParamMethod.getMethod());
+        List<ResolvedMethodParameter> result = Lists.newArrayListWithCapacity(parameterTypes.length);
+        int index = 0;
+        for (Type paramType: parameterTypes){
+            String paramName = parameterNames[index];
+            List<Annotation> annotations = Lists.newArrayList();
+            if (((Class) paramType).isPrimitive()) {
+                RequestParam requestParam = new RequestParam() {
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return RequestParam.class;
+                    }
+
+                    @Override
+                    public String value() {
+                        return "";
+                    }
+
+                    @Override
+                    public String name() {
+                        return paramName;
+                    }
+
+                    @Override
+                    public boolean required() {
+                        return false;
+                    }
+
+                    @Override
+                    public String defaultValue() {
+                        return "";
+                    }
+                };
+                annotations.add(requestParam);
             }
 
-            @Override
-            public boolean required() {
-                return true;
-            }
-        };
-        annotations.add(requestBody);
-        ResolvedMethodParameter methodParameter = new ResolvedMethodParameter(
-                0,
-                "data",
-                annotations,
-                TYPE_RESOLVER.resolve(this.singleParamMethod.getParamCls()));
-        return Lists.newArrayList(methodParameter);
+            ResolvedMethodParameter methodParameter = new ResolvedMethodParameter(
+                    index ++,
+                    paramName,
+                    annotations,
+                    TYPE_RESOLVER.resolve(paramType));
+            result.add(methodParameter);
+        }
+        return result;
     }
 
     @Override
     public ResolvedType getReturnType() {
-        Type genericReturnType = this.singleParamMethod.getMethod().getGenericReturnType();
+        Type genericReturnType = this.multiParamMethod.getMethod().getGenericReturnType();
         genericReturnType = genericReturnType == Void.TYPE ? Void.class : genericReturnType;
         return TYPE_RESOLVER.resolve(RestResult.class, genericReturnType);
     }
@@ -161,12 +193,11 @@ public class RestRequestBodyRequestHandler implements RequestHandler {
 
     @Override
     public HandlerMethod getHandlerMethod() {
-        return new HandlerMethod(this.singleParamMethod.getBean(), this.singleParamMethod.getMethod());
+        return new HandlerMethod(this.multiParamMethod.getBean(), this.multiParamMethod.getMethod());
     }
 
     @Override
     public RequestHandler combine(RequestHandler other) {
-//        return new CombinedRequestHandler(this, other);
         return other;
     }
 

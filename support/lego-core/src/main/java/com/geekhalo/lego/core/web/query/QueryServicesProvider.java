@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.web.query;
 
+import com.geekhalo.lego.core.web.support.MultiParamMethod;
 import com.geekhalo.lego.core.web.support.RestRequestBodyRequestHandler;
+import com.geekhalo.lego.core.web.support.RestRequestParamRequestHandler;
 import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +23,23 @@ public class QueryServicesProvider implements RequestHandlerProvider {
     @Autowired
     private QueryMethodRegistry queryMethodRegistry;
 
-    private String serviceType = "query";
 
     @Override
     public List<RequestHandler> requestHandlers() {
         List<RequestHandler> requestHandlers = Lists.newArrayList();
-        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.queryMethodRegistry.getQueryServiceMap().entrySet()){
+        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.queryMethodRegistry.getSingleQueryServiceMap().entrySet()){
             String serviceName = entry.getKey();
             for (Map.Entry<String, SingleParamMethod> methodEntry : entry.getValue().entrySet()){
                 String methodName = methodEntry.getKey();
-                requestHandlers.add(new RestRequestBodyRequestHandler(serviceName, serviceType, methodName, methodEntry.getValue()));
+                requestHandlers.add(new RestRequestBodyRequestHandler(serviceName, "BodyQuery", methodName, "bodyQuery/", methodEntry.getValue()));
+            }
+        }
+
+        for (Map.Entry<String, Map<String, MultiParamMethod>> entry : this.queryMethodRegistry.getMultiQueryServiceMap().entrySet()){
+            String serviceName = entry.getKey();
+            for (Map.Entry<String, MultiParamMethod> methodEntry : entry.getValue().entrySet()){
+                String method = methodEntry.getKey();
+                requestHandlers.add(new RestRequestParamRequestHandler(serviceName, "ParamQuery", method, "paramQuery/", methodEntry.getValue()));
             }
         }
         return requestHandlers;

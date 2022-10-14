@@ -15,12 +15,11 @@ import java.util.Map;
  * 编程就像玩 Lego
  */
 @RestController
-@RequestMapping("command")
 public class CommandDispatcherController {
     @Autowired
     private CommandMethodRegistry commandMethodRegistry;
 
-    @PostMapping("{serviceName}/{method}")
+    @PostMapping("/bodyCommand/{serviceName}/{method}")
     public <T> RestResult<T> runCommand(
             @PathVariable String serviceName,
             @PathVariable String method,

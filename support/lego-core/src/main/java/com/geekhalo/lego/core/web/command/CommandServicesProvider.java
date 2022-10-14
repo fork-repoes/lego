@@ -20,7 +20,6 @@ import java.util.Map;
 public class CommandServicesProvider implements RequestHandlerProvider {
     @Autowired
     private CommandMethodRegistry commandMethodRegistry;
-    private final String serviceType = "command";
 
     @Override
     public List<RequestHandler> requestHandlers() {
@@ -29,7 +28,7 @@ public class CommandServicesProvider implements RequestHandlerProvider {
             String serviceName = entry.getKey();
             for (Map.Entry<String, SingleParamMethod> methodEntry : entry.getValue().entrySet()){
                 String methodName = methodEntry.getKey();
-                requestHandlers.add(new RestRequestBodyRequestHandler(serviceName, serviceType, methodName, methodEntry.getValue()));
+                requestHandlers.add(new RestRequestBodyRequestHandler(serviceName, "BodyCommand", methodName,"bodyCommand", methodEntry.getValue()));
             }
         }
         return requestHandlers;
