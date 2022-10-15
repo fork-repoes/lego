@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.web.query;
 
 import com.geekhalo.lego.core.web.RestResult;
-import com.geekhalo.lego.core.web.support.*;
+import com.geekhalo.lego.core.web.support.DispatcherController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;

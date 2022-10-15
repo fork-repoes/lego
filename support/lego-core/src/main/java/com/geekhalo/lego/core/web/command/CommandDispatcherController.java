@@ -1,15 +1,10 @@
 package com.geekhalo.lego.core.web.command;
 
-import com.alibaba.fastjson.JSON;
 import com.geekhalo.lego.core.web.RestResult;
 import com.geekhalo.lego.core.web.support.DispatcherController;
-import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * Created by taoli on 2022/10/10.

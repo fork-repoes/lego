@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.query;
 
-import com.geekhalo.lego.core.command.CommandServiceDefinition;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;

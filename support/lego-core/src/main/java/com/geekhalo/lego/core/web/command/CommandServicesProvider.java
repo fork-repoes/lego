@@ -1,9 +1,9 @@
 package com.geekhalo.lego.core.web.command;
 
 import com.geekhalo.lego.core.web.support.MultiParamMethod;
+import com.geekhalo.lego.core.web.support.RestRequestBodyRequestHandler;
 import com.geekhalo.lego.core.web.support.RestRequestParamRequestHandler;
 import com.geekhalo.lego.core.web.support.SingleParamMethod;
-import com.geekhalo.lego.core.web.support.RestRequestBodyRequestHandler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
