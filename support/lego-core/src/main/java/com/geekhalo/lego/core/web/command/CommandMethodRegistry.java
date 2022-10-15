@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.web.command;
 import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.command.CommandServicesRegistry;
 import com.geekhalo.lego.core.support.proxy.ProxyObject;
+import com.geekhalo.lego.core.web.support.MethodRegistry;
 import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import com.google.common.collect.Maps;
 import lombok.Getter;
@@ -22,44 +23,13 @@ import java.util.Map;
  * 编程就像玩 Lego
  */
 @Component
-public class CommandMethodRegistry {
+public class CommandMethodRegistry extends MethodRegistry {
     @Autowired
     private CommandServicesRegistry commandServicesRegistry;
 
-    @Getter
-    private Map<String, Map<String, SingleParamMethod>> commandServiceMap = Maps.newHashMap();
 
-    @PostConstruct
-    public void init(){
-        List<Object> commandServices = this.commandServicesRegistry.getCommandServices();
-        for (Object command : commandServices){
-            AutoRegisterWebController autoRegisterWebController =
-                    AnnotatedElementUtils.findMergedAnnotation(command.getClass(), AutoRegisterWebController.class);
-            if (autoRegisterWebController == null){
-                continue;
-            }
-            if (!(command instanceof ProxyObject)){
-                continue;
-            }
-            Class itf = ((ProxyObject) command).getInterface();
-            String name = autoRegisterWebController.name();
-            Map<String, SingleParamMethod> methodMap = this.commandServiceMap.get(name);
-            if (methodMap != null){
-                throw new RuntimeException("Find More Than One Service " + name);
-            }
-            methodMap = Maps.newHashMap();
-            this.commandServiceMap.put(name, methodMap);
-            for (Method method : ReflectionUtils.getAllDeclaredMethods(itf)){
-
-                if (method.getParameterCount() == 1){
-                    String methodName = method.getName();
-                    SingleParamMethod methodInMap = methodMap.get(methodName);
-                    if (methodInMap != null){
-                        throw new RuntimeException("Find More Than One Method " + methodName +" in Service " + name);
-                    }
-                    methodMap.put(methodName, new SingleParamMethod(command, method));
-                }
-            }
-        }
+    @Override
+    protected List<Object> getServices() {
+        return commandServicesRegistry.getCommandServices();
     }
 }

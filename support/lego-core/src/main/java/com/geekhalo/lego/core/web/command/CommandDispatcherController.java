@@ -2,9 +2,11 @@ package com.geekhalo.lego.core.web.command;
 
 import com.alibaba.fastjson.JSON;
 import com.geekhalo.lego.core.web.RestResult;
+import com.geekhalo.lego.core.web.support.DispatcherController;
 import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -15,32 +17,28 @@ import java.util.Map;
  * 编程就像玩 Lego
  */
 @RestController
-public class CommandDispatcherController {
+public class CommandDispatcherController extends DispatcherController {
+    public static final String COMMAND_BY_BODY_PATH = "commandByBody";
+    public static final String COMMAND_BY_PARAM_PATH = "commandByParam";
     @Autowired
     private CommandMethodRegistry commandMethodRegistry;
 
-    @PostMapping("/bodyCommand/{serviceName}/{method}")
+    @PostMapping("/" + COMMAND_BY_BODY_PATH + "/{serviceName}/{method}")
     public <T> RestResult<T> runCommand(
             @PathVariable String serviceName,
             @PathVariable String method,
-            @RequestBody String payload){
-        Map<String, SingleParamMethod> methodMap = this.commandMethodRegistry.getCommandServiceMap().get(serviceName);
-        if (methodMap == null){
-            throw new RuntimeException("ServiceName " + serviceName + " Not Found");
-        }
-        SingleParamMethod singleParamMethod = methodMap.get(method);
-        if (singleParamMethod == null){
-            throw new RuntimeException("ServiceName " + serviceName + " Method" + method + " Not Found");
-        }
-
-        Type paramCls = singleParamMethod.getParamCls();
-        try {
-            Object param = JSON.parseObject(payload, paramCls);
-            Object result = singleParamMethod.invoke(param);
-            return RestResult.success((T)result);
-        }catch (Exception e){
-            return RestResult.error("Error");
-        }
+            NativeWebRequest webRequest) {
+        return runBodyMethod(serviceName, method, webRequest, this.commandMethodRegistry);
     }
+
+    @RequestMapping(value = "/" + COMMAND_BY_PARAM_PATH + "/{serviceName}/{method}",
+            method = {RequestMethod.POST})
+    public <T> RestResult<T> runParamQuery(
+            @PathVariable String serviceName,
+            @PathVariable String method,
+            NativeWebRequest webRequest){
+        return runParamMethod(serviceName, method, webRequest, this.commandMethodRegistry);
+    }
+
 
 }

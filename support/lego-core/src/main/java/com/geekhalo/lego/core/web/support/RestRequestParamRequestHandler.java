@@ -9,7 +9,6 @@ import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.HandlerMethod;
@@ -25,8 +24,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -44,17 +41,20 @@ public class RestRequestParamRequestHandler implements RequestHandler {
     private final String methodName;
     private final String basePath;
     private final MultiParamMethod multiParamMethod;
+    private final Set<RequestMethod> supportedMethods;
 
     public RestRequestParamRequestHandler(String serviceName,
                                           String serviceType,
                                           String methodName,
                                           String basePath,
-                                          MultiParamMethod multiParamMethod) {
+                                          MultiParamMethod multiParamMethod,
+                                          Set<RequestMethod> supportedMethods) {
         this.serviceName = serviceName;
         this.serviceType = serviceType;
         this.methodName = methodName;
         this.basePath = basePath;
         this.multiParamMethod = multiParamMethod;
+        this.supportedMethods = supportedMethods;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class RestRequestParamRequestHandler implements RequestHandler {
 
     @Override
     public Set<RequestMethod> supportedMethods() {
-        return Sets.newHashSet(RequestMethod.POST, RequestMethod.GET);
+        return this.supportedMethods;
     }
 
     @Override

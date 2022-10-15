@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.web.query;
 import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.query.QueryServicesRegistry;
 import com.geekhalo.lego.core.support.proxy.ProxyObject;
+import com.geekhalo.lego.core.web.support.MethodRegistry;
 import com.geekhalo.lego.core.web.support.MultiParamMethod;
 import com.geekhalo.lego.core.web.support.SingleParamMethod;
 import com.google.common.collect.Maps;
@@ -26,75 +27,11 @@ import java.util.Map;
  * 编程就像玩 Lego
  */
 @Component
-public class QueryMethodRegistry {
+public class QueryMethodRegistry extends MethodRegistry {
     @Autowired
     private QueryServicesRegistry queryServicesRegistry;
 
-    @Getter
-    private Map<String, Map<String, SingleParamMethod>> singleQueryServiceMap = Maps.newHashMap();
-
-    @Getter
-    private Map<String, Map<String, MultiParamMethod>> multiQueryServiceMap = Maps.newHashMap();
-
-    @PostConstruct
-    public void init(){
-        List<Object> queryServices = this.queryServicesRegistry.getQueryServices();
-        for (Object queryService : queryServices){
-            AutoRegisterWebController autoRegisterWebController =
-                    AnnotatedElementUtils.findMergedAnnotation(queryService.getClass(), AutoRegisterWebController.class);
-            if (autoRegisterWebController == null){
-                continue;
-            }
-            if (!(queryService instanceof ProxyObject)){
-                continue;
-            }
-            Class itf = ((ProxyObject) queryService).getInterface();
-            String name = autoRegisterWebController.name();
-
-            buildSingleParamMethods(queryService, itf, name);
-
-            buildMultiParamMethods(queryService, itf, name);
-        }
-    }
-
-    private void buildMultiParamMethods(Object queryService, Class itf, String name) {
-        Map<String, MultiParamMethod> methodMap = this.multiQueryServiceMap.get(name);
-        if (methodMap != null){
-            throw new RuntimeException("Find More Than One Service " + name);
-        }
-        methodMap = Maps.newHashMap();
-        this.multiQueryServiceMap.put(name, methodMap);
-        for (Method method : ReflectionUtils.getAllDeclaredMethods(itf)){
-            String methodName = method.getName();
-            MultiParamMethod methodInMap = methodMap.get(methodName);
-            if (methodInMap != null && !isSameMethod(methodInMap.getMethod(), method)){
-                throw new RuntimeException("Find More Than One Method " + methodName +" in Service " + name);
-            }
-            methodMap.put(methodName, new MultiParamMethod(queryService, method));
-        }
-    }
-
-    private void buildSingleParamMethods(Object queryService, Class itf, String name) {
-        Map<String, SingleParamMethod> methodMap = this.singleQueryServiceMap.get(name);
-        if (methodMap != null){
-            throw new RuntimeException("Find More Than One Service " + name);
-        }
-        methodMap = Maps.newHashMap();
-        this.singleQueryServiceMap.put(name, methodMap);
-        for (Method method : ReflectionUtils.getAllDeclaredMethods(itf)){
-            if (method.getParameterCount() == 1){
-                String methodName = method.getName();
-                SingleParamMethod methodInMap = methodMap.get(methodName);
-                if (methodInMap != null && !isSameMethod(methodInMap.getMethod(), method)){
-                    throw new RuntimeException("Find More Than One Method " + methodName +" in Service " + name);
-                }
-                methodMap.put(methodName, new SingleParamMethod(queryService, method));
-            }
-        }
-    }
-
-    private boolean isSameMethod(Method method, Method method1) {
-        return  method.getName().equals(method1.getName())
-                && Arrays.equals(method.getParameterTypes(), method1.getParameterTypes());
+    protected List<Object> getServices(){
+        return this.queryServicesRegistry.getQueryServices();
     }
 }
