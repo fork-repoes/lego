@@ -19,7 +19,7 @@ public class CommandDispatcherController extends DispatcherController {
     private CommandMethodRegistry commandMethodRegistry;
 
     @PostMapping("/" + COMMAND_BY_BODY_PATH + "/{serviceName}/{method}")
-    public <T> RestResult<T> runCommand(
+    public <T> RestResult<T> runCommandByBody(
             @PathVariable String serviceName,
             @PathVariable String method,
             NativeWebRequest webRequest) {
@@ -28,7 +28,7 @@ public class CommandDispatcherController extends DispatcherController {
 
     @RequestMapping(value = "/" + COMMAND_BY_PARAM_PATH + "/{serviceName}/{method}",
             method = {RequestMethod.POST})
-    public <T> RestResult<T> runParamQuery(
+    public <T> RestResult<T> runCommandByParam(
             @PathVariable String serviceName,
             @PathVariable String method,
             NativeWebRequest webRequest){

@@ -19,7 +19,7 @@ public class QueryDispatcherController extends DispatcherController {
     private QueryMethodRegistry queryMethodRegistry;
 
     @PostMapping("/" + QUERY_BY_BODY_PATH + "/{serviceName}/{method}")
-    public <T> RestResult<T> runBodyQuery(
+    public <T> RestResult<T> runQueryByBody(
             @PathVariable String serviceName,
             @PathVariable String method,
             NativeWebRequest webRequest){
@@ -27,7 +27,7 @@ public class QueryDispatcherController extends DispatcherController {
     }
 
     @RequestMapping(value = "/" + QUERY_BY_PARAM_PATH + "/{serviceName}/{method}", method = {RequestMethod.POST, RequestMethod.GET})
-    public <T> RestResult<T> runParamQuery(
+    public <T> RestResult<T> runQueryByParam(
             @PathVariable String serviceName,
             @PathVariable String method,
             NativeWebRequest webRequest){

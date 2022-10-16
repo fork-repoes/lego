@@ -18,7 +18,7 @@ import java.util.Map;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public abstract class MethodRegistry {
+public abstract class WebMethodRegistry {
     @Getter
     private Map<String, Map<String, SingleParamMethod>> singleQueryServiceMap = Maps.newHashMap();
 
@@ -29,22 +29,23 @@ public abstract class MethodRegistry {
 
     @PostConstruct
     public void init(){
-        List<Object> queryServices = this.getServices();
-        for (Object queryService : queryServices){
+        List<Object> services = this.getServices();
+        for (Object service : services){
             AutoRegisterWebController autoRegisterWebController =
-                    AnnotatedElementUtils.findMergedAnnotation(queryService.getClass(), AutoRegisterWebController.class);
+                    AnnotatedElementUtils.findMergedAnnotation(service.getClass(), AutoRegisterWebController.class);
             if (autoRegisterWebController == null){
                 continue;
             }
-            if (!(queryService instanceof ProxyObject)){
+            if (!(service instanceof ProxyObject)){
                 continue;
             }
-            Class itf = ((ProxyObject) queryService).getInterface();
+            Class itf = ((ProxyObject) service).getInterface();
+
             String name = autoRegisterWebController.name();
 
-            buildSingleParamMethods(queryService, itf, name);
+            buildSingleParamMethods(service, itf, name);
 
-            buildMultiParamMethods(queryService, itf, name);
+            buildMultiParamMethods(service, itf, name);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.web.query;
 
 import com.geekhalo.lego.core.query.QueryServicesRegistry;
-import com.geekhalo.lego.core.web.support.MethodRegistry;
+import com.geekhalo.lego.core.web.support.WebMethodRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Component
-public class QueryMethodRegistry extends MethodRegistry {
+public class QueryMethodRegistry extends WebMethodRegistry {
     @Autowired
     private QueryServicesRegistry queryServicesRegistry;
 

@@ -33,7 +33,7 @@ public abstract class DispatcherController {
     protected <T> RestResult<T> runBodyMethod(String serviceName,
                                               String method,
                                               NativeWebRequest webRequest,
-                                              MethodRegistry methodRegistry) {
+                                              WebMethodRegistry methodRegistry) {
         Map<String, SingleParamMethod> methodMap = methodRegistry.getSingleQueryServiceMap().get(serviceName);
 
         if (methodMap == null){
@@ -56,7 +56,7 @@ public abstract class DispatcherController {
         }
     }
 
-    protected <T> RestResult<T> runParamMethod(String serviceName, String method, NativeWebRequest webRequest, MethodRegistry methodRegistry) {
+    protected <T> RestResult<T> runParamMethod(String serviceName, String method, NativeWebRequest webRequest, WebMethodRegistry methodRegistry) {
         Map<String, MultiParamMethod> methodMap = methodRegistry.getMultiQueryServiceMap().get(serviceName);
         if (methodMap == null){
             throw new RuntimeException("ServiceName " + serviceName + " Not Found");
