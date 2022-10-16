@@ -6,5 +6,5 @@ package com.geekhalo.lego.core.command;
  * 编程就像玩 Lego
  */
 public interface CommandForUpdate<ID> extends Command {
-    ID getId();
+    ID id();
 }

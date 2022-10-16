@@ -8,6 +8,8 @@ import com.geekhalo.lego.core.query.support.method.QueryServiceMethodInvokerFact
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
+import com.geekhalo.lego.core.support.proxy.DefaultProxyObject;
+import com.geekhalo.lego.core.support.proxy.ProxyObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
@@ -48,17 +50,21 @@ public class QueryServiceProxyFactory {
         ProxyFactory result = new ProxyFactory();
 
         result.setTarget(target);
-        result.setInterfaces(metadata.getQueryServiceClass(), TransactionalProxy.class);
+        result.setInterfaces(metadata.getQueryServiceClass(), ProxyObject.class, TransactionalProxy.class);
 
         if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
             result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
         }
 
         Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(queryService));
+        methods.addAll(Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(ProxyObject.class)));
 
         // 对所有的实现进行封装，基于拦截器进行请求转发
         // 1. target 对象封装
         result.addAdvice(createTargetDispatcherInterceptor(target, methods));
+
+        // 添加 ProxyObject 提供 Meta信息
+        result.addAdvice(createTargetDispatcherInterceptor(new DefaultProxyObject(metadata.getQueryServiceClass()), methods));
 
         // 2. 自定义实现类封装
         List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(metadata.getQueryServiceClass());

@@ -98,8 +98,8 @@ public class ReflectBasedExampleConverter<E>
 
     private void bindPageable(E example, Pageable pageable) throws Exception{
         if (pageable != null){
-            MethodUtils.invokeMethod(example, "setRows", pageable.getLimit());
-            MethodUtils.invokeMethod(example, "setOffset", pageable.getOffset());
+            MethodUtils.invokeMethod(example, "setRows", pageable.limit());
+            MethodUtils.invokeMethod(example, "setOffset", pageable.offset());
         }
     }
 

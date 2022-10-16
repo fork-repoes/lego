@@ -17,7 +17,7 @@ public class PaySuccessCommand implements CommandForUpdate<Long> {
     private Long price;
 
     @Override
-    public Long getId() {
+    public Long id() {
         return orderId;
     }
 }

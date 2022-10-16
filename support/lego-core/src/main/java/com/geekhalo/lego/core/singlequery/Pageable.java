@@ -26,7 +26,7 @@ public class Pageable {
      */
     private Integer pageSize;
 
-    public Integer getLimit(){
+    public Integer limit(){
         return pageSize;
     }
 
@@ -34,7 +34,7 @@ public class Pageable {
      * 偏移起始量，从 0 开始
      * @return
      */
-    public Integer getOffset(){
+    public Integer offset(){
         if (pageNo == null || pageSize == null){
             return null;
         }
