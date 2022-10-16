@@ -1,5 +1,6 @@
 package com.geekhalo.lego.query;
 
+import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.query.QueryServiceDefinition;
 import com.geekhalo.lego.core.singlequery.Page;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import java.util.List;
 @QueryServiceDefinition(domainClass = Order.class,
         repositoryClass = OrderQueryRepository.class)
 @Validated
+@AutoRegisterWebController(name = "order")
 public interface OrderQueryServiceProxy extends CustomOrderQueryService, OrderQueryService {
     OrderDetail getById(@Valid @NotNull(message = "订单号不能为null") Long id);
 

@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.command.CommandServiceDefinition;
 
 /**
@@ -11,5 +12,6 @@ import com.geekhalo.lego.core.command.CommandServiceDefinition;
         domainClass = Order.class,
         idClass = Long.class,
         repositoryClass = OrderRepository.class)
+@AutoRegisterWebController(name = "order")
 public interface OrderCommandServiceProxy extends OrderCommandService{
 }

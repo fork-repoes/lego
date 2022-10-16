@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.query.support.method;
 
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;
@@ -13,6 +14,7 @@ import java.util.function.Function;
  */
 @Value
 @Builder
+@Slf4j
 public class QueryServiceMethodInvoker<Q, R>
         implements com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker {
     private final Function<Object[], Q> queryExecutor;
@@ -22,7 +24,15 @@ public class QueryServiceMethodInvoker<Q, R>
     public final Object invoke(Method method, Object[] arguments) {
         validate(method, arguments);
         Q qResult = query(method, arguments);
+        if (qResult == null){
+            log.info("query {} use {} result is null", method, arguments);
+            return null;
+        }
         R resultResult = convert(qResult);
+        if (resultResult == null){
+            log.warn("convert {} result is null", qResult);
+            return null;
+        }
         fill(resultResult);
         return resultResult;
     }
