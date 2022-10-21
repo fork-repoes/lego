@@ -53,8 +53,25 @@ public class TestMessageSenderServiceTest {
     public void testNoTransaction(){
         this.testMessageSenderService.testNoTransaction();
 
-        List<Message> messages = this.testMessageSender.getMessages();
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(messages));
+        {
+            List<Message> messages = this.testMessageSender.getMessages();
+            Assertions.assertTrue(CollectionUtils.isNotEmpty(messages));
+        }
+
+        this.testMessageSender.clean();
+        boolean error = false;
+        try {
+            this.testMessageSenderService.testNoTransactionError();
+        }catch (Exception e){
+            error = true;
+        }
+
+        Assertions.assertTrue(error);
+
+        {
+            List<Message> messages = this.testMessageSender.getMessages();
+            Assertions.assertTrue(CollectionUtils.isNotEmpty(messages));
+        }
     }
 
     @Test
@@ -82,33 +99,48 @@ public class TestMessageSenderServiceTest {
 
     @Test
     public void loadAndSend() throws InterruptedException {
+        // 处理消费表中待发送数据
         this.reliableMessageCompensator.compensate(DateUtils.addSeconds(new Date(), -120), 1000);
 
+        // 进行 error 标记， MessageSender 发送请求直接失败
         this.testMessageSender.markError();
         for (int i = 0; i<10;i++){
+            // 执行业务逻辑，业务逻辑不受影响
             this.testMessageSenderService.testSuccess();
         }
+        // 清理 error 标记，MessageSender 正常发送
         this.testMessageSender.cleanError();
 
+
         {
+            // 检测消息表中存在待处理的任务
             List<LocalMessage> localMessages = localMessageRepository.loadNotSuccessByUpdateGt(DateUtils.addSeconds(new Date(), -60), 100);
             Assertions.assertEquals(10, localMessages.size());
         }
 
+        // 对消息进行补充处理
         this.reliableMessageCompensator.compensate(DateUtils.addSeconds(new Date(), -60), 5);
 
         {
+            //  由于时间限制，未处理消息表的任务
             List<LocalMessage> localMessages = localMessageRepository.loadNotSuccessByUpdateGt(DateUtils.addSeconds(new Date(), -60), 100);
             Assertions.assertEquals(10, localMessages.size());
         }
 
+        // 等待时间超时
         TimeUnit.SECONDS.sleep(15);
 
+        this.testMessageSender.clean();
+        // 对消息进行补充处理
         this.reliableMessageCompensator.compensate(DateUtils.addSeconds(new Date(), -60), 50);
 
         {
+            //  成功处理消息表的待处理任务
             List<LocalMessage> localMessages = localMessageRepository.loadNotSuccessByUpdateGt(DateUtils.addSeconds(new Date(), -60), 100);
             Assertions.assertEquals(0, localMessages.size());
+
+            List<Message> messages = this.testMessageSender.getMessages();
+            Assertions.assertTrue(CollectionUtils.isNotEmpty(messages));
         }
 
     }

@@ -18,21 +18,32 @@ public class TestMessageSenderService {
     private ReliableMessageSender reliableMessageSender;
 
     public void testNoTransaction(){
+        // 业务逻辑
         Message message = buildMessage();
         this.reliableMessageSender.send(message);
+    }
+
+    public void testNoTransactionError(){
+        // 业务逻辑
+        Message message = buildMessage();
+        this.reliableMessageSender.send(message);
+        throw new RuntimeException();
     }
 
 
     @Transactional
     public void testSuccess(){
+        // 业务逻辑
         Message message = buildMessage();
-
+        // 业务逻辑
         this.reliableMessageSender.send(message);
     }
 
     @Transactional
     public void testError(){
+        // 业务逻辑
         Message message = buildMessage();
+        // 业务逻辑
         this.reliableMessageSender.send(message);
         throw new RuntimeException();
     }
