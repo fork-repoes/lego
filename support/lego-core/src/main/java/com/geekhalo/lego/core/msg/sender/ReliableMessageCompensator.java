@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.msg;
+package com.geekhalo.lego.core.msg.sender;
 
 import java.util.Date;
 

@@ -1,6 +1,6 @@
-package com.geekhalo.lego.core.msg.support;
+package com.geekhalo.lego.core.msg.sender.support;
 
-import com.geekhalo.lego.core.msg.ReliableMessageCompensator;
+import com.geekhalo.lego.core.msg.sender.ReliableMessageCompensator;
 
 import java.util.Date;
 

@@ -1,7 +1,7 @@
-package com.geekhalo.lego.core.msg.support;
+package com.geekhalo.lego.core.msg.sender.support;
 
-import com.geekhalo.lego.core.msg.Message;
-import com.geekhalo.lego.core.msg.ReliableMessageSender;
+import com.geekhalo.lego.core.msg.sender.Message;
+import com.geekhalo.lego.core.msg.sender.ReliableMessageSender;
 import lombok.extern.slf4j.Slf4j;
 
 /**

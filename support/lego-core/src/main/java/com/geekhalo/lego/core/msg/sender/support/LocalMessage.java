@@ -1,6 +1,6 @@
-package com.geekhalo.lego.core.msg.support;
+package com.geekhalo.lego.core.msg.sender.support;
 
-import com.geekhalo.lego.core.msg.Message;
+import com.geekhalo.lego.core.msg.sender.Message;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;

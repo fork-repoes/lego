@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.msg;
+package com.geekhalo.lego.core.msg.sender;
 
 /**
  * Created by taoli on 2022/10/16.
