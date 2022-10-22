@@ -27,4 +27,11 @@ public @interface TagBasedDispatcherMessageConsumer {
      * @return
      */
     String consumer();
+
+    /**
+     * 命名服务
+     * @return
+     */
+    String nameServer() default "${rocketmq.name-server:}";
+
 }

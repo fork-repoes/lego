@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.normal;
 
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.support.consumer.AbstractConsumerContainer;
+import com.geekhalo.lego.core.support.consumer.support.AbstractSingleMethodConsumerContainer;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 public class NormalAsyncConsumerContainer
-        extends AbstractConsumerContainer {
+        extends AbstractSingleMethodConsumerContainer {
     private final AsyncBasedRocketMQ asyncBasedRocketMQ;
 
 

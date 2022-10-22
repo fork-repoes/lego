@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.async.order;
 
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
-import com.geekhalo.lego.core.support.consumer.AbstractConsumerContainer;
+import com.geekhalo.lego.core.support.consumer.support.AbstractSingleMethodConsumerContainer;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -20,7 +20,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class OrderedAsyncConsumerContainer extends AbstractConsumerContainer {
+public class OrderedAsyncConsumerContainer extends AbstractSingleMethodConsumerContainer {
     private final AsyncForOrderedBasedRocketMQ asyncForOrderedBasedRocketMQ;
 
     public OrderedAsyncConsumerContainer(Environment environment,
