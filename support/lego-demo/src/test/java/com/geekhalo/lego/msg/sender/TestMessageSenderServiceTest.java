@@ -5,8 +5,6 @@ import com.geekhalo.lego.core.msg.sender.Message;
 import com.geekhalo.lego.core.msg.sender.ReliableMessageCompensator;
 import com.geekhalo.lego.core.msg.sender.support.LocalMessage;
 import com.geekhalo.lego.core.msg.sender.support.LocalMessageRepository;
-import com.geekhalo.lego.msg.sender.TestMessageSender;
-import com.geekhalo.lego.msg.sender.TestMessageSenderService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.AfterEach;

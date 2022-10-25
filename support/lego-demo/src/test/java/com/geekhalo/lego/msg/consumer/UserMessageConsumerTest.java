@@ -1,7 +1,6 @@
 package com.geekhalo.lego.msg.consumer;
 
 import com.alibaba.fastjson.JSON;
-import com.geekhalo.lego.DemoApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -18,25 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by taoli on 2022/10/21.
- * gitee : https://gitee.com/litao851025/lego
- * 编程就像玩 Lego
- */
-@SpringBootTest(classes = DemoApplication.class)
 @Slf4j
-class UserMessageConsumerTest {
-    @Autowired
-    private UserMessageConsumer userMessageConsumer;
-
+public abstract class UserMessageConsumerTest {
+    private List<Long> userIds;
+    
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
+    
+    protected abstract String getTopic();
 
-    private List<Long> userIds;
+    protected abstract UserMessageConsumer getUserMessageConsumer();
 
     @BeforeEach
     void setUp() throws InterruptedException {
-        this.userMessageConsumer.clean();
+        this.getUserMessageConsumer().clean();
 
         this.userIds = new ArrayList<>();
         for (int i = 0; i< 100; i++){
@@ -48,7 +41,7 @@ class UserMessageConsumerTest {
     }
 
     private void sendMessage(Long userId) {
-        String topic = "consumer-test-topic";
+        String topic = getTopic();
         {
             String tag = "UserCreatedEvent";
             UserEvents.UserCreatedEvent userCreatedEvent = new UserEvents.UserCreatedEvent();
@@ -114,7 +107,7 @@ class UserMessageConsumerTest {
     @Test
     void getUserEvents() {
         this.userIds.forEach(userId ->{
-            List<UserEvents.UserEvent> userEvents = this.userMessageConsumer.getUserEvents(userId);
+            List<UserEvents.UserEvent> userEvents = this.getUserMessageConsumer().getUserEvents(userId);
             Assertions.assertEquals(4, userEvents.size());
 
             Assertions.assertTrue(userEvents.get(0) instanceof UserEvents.UserCreatedEvent);
