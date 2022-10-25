@@ -24,7 +24,7 @@ spring:
 rocketmq:
   name-server: http://127.0.0.1:9876
   producer:
-    group: async-demo
+    group: consumer-demo
 
 async:
   test:

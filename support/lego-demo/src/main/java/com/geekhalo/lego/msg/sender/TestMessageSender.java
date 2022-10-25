@@ -1,7 +1,7 @@
-package com.geekhalo.lego.msg;
+package com.geekhalo.lego.msg.sender;
 
-import com.geekhalo.lego.core.msg.Message;
-import com.geekhalo.lego.core.msg.MessageSender;
+import com.geekhalo.lego.core.msg.sender.Message;
+import com.geekhalo.lego.core.msg.sender.MessageSender;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

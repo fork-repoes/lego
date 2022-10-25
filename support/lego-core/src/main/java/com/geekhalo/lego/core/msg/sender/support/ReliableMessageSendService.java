@@ -1,7 +1,7 @@
-package com.geekhalo.lego.core.msg.support;
+package com.geekhalo.lego.core.msg.sender.support;
 
-import com.geekhalo.lego.core.msg.Message;
-import com.geekhalo.lego.core.msg.MessageSender;
+import com.geekhalo.lego.core.msg.sender.Message;
+import com.geekhalo.lego.core.msg.sender.MessageSender;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.support.TransactionSynchronization;

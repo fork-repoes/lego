@@ -1,5 +1,6 @@
-package com.geekhalo.lego.core.support.consumer;
+package com.geekhalo.lego.core.support.consumer.support;
 
+import com.geekhalo.lego.core.support.consumer.ConsumerContainer;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class AbstractConsumerContainerRegistry implements BeanPostProcessor, SmartLifecycle {
     @Getter(AccessLevel.PROTECTED)
-    private final List<AbstractConsumerContainer> consumerContainers = Lists.newArrayList();
+    private final List<ConsumerContainer> consumerContainers = Lists.newArrayList();
 
     @Getter(AccessLevel.PROTECTED)
     private final Environment environment;
@@ -80,7 +81,7 @@ public class AbstractConsumerContainerRegistry implements BeanPostProcessor, Sma
                 || Arrays.asList(getEnvironment().getActiveProfiles()).contains(consumerProfile);
     }
 
-    protected List<AbstractConsumerContainer> getConsumerContainers() {
+    protected List<ConsumerContainer> getConsumerContainers() {
         return this.consumerContainers;
     }
 

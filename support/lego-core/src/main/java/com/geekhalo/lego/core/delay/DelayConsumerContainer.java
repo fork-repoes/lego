@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.delay;
 
 import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
-import com.geekhalo.lego.core.support.consumer.AbstractConsumerContainer;
+import com.geekhalo.lego.core.support.consumer.support.AbstractSingleMethodConsumerContainer;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -20,7 +20,7 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class DelayConsumerContainer extends AbstractConsumerContainer {
+public class DelayConsumerContainer extends AbstractSingleMethodConsumerContainer {
     private final DelayBasedRocketMQ delayBasedRocketMQ;
 
 

@@ -1,7 +1,7 @@
-package com.geekhalo.lego.msg;
+package com.geekhalo.lego.msg.sender;
 
-import com.geekhalo.lego.core.msg.MessageSender;
-import com.geekhalo.lego.starter.msg.LocalTableBasedReliableMessageConfigurationSupport;
+import com.geekhalo.lego.core.msg.sender.MessageSender;
+import com.geekhalo.lego.starter.msg.sender.LocalTableBasedReliableMessageConfigurationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,9 @@
-package com.geekhalo.lego.starter.msg;
+package com.geekhalo.lego.starter.msg.sender;
 
-import com.geekhalo.lego.core.msg.MessageSender;
-import com.geekhalo.lego.core.msg.ReliableMessageCompensator;
-import com.geekhalo.lego.core.msg.ReliableMessageSender;
-import com.geekhalo.lego.core.msg.support.*;
+import com.geekhalo.lego.core.msg.sender.MessageSender;
+import com.geekhalo.lego.core.msg.sender.ReliableMessageCompensator;
+import com.geekhalo.lego.core.msg.sender.ReliableMessageSender;
+import com.geekhalo.lego.core.msg.sender.support.*;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
