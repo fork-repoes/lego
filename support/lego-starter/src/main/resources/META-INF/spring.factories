@@ -11,4 +11,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.geekhalo.lego.starter.async.OrderedAsyncAutoConfiguration,\
   com.geekhalo.lego.starter.delay.DelayBasedRocketMQAutoConfiguration,\
   com.geekhalo.lego.starter.validator.ValidatorAutoConfiguration,\
-  com.geekhalo.lego.starter.web.AutoRegisterWebControllerConfiguration
+  com.geekhalo.lego.starter.web.AutoRegisterWebControllerConfiguration,\
+  com.geekhalo.lego.starter.msg.consumer.TabBasedDispatcherMessageConsumerAutoConfiguration

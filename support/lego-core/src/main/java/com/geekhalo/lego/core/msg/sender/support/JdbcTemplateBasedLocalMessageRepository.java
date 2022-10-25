@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.msg.support;
+package com.geekhalo.lego.core.msg.sender.support;
 
 import com.google.common.collect.Maps;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

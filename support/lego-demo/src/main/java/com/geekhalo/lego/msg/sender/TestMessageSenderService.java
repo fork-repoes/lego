@@ -1,7 +1,7 @@
-package com.geekhalo.lego.msg;
+package com.geekhalo.lego.msg.sender;
 
-import com.geekhalo.lego.core.msg.Message;
-import com.geekhalo.lego.core.msg.ReliableMessageSender;
+import com.geekhalo.lego.core.msg.sender.Message;
+import com.geekhalo.lego.core.msg.sender.ReliableMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

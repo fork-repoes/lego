@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.delay;
 
 import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
-import com.geekhalo.lego.core.support.consumer.AbstractConsumerContainerRegistry;
+import com.geekhalo.lego.core.support.consumer.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
