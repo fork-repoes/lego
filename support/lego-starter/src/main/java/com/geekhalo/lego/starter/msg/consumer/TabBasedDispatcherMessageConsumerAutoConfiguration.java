@@ -1,14 +1,8 @@
 package com.geekhalo.lego.starter.msg.consumer;
 
-import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
-import com.geekhalo.lego.core.async.normal.NormalAsyncConsumerContainerRegistry;
-import com.geekhalo.lego.core.async.normal.NormalAsyncInterceptor;
 import com.geekhalo.lego.core.msg.consumer.TagBasedDispatcherConsumerContainerRegistry;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.aop.PointcutAdvisor;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
