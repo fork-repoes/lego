@@ -54,7 +54,6 @@ class UserMessageConsumerTest {
             UserEvents.UserCreatedEvent userCreatedEvent = new UserEvents.UserCreatedEvent();
             userCreatedEvent.setUserId(userId);
             userCreatedEvent.setUserName("Name-" + userId);
-            String shardingKey = String.valueOf(userCreatedEvent.getUserId());
 
             sendOrderlyMessage(topic, tag, userCreatedEvent);
         }
