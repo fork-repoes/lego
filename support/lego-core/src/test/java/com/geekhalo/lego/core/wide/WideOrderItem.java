@@ -1,4 +1,4 @@
-package com.geekhalo.lego.wide;
+package com.geekhalo.lego.core.wide;
 
 import com.geekhalo.lego.annotation.wide.BindFrom;
 import lombok.Data;
@@ -10,22 +10,27 @@ import lombok.Data;
  */
 
 @Data
-public class WideOrderItem{
+public class WideOrderItem implements Wide {
     @BindFrom(sourceClass = OrderItem.class, field = "id")
     private Long orderId;
 
     @BindFrom(sourceClass = OrderItem.class, field = "status")
     private Integer orderStatus;
 
-    @BindFrom(sourceClass = User.class, field = "id")
+    @BindFrom(sourceClass = OrderItem.class, field = "userId")
     private Long userId;
 
     @BindFrom(sourceClass = User.class, field = "name")
     private String userName;
 
-    @BindFrom(sourceClass = Product.class, field = "id")
+    @BindFrom(sourceClass = OrderItem.class, field = "productId")
     private Long productId;
 
     @BindFrom(sourceClass = Product.class, field = "name")
     private String productName;
+
+    @Override
+    public boolean isValidate() {
+        return true;
+    }
 }

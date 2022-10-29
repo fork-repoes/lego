@@ -5,7 +5,8 @@ package com.geekhalo.lego.core.wide;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface WideObjectWrapper {
+public interface WideWrapper<W extends Wide> {
+    W getTarget();
 
     default <I> void bindItem(I item){
         updateItem(item);

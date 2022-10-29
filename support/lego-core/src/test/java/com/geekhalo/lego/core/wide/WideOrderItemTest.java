@@ -1,7 +1,6 @@
-package com.geekhalo.lego.wide;
+package com.geekhalo.lego.core.wide;
 
-import com.geekhalo.lego.core.wide.support.DataFromItemWideObjectWrapper;
-import com.geekhalo.lego.core.wide.WideObjectWrapper;
+import com.geekhalo.lego.core.wide.support.BindFromBasedWideWrapperFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,12 +11,13 @@ import java.util.Random;
 
 class WideOrderItemTest {
     private WideOrderItem wideOrderItem;
-    private WideObjectWrapper wideObjectWrapper;
+    private WideWrapper wideWrapper;
 
     @BeforeEach
     void setUp() {
         this.wideOrderItem = new WideOrderItem();
-        this.wideObjectWrapper = new DataFromItemWideObjectWrapper(this.wideOrderItem, new GenericConversionService());
+        WideWrapperFactory wideWrapperFactory = new BindFromBasedWideWrapperFactory(new GenericConversionService());
+        this.wideWrapper = wideWrapperFactory.createForWide(this.wideOrderItem);
     }
 
     @AfterEach
@@ -32,21 +32,21 @@ class WideOrderItemTest {
 
             OrderItem orderItem = createOrderItem();
 
-            this.wideObjectWrapper.bindItem(orderItem);
+            this.wideWrapper.bindItem(orderItem);
 
             Assertions.assertEquals(orderItem.getId(), this.wideOrderItem.getOrderId());
             Assertions.assertEquals(orderItem.getStatus(), this.wideOrderItem.getOrderStatus());
 
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(orderItem));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(orderItem));
 
             OrderItem orderItem2 = createOrderItem();
-            this.wideObjectWrapper.updateItem(orderItem2);
+            this.wideWrapper.updateItem(orderItem2);
 
             Assertions.assertEquals(orderItem2.getId(), this.wideOrderItem.getOrderId());
             Assertions.assertEquals(orderItem2.getStatus(), this.wideOrderItem.getOrderStatus());
 
-            Assertions.assertFalse(this.wideObjectWrapper.isSameWithItem(orderItem));
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(orderItem2));
+            Assertions.assertFalse(this.wideWrapper.isSameWithItem(orderItem));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(orderItem2));
 
         }
 
@@ -56,21 +56,21 @@ class WideOrderItemTest {
 
             User user = createUser();
 
-            this.wideObjectWrapper.bindItem(user);
+            this.wideWrapper.bindItem(user);
 
             Assertions.assertEquals(user.getId(), this.wideOrderItem.getUserId());
             Assertions.assertEquals(user.getName(), this.wideOrderItem.getUserName());
 
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(user));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(user));
 
             User user2 = createUser();
-            this.wideObjectWrapper.updateItem(user2);
+            this.wideWrapper.updateItem(user2);
 
             Assertions.assertEquals(user2.getId(), this.wideOrderItem.getUserId());
             Assertions.assertEquals(user2.getName(), this.wideOrderItem.getUserName());
 
-            Assertions.assertFalse(this.wideObjectWrapper.isSameWithItem(user));
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(user2));
+            Assertions.assertFalse(this.wideWrapper.isSameWithItem(user));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(user2));
 
         }
 
@@ -80,20 +80,20 @@ class WideOrderItemTest {
 
             Product product = createProduct();
 
-            this.wideObjectWrapper.bindItem(product);
+            this.wideWrapper.bindItem(product);
 
             Assertions.assertEquals(product.getId(), this.wideOrderItem.getProductId());
             Assertions.assertEquals(product.getName(), this.wideOrderItem.getProductName());
 
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(product));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(product));
 
             Product product2 = createProduct();
-            this.wideObjectWrapper.updateItem(product2);
+            this.wideWrapper.updateItem(product2);
 
             Assertions.assertEquals(product2.getId(), this.wideOrderItem.getProductId());
             Assertions.assertEquals(product2.getName(), this.wideOrderItem.getProductName());
-            Assertions.assertFalse(this.wideObjectWrapper.isSameWithItem(product));
-            Assertions.assertTrue(this.wideObjectWrapper.isSameWithItem(product2));
+            Assertions.assertFalse(this.wideWrapper.isSameWithItem(product));
+            Assertions.assertTrue(this.wideWrapper.isSameWithItem(product2));
 
         }
     }

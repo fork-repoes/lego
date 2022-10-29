@@ -7,13 +7,13 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface WideItemBinder<W> {
-    default void bindFor(W wide){
-        if (wide == null){
+public interface WideItemBinder<W extends Wide> {
+    default void bindFor(WideWrapper<W> wideWrapper){
+        if (wideWrapper == null){
             return;
         }
-        bindFor(Collections.singletonList(wide));
+        bindFor(Collections.singletonList(wideWrapper));
     }
 
-    void bindFor(List<W> wide);
+    void bindFor(List<WideWrapper<W>> wideWrappers);
 }
