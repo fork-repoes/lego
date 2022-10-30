@@ -2,7 +2,6 @@ package com.geekhalo.lego.wide;
 
 import com.geekhalo.lego.core.wide.WideItemDataProvider;
 import com.geekhalo.lego.service.product.Product;
-import com.geekhalo.lego.service.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,6 @@ package com.geekhalo.lego.wide;
 
 import com.geekhalo.lego.core.wide.WideItemDataProvider;
 import com.geekhalo.lego.service.order.Order;
-import com.geekhalo.lego.service.order.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
