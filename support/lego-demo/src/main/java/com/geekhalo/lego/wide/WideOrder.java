@@ -7,7 +7,9 @@ import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.order.Order;
 import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,6 +25,8 @@ import java.util.List;
 @Entity
 @Table(name = "t_wide_order")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WideOrder extends BindFromBasedWide<Long, WideOrderType> {
     @Id
     private Long id;
@@ -33,6 +37,8 @@ public class WideOrder extends BindFromBasedWide<Long, WideOrderType> {
     private Long addressId;
     @BindFrom(sourceClass = Order.class, field = "productId")
     private Long productId;
+    @BindFrom(sourceClass = Order.class, field = "descr")
+    private String orderDescr;
 
     @BindFrom(sourceClass = User.class, field = "name")
     private String userName;
@@ -45,6 +51,9 @@ public class WideOrder extends BindFromBasedWide<Long, WideOrderType> {
     @BindFrom(sourceClass = Product.class, field = "price")
     private Integer productPrice;
 
+    public WideOrder(Long orderId){
+        setId(orderId);
+    }
     @Override
     public Long getId() {
         return id;

@@ -2,7 +2,6 @@ package com.geekhalo.lego.wide;
 
 import com.geekhalo.lego.core.wide.WideItemDataProvider;
 import com.geekhalo.lego.service.user.User;
-import com.geekhalo.lego.service.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +15,11 @@ import java.util.List;
 @Component
 public class UserProvider implements WideItemDataProvider<WideOrderType, Long, User> {
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userDao;
 
     @Override
     public List<User> apply(List<Long> key) {
-        return userRepository.getByIds(key);
+        return userDao.findAllById(key);
     }
 
     @Override

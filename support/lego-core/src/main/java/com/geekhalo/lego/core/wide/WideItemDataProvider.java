@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.wide;
 
 import com.geekhalo.lego.core.SmartComponent;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.core.annotation.Order;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Order
 public interface WideItemDataProvider<
         TYPE extends Enum<TYPE> & WideItemType<TYPE>,
         KEY,

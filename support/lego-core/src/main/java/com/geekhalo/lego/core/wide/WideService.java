@@ -31,17 +31,23 @@ public class WideService <
     }
 
     public void index(MASTER_DATA_ID id){
-        this.patrolService.index(id);
+        if (this.patrolService != null) {
+            this.patrolService.index(id);
+        }
         this.indexService.index(id);
     }
 
     public void index(List<MASTER_DATA_ID> ids){
-        this.patrolService.index(ids);
+        if (this.patrolService != null) {
+            this.patrolService.index(ids);
+        }
         this.indexService.index(ids);
     }
 
     public <KEY> void updateItem(ITEM_TYPE type, KEY key){
-        this.patrolService.updateItem(type, key);
+        if (this.patrolService != null) {
+            this.patrolService.updateItem(type, key);
+        }
         this.indexService.updateItem(type, key);
     }
 }

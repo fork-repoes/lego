@@ -16,11 +16,11 @@ import java.util.List;
 @Component
 public class AddressProvider implements WideItemDataProvider<WideOrderType, Long, Address> {
     @Autowired
-    private AddressRepository addressRepository;
+    private AddressDao addressDao;
 
     @Override
     public List<Address> apply(List<Long> key) {
-        return addressRepository.getByIds(key);
+        return addressDao.findAllById(key);
     }
 
     @Override

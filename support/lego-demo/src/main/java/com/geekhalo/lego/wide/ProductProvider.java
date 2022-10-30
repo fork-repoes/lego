@@ -16,11 +16,11 @@ import java.util.List;
 @Component
 public class ProductProvider implements WideItemDataProvider<WideOrderType, Long, Product> {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductDao productDao;
 
     @Override
     public List<Product> apply(List<Long> key) {
-        return productRepository.getByIds(key);
+        return productDao.findAllById(key);
     }
 
     @Override

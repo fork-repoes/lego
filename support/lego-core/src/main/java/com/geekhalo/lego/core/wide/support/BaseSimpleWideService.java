@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class BaseSimpleWideService<
     private WideWrapperFactory<WIDE> wideWrapperFactory;
 
     @Getter(AccessLevel.PROTECTED)
-    @Setter
-    private List<WideItemDataProvider<TYPE, ? extends Object, ? extends WideItemData<TYPE, ?>>> wideItemDataProviders;
+    private final List<WideItemDataProvider<TYPE, ? extends Object, ? extends WideItemData<TYPE, ?>>> wideItemDataProviders
+                = Lists.newArrayList();
 
     @Getter(AccessLevel.PROTECTED)
     @Setter
@@ -108,5 +109,13 @@ public class BaseSimpleWideService<
 
     protected WideWrapper<WIDE> createWrapperForWide(WIDE wide) {
         return getWideWrapperFactory().createForWide(wide);
+    }
+
+    public void setWideItemDataProviders(List<WideItemDataProvider<TYPE, ?, ? extends WideItemData<TYPE, ?>>> wideItemProviders) {
+        if (wideItemProviders != null){
+            this.wideItemDataProviders.addAll(wideItemProviders);
+        }
+
+        AnnotationAwareOrderComparator.sort(this.wideItemDataProviders);
     }
 }
