@@ -5,6 +5,10 @@ package com.geekhalo.lego.core.wide;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface WideItemData<T extends Enum<T> & WideItemTypes<T>> {
+public interface WideItemData<
+        T extends Enum<T> & WideItemType<T>,
+        KEY> {
     T getItemType();
+
+    KEY getKey();
 }

@@ -58,7 +58,6 @@ class WideOrderItemTest {
 
             this.wideWrapper.bindItem(user);
 
-            Assertions.assertEquals(user.getId(), this.wideOrderItem.getUserId());
             Assertions.assertEquals(user.getName(), this.wideOrderItem.getUserName());
 
             Assertions.assertTrue(this.wideWrapper.isSameWithItem(user));
@@ -66,7 +65,6 @@ class WideOrderItemTest {
             User user2 = createUser();
             this.wideWrapper.updateItem(user2);
 
-            Assertions.assertEquals(user2.getId(), this.wideOrderItem.getUserId());
             Assertions.assertEquals(user2.getName(), this.wideOrderItem.getUserName());
 
             Assertions.assertFalse(this.wideWrapper.isSameWithItem(user));
@@ -75,14 +73,12 @@ class WideOrderItemTest {
         }
 
         {
-            Assertions.assertNull(this.wideOrderItem.getProductId());
             Assertions.assertNull(this.wideOrderItem.getProductName());
 
             Product product = createProduct();
 
             this.wideWrapper.bindItem(product);
 
-            Assertions.assertEquals(product.getId(), this.wideOrderItem.getProductId());
             Assertions.assertEquals(product.getName(), this.wideOrderItem.getProductName());
 
             Assertions.assertTrue(this.wideWrapper.isSameWithItem(product));
@@ -90,7 +86,6 @@ class WideOrderItemTest {
             Product product2 = createProduct();
             this.wideWrapper.updateItem(product2);
 
-            Assertions.assertEquals(product2.getId(), this.wideOrderItem.getProductId());
             Assertions.assertEquals(product2.getName(), this.wideOrderItem.getProductName());
             Assertions.assertFalse(this.wideWrapper.isSameWithItem(product));
             Assertions.assertTrue(this.wideWrapper.isSameWithItem(product2));

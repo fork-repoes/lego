@@ -5,5 +5,5 @@ package com.geekhalo.lego.core.wide;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface WideMasterData {
+public interface WideItemType<E extends Enum<E> & WideItemType<E>>{
 }
