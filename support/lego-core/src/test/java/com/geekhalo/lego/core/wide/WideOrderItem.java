@@ -2,7 +2,6 @@ package com.geekhalo.lego.core.wide;
 
 import com.geekhalo.lego.annotation.wide.BindFrom;
 import com.geekhalo.lego.core.wide.support.BindFromBasedWide;
-import com.geekhalo.lego.core.wide.support.BindFromBasedWideWrapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

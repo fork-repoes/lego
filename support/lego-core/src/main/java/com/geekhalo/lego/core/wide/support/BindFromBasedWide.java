@@ -1,6 +1,9 @@
 package com.geekhalo.lego.core.wide.support;
 
-import com.geekhalo.lego.core.wide.*;
+import com.geekhalo.lego.core.wide.Wide;
+import com.geekhalo.lego.core.wide.WideIndexCompareContext;
+import com.geekhalo.lego.core.wide.WideIndexSingleUpdateContext;
+import com.geekhalo.lego.core.wide.WideItemType;
 
 /**
  * Created by taoli on 2022/10/30.

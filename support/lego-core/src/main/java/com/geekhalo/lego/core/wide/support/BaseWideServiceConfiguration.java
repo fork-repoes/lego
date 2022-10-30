@@ -1,8 +1,6 @@
 package com.geekhalo.lego.core.wide.support;
 
-import com.geekhalo.lego.core.wide.*;
-
-import java.util.List;
+import com.geekhalo.lego.core.wide.Wide;
 
 /**
  * Created by taoli on 2022/10/28.

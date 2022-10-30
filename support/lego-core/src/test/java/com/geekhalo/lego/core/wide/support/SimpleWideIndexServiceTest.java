@@ -1,8 +1,7 @@
 package com.geekhalo.lego.core.wide.support;
 
-import com.geekhalo.lego.core.wide.*;
-import lombok.Getter;
-import org.assertj.core.util.Lists;
+import com.geekhalo.lego.core.wide.WideOrderItem;
+import com.geekhalo.lego.core.wide.WideOrderItemType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/10/28.

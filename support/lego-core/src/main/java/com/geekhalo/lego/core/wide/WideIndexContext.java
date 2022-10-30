@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.wide;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 
 /**
  * Created by taoli on 2022/10/30.

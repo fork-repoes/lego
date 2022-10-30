@@ -2,15 +2,14 @@ package com.geekhalo.lego.core.wide.support;
 
 import com.geekhalo.lego.core.wide.Wide;
 import com.geekhalo.lego.core.wide.WideWrapper;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.annotation.Validated;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 /**
  * Created by taoli on 2022/10/26.
  * gitee : https://gitee.com/litao851025/lego
