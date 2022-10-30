@@ -1,5 +1,7 @@
 package com.geekhalo.lego.service.address;
 
+import com.geekhalo.lego.core.wide.WideItemData;
+import com.geekhalo.lego.wide.WideOrderType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,8 +12,18 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class Address {
+public class Address implements WideItemData<WideOrderType, Long> {
     private Long id;
     private Long userId;
     private String detail;
+
+    @Override
+    public WideOrderType getItemType() {
+        return WideOrderType.ADDRESS;
+    }
+
+    @Override
+    public Long getKey() {
+        return id;
+    }
 }

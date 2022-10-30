@@ -1,5 +1,7 @@
 package com.geekhalo.lego.service.order;
 
+import com.geekhalo.lego.core.wide.WideItemData;
+import com.geekhalo.lego.wide.WideOrderType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,10 +12,19 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class Order {
+public class Order implements WideItemData<WideOrderType, Long> {
     private Long id;
     private Long userId;
     private Long addressId;
     private Long productId;
 
+    @Override
+    public WideOrderType getItemType() {
+        return WideOrderType.ORDER;
+    }
+
+    @Override
+    public Long getKey() {
+        return id;
+    }
 }

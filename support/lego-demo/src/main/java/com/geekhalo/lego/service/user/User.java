@@ -1,5 +1,7 @@
 package com.geekhalo.lego.service.user;
 
+import com.geekhalo.lego.core.wide.WideItemData;
+import com.geekhalo.lego.wide.WideOrderType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,11 +12,21 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class User {
+public class User implements WideItemData<WideOrderType, Long> {
     private Long id;
     private String name;
 
     public boolean isEnable() {
         return true;
+    }
+
+    @Override
+    public WideOrderType getItemType() {
+        return WideOrderType.USER;
+    }
+
+    @Override
+    public Long getKey() {
+        return id;
     }
 }

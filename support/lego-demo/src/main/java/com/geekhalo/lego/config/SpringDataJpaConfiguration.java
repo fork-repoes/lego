@@ -14,7 +14,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.geekhalo.lego.singlequery.jpa",
         "com.geekhalo.lego.validator",
         "com.geekhalo.lego.query",
-        "com.geekhalo.lego.command"
+        "com.geekhalo.lego.command",
+        "com.geekhalo.lego.wide"
 }, repositoryFactoryBeanClass = JpaBasedQueryObjectRepositoryFactoryBean.class)
 public class SpringDataJpaConfiguration {
 }
