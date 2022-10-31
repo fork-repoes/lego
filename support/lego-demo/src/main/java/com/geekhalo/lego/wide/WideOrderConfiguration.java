@@ -4,11 +4,14 @@ import com.geekhalo.lego.core.wide.*;
 import com.geekhalo.lego.core.wide.support.BindFromBasedWideWrapperFactory;
 import com.geekhalo.lego.core.wide.support.SimpleWideIndexService;
 import com.geekhalo.lego.core.wide.support.SimpleWidePatrolService;
+import com.geekhalo.lego.starter.wide.WideConfigurationSupport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.support.GenericConversionService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by taoli on 2022/10/30.
@@ -16,59 +19,44 @@ import java.util.List;
  * 编程就像玩 Lego
  */
 @Configuration
-public class WideOrderConfiguration {
+public class WideOrderConfiguration extends WideConfigurationSupport<Long, WideOrderType, WideOrder> {
+
+    @Autowired
+    private WideOrderRepository wideOrderRepository;
+
+    @Autowired
+    private List<WideItemDataProvider<WideOrderType, ?, ? extends WideItemData<WideOrderType, ?>>> wideItemDataProviders;
 
     @Bean
-    public WideService<Long, WideOrderType> wideService(
+    public WideIndexService<Long, WideOrderType> createWideIndexService(){
+        return super.createWideIndexService();
+    }
+
+    @Bean
+    public WideOrderPatrolService wideOrderPatrolService(){
+        return new WideOrderPatrolService(createWidePatrolService());
+    }
+
+    @Bean
+    protected WideService<Long, WideOrderType> createWideService(
             WideIndexService<Long, WideOrderType> wideIndexService,
             WideOrderPatrolService wideOrderPatrolService){
-        WideService wideService = new WideService<>();
-        wideService.setIndexService(wideIndexService);
-        wideService.setPatrolService(wideOrderPatrolService);
-        wideService.init();
-        return wideService;
+        return super.createWideService(wideIndexService, wideOrderPatrolService);
     }
 
-    @Bean
-    public WideIndexService<Long, WideOrderType> wideIndexService(
-            WideFactory<Long, WideOrder> wideFactory,
-            WideWrapperFactory<WideOrder> wideWrapperFactory,
-            List<WideItemDataProvider<WideOrderType, ? extends Object, ? extends WideItemData<WideOrderType, ?>>> wideItemProviders,
-            WideOrderRepository wideOrderItemCommandRepository){
-        SimpleWideIndexService<Long, WideOrder, WideOrderType> simpleWideIndexService = new SimpleWideIndexService();
-        simpleWideIndexService.setWideWrapperFactory(wideWrapperFactory);
-        simpleWideIndexService.setWideFactory(wideFactory);
-        simpleWideIndexService.setWideItemDataProviders(wideItemProviders);
-        simpleWideIndexService.setWideCommandRepository(wideOrderItemCommandRepository);
-        return simpleWideIndexService;
+
+    @Override
+    protected WideFactory<Long, WideOrder> getWideFactory() {
+        return WideOrder::new;
     }
 
-    @Bean
-    public WideOrderPatrolService wideOrderPatrolService(WidePatrolService<Long, WideOrderType> widePatrolService){
-        return new WideOrderPatrolService(widePatrolService);
+    @Override
+    protected WideCommandRepository<Long, WideOrderType, WideOrder> getWideCommandRepository() {
+        return this.wideOrderRepository;
     }
 
-    @Bean
-    public WidePatrolService<Long, WideOrderType> widePatrolService(
-            WideFactory<Long, WideOrder> wideFactory,
-            WideWrapperFactory<WideOrder> wideWrapperFactory,
-            List<WideItemDataProvider<WideOrderType, ? extends Object, ? extends WideItemData<WideOrderType, ?>>> wideItemProviders,
-            WideOrderRepository wideOrderItemCommandRepository){
-        SimpleWidePatrolService<Long, WideOrder, WideOrderType> widePatrolService = new SimpleWidePatrolService();
-        widePatrolService.setWideWrapperFactory(wideWrapperFactory);
-        widePatrolService.setWideFactory(wideFactory);
-        widePatrolService.setWideItemDataProviders(wideItemProviders);
-        widePatrolService.setWideCommandRepository(wideOrderItemCommandRepository);
-        return widePatrolService;
-    }
-
-    @Bean
-    public WideWrapperFactory<WideOrder> wideWrapperFactory(){
-        return new BindFromBasedWideWrapperFactory<>(new GenericConversionService());
-    }
-
-    @Bean
-    public WideFactory<Long, WideOrder> wideFactory(){
-        return orderId -> new WideOrder(orderId);
+    @Override
+    protected List<WideItemDataProvider<WideOrderType, ?, ? extends WideItemData<WideOrderType, ?>>> getWideItemProviders() {
+        return this.wideItemDataProviders;
     }
 }
