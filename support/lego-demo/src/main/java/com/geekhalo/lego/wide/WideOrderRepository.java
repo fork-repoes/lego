@@ -2,6 +2,9 @@ package com.geekhalo.lego.wide;
 
 import com.geekhalo.lego.core.wide.WideCommandRepository;
 import com.geekhalo.lego.core.wide.WideItemData;
+import com.geekhalo.lego.wide.es.WideOrderESDao;
+import com.geekhalo.lego.wide.jpa.WideOrderJpaDao;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +19,7 @@ import java.util.function.Consumer;
 @Repository
 public class WideOrderRepository implements WideCommandRepository<Long, WideOrderType, WideOrder> {
     @Autowired
-    private WideOrderDao wideOrderDao;
+    private WideOrderESDao wideOrderDao;
 
     @Override
     public void save(List<WideOrder> wides) {
@@ -25,7 +28,7 @@ public class WideOrderRepository implements WideCommandRepository<Long, WideOrde
 
     @Override
     public List<WideOrder> findByIds(List<Long> masterIds) {
-        return wideOrderDao.findAllById(masterIds);
+        return Lists.newArrayList(wideOrderDao.findAllById(masterIds));
     }
 
     @Override

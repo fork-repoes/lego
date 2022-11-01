@@ -1,6 +1,6 @@
-package com.geekhalo.lego.wide;
+package com.geekhalo.lego.wide.jpa;
 
-import com.geekhalo.lego.service.user.User;
+import com.geekhalo.lego.service.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface UserDao extends JpaRepository<User, Long> {
+public interface ProductDao extends JpaRepository<Product, Long> {
 }

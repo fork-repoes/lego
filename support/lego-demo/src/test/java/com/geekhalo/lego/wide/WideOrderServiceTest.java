@@ -5,6 +5,7 @@ import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.order.Order;
 import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.user.User;
+import com.geekhalo.lego.wide.jpa.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ class WideOrderServiceTest {
     private ProductDao productDao;
 
     @Autowired
-    private WideOrderDao wideOrderDao;
+    private WideOrderJpaDao wideOrderDao;
 
     @Autowired
     private WideOrderService wideOrderService;

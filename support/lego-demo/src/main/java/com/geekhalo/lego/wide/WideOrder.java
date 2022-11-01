@@ -10,6 +10,7 @@ import com.geekhalo.lego.service.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +28,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(indexName = "wide_order")
 public class WideOrder extends BindFromBasedWide<Long, WideOrderType> {
     @Id
     private Long id;

@@ -1,6 +1,6 @@
-package com.geekhalo.lego.wide;
+package com.geekhalo.lego.wide.jpa;
 
-import com.geekhalo.lego.service.address.Address;
+import com.geekhalo.lego.service.order.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface AddressDao extends JpaRepository<Address, Long> {
+public interface OrderDao extends JpaRepository<Order, Long> {
 }
