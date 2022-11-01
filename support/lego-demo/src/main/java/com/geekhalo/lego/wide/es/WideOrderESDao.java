@@ -2,7 +2,6 @@ package com.geekhalo.lego.wide.es;
 
 import com.geekhalo.lego.wide.WideOrder;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

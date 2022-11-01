@@ -5,7 +5,11 @@ import com.geekhalo.lego.service.address.Address;
 import com.geekhalo.lego.service.order.Order;
 import com.geekhalo.lego.service.product.Product;
 import com.geekhalo.lego.service.user.User;
-import com.geekhalo.lego.wide.jpa.*;
+import com.geekhalo.lego.wide.es.WideOrderESDao;
+import com.geekhalo.lego.wide.jpa.AddressDao;
+import com.geekhalo.lego.wide.jpa.OrderDao;
+import com.geekhalo.lego.wide.jpa.ProductDao;
+import com.geekhalo.lego.wide.jpa.UserDao;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +29,7 @@ import java.util.Optional;
 @SpringBootTest(classes = DemoApplication.class)
 @Transactional
 @Rollback(value = false)
-class WideOrderServiceTest {
+class WideOrderEsServiceTest {
     @Autowired
     private OrderDao orderDao;
     @Autowired
@@ -36,7 +40,7 @@ class WideOrderServiceTest {
     private ProductDao productDao;
 
     @Autowired
-    private WideOrderJpaDao wideOrderDao;
+    private WideOrderESDao wideOrderDao;
 
     @Autowired
     private WideOrderService wideOrderService;

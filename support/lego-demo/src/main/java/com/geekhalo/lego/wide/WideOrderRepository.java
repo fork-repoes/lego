@@ -3,7 +3,6 @@ package com.geekhalo.lego.wide;
 import com.geekhalo.lego.core.wide.WideCommandRepository;
 import com.geekhalo.lego.core.wide.WideItemData;
 import com.geekhalo.lego.wide.es.WideOrderESDao;
-import com.geekhalo.lego.wide.jpa.WideOrderJpaDao;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -52,15 +51,16 @@ public class WideOrderRepository implements WideCommandRepository<Long, WideOrde
 
     @Override
     public <KEY> void updateByItem(WideOrderType wideOrderType, KEY key, Consumer<WideOrder> wideConsumer) {
+        Consumer<WideOrder> updateAndSave = wideConsumer.andThen(wideOrder -> wideOrderDao.save(wideOrder));
         switch (wideOrderType){
             case PRODUCT:
-                this.wideOrderDao.findByProductId((Long) key).forEach(wideConsumer);
+                this.wideOrderDao.findByProductId((Long) key).forEach(updateAndSave);
             case ADDRESS:
-                this.wideOrderDao.findByAddressId((Long) key).forEach(wideConsumer);
+                this.wideOrderDao.findByAddressId((Long) key).forEach(updateAndSave);
             case ORDER:
-                this.wideOrderDao.findById((Long) key).ifPresent(wideConsumer);
+                this.wideOrderDao.findById((Long) key).ifPresent(updateAndSave);
             case USER:
-                this.wideOrderDao.findByUserId((Long) key).forEach(wideConsumer);
+                this.wideOrderDao.findByUserId((Long) key).forEach(updateAndSave);
         }
     }
 

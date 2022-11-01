@@ -31,6 +31,7 @@ import java.util.List;
 @Document(indexName = "wide_order")
 public class WideOrder extends BindFromBasedWide<Long, WideOrderType> {
     @Id
+    @org.springframework.data.annotation.Id
     private Long id;
 
     @BindFrom(sourceClass = Order.class, field = "userId")

@@ -26,9 +26,9 @@ public class WideOrderPatrolService implements WidePatrolService<Long, WideOrder
     }
 
     @Override
-    @DelayBasedRocketMQ(topic = "wide_order_patrol", tag = "BatchIndex", consumerGroup = "order_patrol_group", delayLevel = 2)
     public void index(List<Long> longs) {
-        this.widePatrolService.index(longs);
+        WideOrderPatrolService wideOrderPatrolService = ((WideOrderPatrolService)AopContext.currentProxy());
+        longs.forEach(id -> wideOrderPatrolService.index(id));
     }
 
     @Override
