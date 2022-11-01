@@ -1,17 +1,12 @@
 package com.geekhalo.lego.wide;
 
 import com.geekhalo.lego.core.wide.*;
-import com.geekhalo.lego.core.wide.support.BindFromBasedWideWrapperFactory;
-import com.geekhalo.lego.core.wide.support.SimpleWideIndexService;
-import com.geekhalo.lego.core.wide.support.SimpleWidePatrolService;
 import com.geekhalo.lego.starter.wide.WideConfigurationSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.support.GenericConversionService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by taoli on 2022/10/30.
