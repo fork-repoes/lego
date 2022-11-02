@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.async.normal;
 import com.geekhalo.lego.annotation.async.AsyncBasedRocketMQ;
 import com.geekhalo.lego.core.support.consumer.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
@@ -21,6 +22,7 @@ import java.util.List;
  * 扫描 bean 中被 @AsyncBasedRocketMQ 注解的方法，并将方法封装成 AsyncConsumerContainer，
  * 以启动 DefaultMQPushConsumer
  */
+@Slf4j
 public class NormalAsyncConsumerContainerRegistry
         extends AbstractConsumerContainerRegistry {
 
@@ -45,8 +47,12 @@ public class NormalAsyncConsumerContainerRegistry
 
         // 2. 为每个 @AsyncBasedRocketMQ 注解方法 注册 NormalAsyncConsumerContainer
         for(Method method : methodsListWithAnnotation){
-            AsyncBasedRocketMQ annotation = method.getAnnotation(AsyncBasedRocketMQ.class);
+            if (method.isBridge()){
+                log.warn("method {} is bridge, break!", method);
+                continue;
+            }
 
+            AsyncBasedRocketMQ annotation = method.getAnnotation(AsyncBasedRocketMQ.class);
             String consumerProfile = annotation.consumerProfile();
             if (!isActiveProfile(consumerProfile)){
                 continue;

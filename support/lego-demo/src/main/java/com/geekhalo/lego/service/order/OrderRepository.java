@@ -5,6 +5,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.geekhalo.lego.util.TimeUtils.sleepAsMS;
 
@@ -24,9 +25,25 @@ public class OrderRepository {
         return orders;
     }
 
+    public List<Order> getById(List<Long> ids){
+        return ids.stream()
+                .map(id -> createOrderById(id))
+                .collect(Collectors.toList());
+    }
+
     private Order createOrder(long userId) {
         return Order.builder()
                 .id(RandomUtils.nextLong(0, 1000000))
+                .userId(userId)
+                .addressId(userId + 1)
+                .productId(userId + 2)
+                .build();
+    }
+
+    private Order createOrderById(long id) {
+        long userId = RandomUtils.nextLong(0, 10);
+        return Order.builder()
+                .id(id)
                 .userId(userId)
                 .addressId(userId + 1)
                 .productId(userId + 2)
