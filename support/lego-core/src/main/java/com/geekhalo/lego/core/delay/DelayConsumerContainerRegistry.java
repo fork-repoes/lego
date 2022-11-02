@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.delay;
 import com.geekhalo.lego.annotation.delay.DelayBasedRocketMQ;
 import com.geekhalo.lego.core.support.consumer.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
@@ -18,6 +19,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Slf4j
 public class DelayConsumerContainerRegistry
     extends AbstractConsumerContainerRegistry {
 
@@ -34,6 +36,10 @@ public class DelayConsumerContainerRegistry
 
         // 2. 为每个 @DelayBasedRocketMQ 注解方法 注册 RocketMQConsumerContainer
         for(Method method : methodsListWithAnnotation){
+            if (method.isBridge()){
+                log.warn("method {} is bridge, break!", method);
+                continue;
+            }
             DelayBasedRocketMQ annotation = AnnotatedElementUtils.findMergedAnnotation(method, DelayBasedRocketMQ.class);
             String consumerProfile = annotation.consumerProfile();
             if (!isActiveProfile(consumerProfile)){

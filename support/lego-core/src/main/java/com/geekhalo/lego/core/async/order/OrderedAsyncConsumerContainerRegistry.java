@@ -3,6 +3,7 @@ package com.geekhalo.lego.core.async.order;
 import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
 import com.geekhalo.lego.core.support.consumer.support.AbstractConsumerContainerRegistry;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
@@ -17,6 +18,7 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Slf4j
 public class OrderedAsyncConsumerContainerRegistry extends AbstractConsumerContainerRegistry {
 
     public OrderedAsyncConsumerContainerRegistry(Environment environment) {
@@ -32,6 +34,11 @@ public class OrderedAsyncConsumerContainerRegistry extends AbstractConsumerConta
 
         // 2. 为每个 @AsyncForOrderedBasedRocketMQ 注解方法 注册 OrderedAsyncConsumerContainer
         for(Method method : methodsListWithAnnotation){
+            if (method.isBridge()){
+                log.warn("method {} is bridge, break!", method);
+                continue;
+            }
+
             AsyncForOrderedBasedRocketMQ annotation = method.getAnnotation(AsyncForOrderedBasedRocketMQ.class);
             String consumerProfile = annotation.consumerProfile();
             if (!isActiveProfile(consumerProfile)){
