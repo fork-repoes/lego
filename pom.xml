@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>modules</artifactId>
-	<version>0.1.14-wide-SNAPSHOT</version>
+	<version>0.1.15-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>lego-modules</name>
 	<modules>

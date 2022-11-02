@@ -4,24 +4,24 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.14-wide-SNAPSHOT</version>
+		<version>0.1.15-SNAPSHOT</version>
 		<relativePath>../lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-core</artifactId>
-	<version>0.1.14-wide-SNAPSHOT</version>
+	<version>0.1.15-SNAPSHOT</version>
 	<name>lego-core</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
 			<artifactId>lego-annotation</artifactId>
-			<version>0.1.14-wide-SNAPSHOT</version>
+			<version>0.1.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
 			<artifactId>lego-common</artifactId>
-			<version>0.1.14-wide-SNAPSHOT</version>
+			<version>0.1.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
