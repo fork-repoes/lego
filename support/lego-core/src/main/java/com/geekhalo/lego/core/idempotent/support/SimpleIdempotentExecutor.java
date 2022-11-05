@@ -40,6 +40,7 @@ public class SimpleIdempotentExecutor
 
             // 异常中断逻辑
             if (this.meta.handleType() == IdempotentHandleType.ERROR){
+                log.info("In Error Mode, throw RepeatedSubmitException");
                 throw new RepeatedSubmitException();
             }
 

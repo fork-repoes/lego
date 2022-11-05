@@ -25,14 +25,14 @@ public class RedisBasedExecutionRecordRepository implements ExecutionRecordRepos
 
     @Override
     public void update(ExecutionRecord executionRecord) {
-        String cacheKey = createCacheKey(executionRecord.getGroup(), executionRecord.getKey());
+        String cacheKey = createCacheKey(executionRecord.getType(), executionRecord.getUniqueKey());
         this.recordRedisTemplate.opsForValue().set(cacheKey, executionRecord, this.duration);
     }
 
     @Override
-    public ExecutionRecord getOrCreate(int group, String key) {
-        String cacheKey = createCacheKey(group, key);
-        ExecutionRecord executionRecord = ExecutionRecord.apply(group, key);
+    public ExecutionRecord getOrCreate(int type, String key) {
+        String cacheKey = createCacheKey(type, key);
+        ExecutionRecord executionRecord = ExecutionRecord.apply(type, key);
         executionRecord.init();
         boolean result = this.recordRedisTemplate.opsForValue()
                             .setIfAbsent(cacheKey, executionRecord, this.duration);

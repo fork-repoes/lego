@@ -8,5 +8,5 @@ package com.geekhalo.lego.core.idempotent.support;
 public interface ExecutionRecordRepository {
     void update(ExecutionRecord executionRecord);
 
-    ExecutionRecord getOrCreate(int group, String key);
+    ExecutionRecord getOrCreate(int type, String key);
 }

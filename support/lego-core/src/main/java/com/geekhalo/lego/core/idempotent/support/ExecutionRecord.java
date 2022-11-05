@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -14,14 +15,20 @@ import java.util.Date;
  */
 @NoArgsConstructor
 @Data
+@Table
+@Entity
 public class ExecutionRecord {
     private static final Integer STATUS_NONE = 0;
     private static final Integer STATUS_ING = 1;
     private static final Integer STATUS_DONE_SUCCESS = 2;
     private static final Integer STATUS_DONE_ERROR = 3;
 
-    private Integer group;
-    private String key;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Integer type;
+    private String uniqueKey;
 
     private String result;
     private Integer status;
@@ -61,8 +68,8 @@ public class ExecutionRecord {
         Preconditions.checkArgument(StringUtils.isNoneBlank(key));
 
         ExecutionRecord executionRecord = new ExecutionRecord();
-        executionRecord.setGroup(group);
-        executionRecord.setKey(key);
+        executionRecord.setType(group);
+        executionRecord.setUniqueKey(key);
         return executionRecord;
     }
 
