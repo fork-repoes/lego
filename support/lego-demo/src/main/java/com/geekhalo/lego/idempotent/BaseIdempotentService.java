@@ -1,7 +1,5 @@
 package com.geekhalo.lego.idempotent;
 
-import com.geekhalo.lego.annotation.idempotent.Idempotent;
-import com.geekhalo.lego.annotation.idempotent.IdempotentHandleType;
 import com.google.common.collect.Maps;
 
 import java.util.Map;

@@ -17,7 +17,7 @@ public @interface Idempotent {
      * 执行器名称
      * @return
      */
-    String executorName() default "DEFAULT_EXECUTOR";
+    String executorFactory() default "DEFAULT_EXECUTOR_FACTORY";
 
 
     /**
@@ -30,7 +30,7 @@ public @interface Idempotent {
      * 幂等key，通过 SpEL 表达式读取参数信息
      * @return
      */
-    String key();
+    String keyEl();
 
     /**
      * 幂等结果执行类型

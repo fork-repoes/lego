@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -95,11 +96,12 @@ abstract class BaseIdempotentServiceTest {
         );
     }
 
-    private void testForConcurrent(Consumer<BaseIdempotentService> consumer){
+    private void testForConcurrent(Consumer<BaseIdempotentService> consumer) throws InterruptedException {
 
         Thread thread = new Thread(() -> consumer.accept(getIdempotentService()));
         thread.start();
 
+        TimeUnit.SECONDS.sleep(1);
         consumer.accept(getIdempotentService());
     }
 
