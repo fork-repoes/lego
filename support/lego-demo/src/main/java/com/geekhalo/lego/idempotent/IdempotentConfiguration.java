@@ -2,7 +2,8 @@ package com.geekhalo.lego.idempotent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekhalo.lego.core.idempotent.IdempotentExecutorFactory;
-import com.geekhalo.lego.core.idempotent.support.*;
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecord;
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecordRepository;
 import com.geekhalo.lego.core.idempotent.support.repository.JpaBasedExecutionRecordRepository;
 import com.geekhalo.lego.core.idempotent.support.repository.RedisBasedExecutionRecordRepository;
 import com.geekhalo.lego.starter.idempotent.IdempotentConfigurationSupport;
