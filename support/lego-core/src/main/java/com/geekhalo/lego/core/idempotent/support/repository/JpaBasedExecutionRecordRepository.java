@@ -1,5 +1,7 @@
-package com.geekhalo.lego.core.idempotent.support;
+package com.geekhalo.lego.core.idempotent.support.repository;
 
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecord;
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecordRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface JpaBasedExecutionRecordRepository extends JpaRepository<ExecutionRecord, Long>, ExecutionRecordRepository{
+public interface JpaBasedExecutionRecordRepository extends JpaRepository<ExecutionRecord, Long>, ExecutionRecordRepository {
 
     ExecutionRecord getByTypeAndUniqueKey(int type, String key);
 

@@ -1,6 +1,7 @@
 package com.geekhalo.lego.idempotent;
 
 import com.geekhalo.lego.common.idempotent.ConcurrentRequestException;
+import com.geekhalo.lego.common.idempotent.RepeatedSubmitException;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -73,6 +74,42 @@ abstract class BaseIdempotentServiceTest {
 
             Assertions.assertTrue(error);
             Assertions.assertEquals(value, idempotentService.getValue(key));
+        }
+    }
+
+    @Test
+    void putExceptionForResult(){
+        BaseIdempotentService idempotentService = getIdempotentService();
+        String key = String.valueOf(RandomUtils.nextLong());
+        Long value = RandomUtils.nextLong();
+
+        {   // 第一次操作，抛出异常
+            Assertions.assertThrows(IdempotentTestException.class,
+                    ()->idempotentService.putExceptionForResult(key, value));
+        }
+
+        {   // 第二次操作，返回值和最终结果 与第一一致（直接获取返回值，没有执行业务逻辑）
+            Long valueNew = RandomUtils.nextLong();
+            Assertions.assertThrows(IdempotentTestException.class,
+                    ()->idempotentService.putExceptionForResult(key, valueNew));
+        }
+    }
+
+    @Test
+    public void putExceptionForError(){
+        BaseIdempotentService idempotentService = getIdempotentService();
+        String key = String.valueOf(RandomUtils.nextLong());
+        Long value = RandomUtils.nextLong();
+
+        {   // 第一次操作，抛出异常
+            Assertions.assertThrows(IdempotentTestException.class,
+                    ()->idempotentService.putExceptionForResult(key, value));
+        }
+
+        {   // 第二次操作，返回值和最终结果 与第一一致（直接获取返回值，没有执行业务逻辑）
+            Long valueNew = RandomUtils.nextLong();
+            Assertions.assertThrows(RepeatedSubmitException.class,
+                    ()->idempotentService.putExceptionForError(key, valueNew));
         }
     }
 

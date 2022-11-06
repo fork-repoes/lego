@@ -35,6 +35,22 @@ public class DBBasedIdempotentService
     @Idempotent(executorFactory = "dbExecutorFactory", group = 1, keyEl = "#key",
             handleType = IdempotentHandleType.RESULT)
     @Transactional
+    public Long putExceptionForResult(String key, Long data) {
+        return putException(key, data);
+    }
+
+    @Override
+    @Idempotent(executorFactory = "dbExecutorFactory", group = 1, keyEl = "#key",
+            handleType = IdempotentHandleType.ERROR)
+    @Transactional
+    public Long putExceptionForError(String key, Long data) {
+        return putException(key, data);
+    }
+
+    @Override
+    @Idempotent(executorFactory = "dbExecutorFactory", group = 1, keyEl = "#key",
+            handleType = IdempotentHandleType.RESULT)
+    @Transactional
     public Long putWaitForResult(String key, Long data) {
         return putForWait(key, data);
     }

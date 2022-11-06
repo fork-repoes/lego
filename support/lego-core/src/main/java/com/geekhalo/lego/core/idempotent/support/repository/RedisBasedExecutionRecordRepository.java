@@ -1,5 +1,7 @@
-package com.geekhalo.lego.core.idempotent.support;
+package com.geekhalo.lego.core.idempotent.support.repository;
 
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecord;
+import com.geekhalo.lego.core.idempotent.support.ExecutionRecordRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
@@ -9,7 +11,7 @@ import java.time.Duration;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class RedisBasedExecutionRecordRepository implements ExecutionRecordRepository{
+public class RedisBasedExecutionRecordRepository implements ExecutionRecordRepository {
 
     private final String keyTemplate;
     private final Duration duration;

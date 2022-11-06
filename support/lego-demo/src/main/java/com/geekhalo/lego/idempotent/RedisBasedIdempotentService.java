@@ -27,6 +27,20 @@ public class RedisBasedIdempotentService
         return put(key, data);
     }
 
+    @Idempotent(executorFactory = "redisExecutorFactory", group = 1, keyEl = "#key",
+            handleType = IdempotentHandleType.RESULT)
+    @Override
+    public Long putExceptionForResult(String key, Long data) {
+        return putException(key, data);
+    }
+
+    @Idempotent(executorFactory = "redisExecutorFactory", group = 1, keyEl = "#key",
+            handleType = IdempotentHandleType.ERROR)
+    @Override
+    public Long putExceptionForError(String key, Long data) {
+        return putException(key, data);
+    }
+
     @Override
     @Idempotent(executorFactory = "redisExecutorFactory", group = 1, keyEl = "#key",
             handleType = IdempotentHandleType.RESULT)

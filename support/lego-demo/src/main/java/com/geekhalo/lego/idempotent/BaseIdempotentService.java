@@ -26,6 +26,10 @@ public abstract class BaseIdempotentService {
          return data;
     }
 
+    protected Long putException(String key, Long data){
+        throw new IdempotentTestException();
+    }
+
     protected Long putForWait(String key, Long data){
         try {
             TimeUnit.SECONDS.sleep(3);
@@ -39,6 +43,10 @@ public abstract class BaseIdempotentService {
     public abstract Long putForResult(String key, Long data);
 
     public abstract Long putForError(String key, Long data);
+
+    public abstract Long putExceptionForResult(String key, Long data);
+
+    public abstract Long putExceptionForError(String key, Long data);
 
     public abstract Long putWaitForResult(String key, Long data);
 
