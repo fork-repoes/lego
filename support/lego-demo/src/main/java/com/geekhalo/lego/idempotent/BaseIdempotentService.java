@@ -27,6 +27,7 @@ public abstract class BaseIdempotentService {
     }
 
     protected Long putException(String key, Long data){
+        this.data.put(key, data);
         throw new IdempotentTestException();
     }
 

@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @NoArgsConstructor
 @Data
-@Table
+@Table(name = "idempotent_execution_record")
 @Entity
 public class ExecutionRecord {
     private static final Integer STATUS_NONE = 0;

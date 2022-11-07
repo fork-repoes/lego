@@ -64,15 +64,10 @@ abstract class BaseIdempotentServiceTest {
         }
 
         { // 第二次操作，直接抛出异常，结果与第一次一致
-            boolean error = false;
-            try {
+            Assertions.assertThrows(RepeatedSubmitException.class, () ->{
                 Long valueNew = RandomUtils.nextLong();
                 idempotentService.putForError(key, valueNew);
-            }catch (Exception e){
-                error = true;
-            }
-
-            Assertions.assertTrue(error);
+            });
             Assertions.assertEquals(value, idempotentService.getValue(key));
         }
     }
@@ -86,12 +81,14 @@ abstract class BaseIdempotentServiceTest {
         {   // 第一次操作，抛出异常
             Assertions.assertThrows(IdempotentTestException.class,
                     ()->idempotentService.putExceptionForResult(key, value));
+            Assertions.assertEquals(value, idempotentService.getValue(key));
         }
 
         {   // 第二次操作，返回值和最终结果 与第一一致（直接获取返回值，没有执行业务逻辑）
             Long valueNew = RandomUtils.nextLong();
             Assertions.assertThrows(IdempotentTestException.class,
                     ()->idempotentService.putExceptionForResult(key, valueNew));
+            Assertions.assertEquals(value, idempotentService.getValue(key));
         }
     }
 
@@ -117,6 +114,8 @@ abstract class BaseIdempotentServiceTest {
     void putWaitForResult(){
         String key = String.valueOf(RandomUtils.nextLong());
         Long value = RandomUtils.nextLong();
+
+        // 主线程抛出 ConcurrentRequestException
         Assertions.assertThrows(ConcurrentRequestException.class, () ->
             testForConcurrent(baseIdempotentService ->
                 baseIdempotentService.putWaitForResult(key, value))
@@ -134,10 +133,11 @@ abstract class BaseIdempotentServiceTest {
     }
 
     private void testForConcurrent(Consumer<BaseIdempotentService> consumer) throws InterruptedException {
-
+        // 启动一个线程执行任务，模拟并发场景
         Thread thread = new Thread(() -> consumer.accept(getIdempotentService()));
         thread.start();
 
+        // 主线程 sleep 1 秒，与异步线程并行执行任务
         TimeUnit.SECONDS.sleep(1);
         consumer.accept(getIdempotentService());
     }
