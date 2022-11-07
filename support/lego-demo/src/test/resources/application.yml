@@ -15,7 +15,7 @@ spring:
     username: root
     password: root
   elasticsearch:
-    uris: http://localhost:9200
+    uris: http://127.0.0.1:9200
     connection-timeout: 10s
     socket-timeout: 30s
   jpa:
@@ -25,6 +25,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
 rocketmq:
   name-server: http://127.0.0.1:9876
   producer:
