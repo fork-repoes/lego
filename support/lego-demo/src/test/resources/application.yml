@@ -2,7 +2,6 @@ logging:
     level:
       com.geekhalo.lego.singlequery: debug
       com.geekhalo: info
-
 spring:
   sql:
     init:
@@ -49,3 +48,5 @@ cancelOrder:
     topic: delay-task-test-topic
     consumerGroup1: delay-cancel-order-group1
     consumerGroup2: delay-cancel-order-group2
+server:
+  port: 9090
