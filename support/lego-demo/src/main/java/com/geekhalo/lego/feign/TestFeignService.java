@@ -29,7 +29,7 @@ public class TestFeignService implements TestFeignApi{
 
     @Override
     public void postDataForError(String key, List<Long> data) {
-        throw new RuntimeException();
+        throw new TestPostException();
     }
 
     @Override
@@ -39,6 +39,6 @@ public class TestFeignService implements TestFeignApi{
 
     @Override
     public List<Long> getDataForError(String key) {
-        throw new RuntimeException();
+        throw new TestGetException();
     }
 }
