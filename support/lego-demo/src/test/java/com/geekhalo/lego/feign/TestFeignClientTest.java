@@ -1,6 +1,7 @@
 package com.geekhalo.lego.feign;
 
 import com.geekhalo.lego.DemoApplication;
+import com.geekhalo.lego.core.feign.RpcException;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -48,7 +49,7 @@ class TestFeignClientTest {
 
     @Test
     void postDataForError(){
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(RpcException.class, ()->{
             this.testFeignClient.postDataForError(key, data);
         });
     }
@@ -67,7 +68,7 @@ class TestFeignClientTest {
     @Test
     void getDataForError(){
         this.testFeignClient.getData(key);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(RpcException.class, ()->{
             this.testFeignClient.getDataForError(key);
         });
     }
