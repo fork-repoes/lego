@@ -2,8 +2,9 @@ logging:
     level:
       com.geekhalo.lego.singlequery: debug
       com.geekhalo: info
-
 spring:
+  application:
+    name: Lego-demo
   sql:
     init:
       schema-locations: classpath:db/schema.sql
@@ -33,7 +34,9 @@ rocketmq:
   name-server: http://127.0.0.1:9876
   producer:
     group: consumer-demo
-
+feign:
+  service:
+    basePackages: com.geekhalo.lego.feign
 async:
   test:
     normal:
@@ -49,3 +52,5 @@ cancelOrder:
     topic: delay-task-test-topic
     consumerGroup1: delay-cancel-order-group1
     consumerGroup2: delay-cancel-order-group2
+server:
+  port: 9090
