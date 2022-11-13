@@ -1,7 +1,6 @@
 package com.geekhalo.lego.starter.feign;
 
 import com.geekhalo.lego.core.feign.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
