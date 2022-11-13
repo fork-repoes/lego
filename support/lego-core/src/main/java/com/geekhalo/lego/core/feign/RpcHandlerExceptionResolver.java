@@ -20,7 +20,7 @@ import static com.geekhalo.lego.core.feign.RpcConstants.PRC_RESULT_CODE_DEF;
 
 @Slf4j
 @Order(0)
-public class RpcExceptionHandler implements HandlerExceptionResolver {
+public class RpcHandlerExceptionResolver implements HandlerExceptionResolver {
     @Value("${spring.application.name:Unknown}")
     private String applicationName;
 

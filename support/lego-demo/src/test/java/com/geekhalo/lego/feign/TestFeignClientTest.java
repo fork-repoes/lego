@@ -72,4 +72,11 @@ class TestFeignClientTest {
             this.testFeignClient.getDataForError(key);
         });
     }
+
+    @Test
+    void customException(){
+        Assertions.assertThrows(CustomException.class, ()->{
+            this.testFeignClient.customException();
+        });
+    }
 }

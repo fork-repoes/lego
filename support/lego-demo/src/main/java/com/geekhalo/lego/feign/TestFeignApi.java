@@ -24,4 +24,7 @@ public interface TestFeignApi {
 
     @GetMapping("/test/getDataForError/{key}")
     List<Long> getDataForError(@PathVariable String key);
+
+    @GetMapping("/test/customException")
+    void customException();
 }

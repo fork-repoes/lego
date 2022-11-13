@@ -20,6 +20,11 @@ public class FeignRpcConfiguration {
     }
 
     @Bean
+    public RpcHandlerExceptionResolver rpcExceptionHandler(){
+        return new RpcHandlerExceptionResolver();
+    }
+
+    @Bean
     public RpcErrorDecoder rpcErrorDecoder(RpcExceptionResolvers resolvers){
         return new RpcErrorDecoder(resolvers);
     }
@@ -34,9 +39,4 @@ public class FeignRpcConfiguration {
         return new SimpleRpcExceptionResolver();
     }
 
-    @ConditionalOnMissingBean
-    @Bean
-    public RpcExceptionHandler rpcExceptionHandler(){
-        return new RpcExceptionHandler();
-    }
 }

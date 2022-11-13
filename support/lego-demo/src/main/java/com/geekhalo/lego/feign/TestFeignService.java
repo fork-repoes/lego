@@ -21,7 +21,6 @@ public class TestFeignService implements TestFeignApi{
     public List<Long> getByKey(String key){
         return this.cache.get(key);
     }
-
     @Override
     public void postData(String key, List<Long> data) {
         this.cache.put(key, data);
@@ -40,5 +39,10 @@ public class TestFeignService implements TestFeignApi{
     @Override
     public List<Long> getDataForError(String key) {
         throw new TestGetException();
+    }
+
+    @Override
+    public void customException() {
+        throw new CustomException();
     }
 }
