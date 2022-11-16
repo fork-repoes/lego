@@ -22,6 +22,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.executable.ExecutableValidator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 @Configuration
-@ConditionalOnClass(Validateable.class)
+@ConditionalOnClass({Validateable.class, ExecutableValidator.class})
 @AutoConfigureAfter(ValidationAutoConfiguration.class)
 public class ValidatorAutoConfiguration {
 

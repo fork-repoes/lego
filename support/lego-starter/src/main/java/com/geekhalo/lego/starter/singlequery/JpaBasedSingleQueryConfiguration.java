@@ -3,10 +3,16 @@ package com.geekhalo.lego.starter.singlequery;
 import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.jpa.support.DefaultSpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.jpa.support.handler.*;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -14,6 +20,9 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@ConditionalOnBean({DataSource.class})
+@ConditionalOnClass({JpaRepository.class})
+@AutoConfiguration(after = JpaRepositoriesAutoConfiguration.class)
 @Configuration
 public class JpaBasedSingleQueryConfiguration {
 
