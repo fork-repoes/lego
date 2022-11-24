@@ -43,6 +43,7 @@ public class DelayBasedRocketMQAutoConfiguration {
     public DelayConsumerContainerRegistry delayConsumerContainerRegistry(){
         return new DelayConsumerContainerRegistry(this.environment);
     }
+
     @Bean
     public PointcutAdvisor delayPointcutAdvisor(@Autowired DelayMethodInterceptor delayMethodInterceptor){
         return new DefaultPointcutAdvisor(new AnnotationMatchingPointcut(null, DelayBasedRocketMQ.class),
