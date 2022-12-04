@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class LongBitOrOp implements LongBitOp {
     private final LongBitOp[] longBitOps;
 
-    public LongBitOrOp(LongBitOp... longBitOps) {
+    LongBitOrOp(LongBitOp... longBitOps) {
         this.longBitOps = longBitOps;
     }
 

@@ -14,19 +14,19 @@ class MessageTipsTest {
     @Test
     public void match() {
         {
-            Assertions.assertFalse(this.messageTips.isLike());
-            this.messageTips.setLike(true);
-            Assertions.assertTrue(this.messageTips.isLike());
-            this.messageTips.setLike(false);
-            Assertions.assertFalse(this.messageTips.isLike());
+            Assertions.assertFalse(this.messageTips.isHasLike());
+            this.messageTips.setLike();
+            Assertions.assertTrue(this.messageTips.isHasLike());
+            this.messageTips.cleanLike();
+            Assertions.assertFalse(this.messageTips.isHasLike());
         }
 
         {
-            Assertions.assertFalse(this.messageTips.isSystem());
-            this.messageTips.setSystem(true);
-            Assertions.assertTrue(this.messageTips.isSystem());
-            this.messageTips.setSystem(false);
-            Assertions.assertFalse(this.messageTips.isSystem());
+            Assertions.assertFalse(this.messageTips.isHasSystem());
+            this.messageTips.setSystem();
+            Assertions.assertTrue(this.messageTips.isHasSystem());
+            this.messageTips.cleanSystem();
+            Assertions.assertFalse(this.messageTips.isHasSystem());
         }
 
         {

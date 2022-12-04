@@ -1,6 +1,6 @@
 package com.geekhalo.lego.core.bitop.tips;
 
-import com.geekhalo.lego.core.bitop.intop.IntMaskOp;
+import com.geekhalo.lego.core.bitop.longop.LongMaskOp;
 
 /**
  * Created by taoli on 2022/11/26.
@@ -8,25 +8,48 @@ import com.geekhalo.lego.core.bitop.intop.IntMaskOp;
  * 编程就像玩 Lego
  */
 public class MessageTips {
-    private static final IntMaskOp SYSTEM = IntMaskOp.MASK_1;
-    private static final IntMaskOp LIKE = IntMaskOp.MASK_2;
+    private static final LongMaskOp SYSTEM = LongMaskOp.MASK_1;
+    private static final LongMaskOp LIKE = LongMaskOp.MASK_2;
+    private static final LongMaskOp FOLLOW = LongMaskOp.MASK_3;
 
-    private int type = 0;
+    private Long userId;
 
-    public void setSystem(boolean tutu){
-        this.type = SYSTEM.set(this.type, tutu);
+    private long messageTips = 0L;
+
+    public void setSystem(){
+        this.messageTips = SYSTEM.set(this.messageTips);
     }
 
-    public boolean isSystem(){
-        return SYSTEM.isSet(this.type);
+    public void cleanSystem(){
+        this.messageTips = SYSTEM.unset(this.messageTips);
     }
 
-    public void setLike(boolean gaotu){
-        this.type = LIKE.set(this.type, gaotu);
+    public boolean isHasSystem(){
+        return SYSTEM.match(this.messageTips);
     }
 
-    public boolean isLike(){
-        return LIKE.isSet(this.type);
+    public void setLike(){
+        this.messageTips = LIKE.set(this.messageTips);
+    }
+
+    public void cleanLike(){
+        this.messageTips = LIKE.unset(this.messageTips);
+    }
+
+    public boolean isHasLike(){
+        return LIKE.match(this.messageTips);
+    }
+
+    public void setFollow(){
+        this.messageTips = FOLLOW.set(this.messageTips);
+    }
+
+    public void cleanFollow(){
+        this.messageTips = FOLLOW.unset(this.messageTips);
+    }
+
+    public boolean isHasFollow(){
+        return FOLLOW.match(this.messageTips);
     }
 
     public String filterByLike(String filed){

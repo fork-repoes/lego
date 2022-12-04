@@ -18,7 +18,6 @@ class LongMaskOpTest {
     void or() {
         LongMaskOp bitOp1 = LongMaskOp.getByBitIndex(1);
         LongMaskOp bitOp2 = LongMaskOp.getByBitIndex(2);
-
         LongBitOp bitOp = bitOp1.or(bitOp2);
 
         {

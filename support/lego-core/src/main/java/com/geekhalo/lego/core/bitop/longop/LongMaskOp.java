@@ -43,7 +43,7 @@ public class LongMaskOp implements LongBitOp {
                 .toString();
     }
 
-    private long set(long value, boolean isSet){
+    public long set(long value, boolean isSet){
         if (isSet){
             return set(value);
         }else {

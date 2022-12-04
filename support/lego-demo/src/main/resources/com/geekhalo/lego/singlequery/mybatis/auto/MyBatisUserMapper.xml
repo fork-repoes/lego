@@ -3,10 +3,10 @@
 <mapper namespace="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserMapper">
   <resultMap id="BaseResultMap" type="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="birth_at" jdbcType="TIMESTAMP" property="birthAt" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, status, birth_at, mobile
+    id, birth_at, mobile, name, status
   </sql>
   <select id="selectByExample" parameterType="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUserExample" resultMap="BaseResultMap">
     select
@@ -108,10 +108,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser">
-    insert into t_user (id, name, status, 
-      birth_at, mobile)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{birthAt,jdbcType=TIMESTAMP}, #{mobile,jdbcType=VARCHAR})
+    insert into t_user (id, birth_at, mobile, 
+      name, status)
+    values (#{id,jdbcType=BIGINT}, #{birthAt,jdbcType=TIMESTAMP}, #{mobile,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser">
     insert into t_user
@@ -119,34 +119,34 @@
       <if test="id != null">
         id,
       </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
       <if test="birthAt != null">
         birth_at,
       </if>
       <if test="mobile != null">
         mobile,
       </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
       </if>
       <if test="birthAt != null">
         #{birthAt,jdbcType=TIMESTAMP},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -162,17 +162,17 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=INTEGER},
-      </if>
       <if test="record.birthAt != null">
         birth_at = #{record.birthAt,jdbcType=TIMESTAMP},
       </if>
       <if test="record.mobile != null">
         mobile = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -182,10 +182,10 @@
   <update id="updateByExample" parameterType="map">
     update t_user
     set id = #{record.id,jdbcType=BIGINT},
-      name = #{record.name,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER},
       birth_at = #{record.birthAt,jdbcType=TIMESTAMP},
-      mobile = #{record.mobile,jdbcType=VARCHAR}
+      mobile = #{record.mobile,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -193,27 +193,27 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser">
     update t_user
     <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
       <if test="birthAt != null">
         birth_at = #{birthAt,jdbcType=TIMESTAMP},
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
       </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.geekhalo.lego.singlequery.mybatis.auto.MyBatisUser">
     update t_user
-    set name = #{name,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      birth_at = #{birthAt,jdbcType=TIMESTAMP},
-      mobile = #{mobile,jdbcType=VARCHAR}
+    set birth_at = #{birthAt,jdbcType=TIMESTAMP},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

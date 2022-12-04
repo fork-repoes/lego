@@ -11,7 +11,7 @@ import com.geekhalo.lego.core.bitop.intop.IntMaskOp;
 public class LongBitNotOp implements LongBitOp {
     private final LongBitOp longBitOp;
 
-    public LongBitNotOp(LongBitOp longBitOp) {
+    LongBitNotOp(LongBitOp longBitOp) {
         this.longBitOp = longBitOp;
     }
 
