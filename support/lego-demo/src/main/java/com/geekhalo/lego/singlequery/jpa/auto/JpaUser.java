@@ -9,7 +9,7 @@ import java.util.Objects;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Entity
+@Entity(name = "JpaUser3")
 @Table(name = "t_user", schema = "lego", catalog = "")
 public class JpaUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -54,3 +54,5 @@ cancelOrder:
     consumerGroup2: delay-cancel-order-group2
 server:
   port: 9090
+mybatis:
+  type-handlers-package: com.geekhalo.lego.enums.mybatis

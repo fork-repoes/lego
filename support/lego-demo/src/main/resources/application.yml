@@ -19,12 +19,12 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
+baseEnum:
+  basePackage: com.geekhalo.lego.enums
 rocketmq:
   name-server: http://127.0.0.1:9876
   producer:
     group: async-demo
-
 async:
   test:
     normal:
@@ -40,3 +40,5 @@ cancelOrder:
     topic: delay-task-test-topic
     consumerGroup1: delay-cancel-order-group1
     consumerGroup2: delay-cancel-order-group2
+mybatis:
+  type-handlers-package: com.geekhalo.lego.enums.mybatis
