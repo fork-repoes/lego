@@ -4,24 +4,24 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.19-SNAPSHOT</version>
+		<version>0.1.19-enum-SNAPSHOT</version>
 		<relativePath>../lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-core</artifactId>
-	<version>0.1.19-SNAPSHOT</version>
+	<version>0.1.19-enum-SNAPSHOT</version>
 	<name>lego-core</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
 			<artifactId>lego-annotation</artifactId>
-			<version>0.1.19-SNAPSHOT</version>
+			<version>0.1.19-enum-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.geekhalo.lego</groupId>
 			<artifactId>lego-common</artifactId>
-			<version>0.1.19-SNAPSHOT</version>
+			<version>0.1.19-enum-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -114,6 +114,18 @@
             <version>3.0.0</version>
 			<scope>provided</scope>
         </dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.20</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.4.5</version>
+			<scope>provided</scope>
+		</dependency>
     </dependencies>
 
 </project>
