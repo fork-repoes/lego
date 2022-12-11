@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration;
  * 编程就像玩 Lego
  */
 @Configuration
-@MapperScan(basePackages = "com.geekhalo.lego.singlequery.mybatis")
+@MapperScan(basePackages = {
+        "com.geekhalo.lego.singlequery.mybatis",
+        "com.geekhalo.lego.enums.mybatis"
+})
 public class MyBatisConfiguration {
 }
