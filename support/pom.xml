@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.19-SNAPSHOT</version>
+		<version>0.1.19</version>
 		<relativePath>lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>support-module</artifactId>
-	<version>0.1.19-SNAPSHOT</version>
+	<version>0.1.19</version>
 	<packaging>pom</packaging>
 	<name>lego-support-module</name>
 	<modules>
