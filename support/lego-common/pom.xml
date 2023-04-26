@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.geekhalo.lego</groupId>
 		<artifactId>lego-parent</artifactId>
-		<version>0.1.20-SNAPSHOT</version>
+		<version>0.1.20-cache-SNAPSHOT</version>
 		<relativePath>../lego-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-common</artifactId>
-	<version>0.1.20-SNAPSHOT</version>
+	<version>0.1.20-cache-SNAPSHOT</version>
 	<name>lego-core</name>
 
 </project>
