@@ -23,6 +23,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  cache:
+    cache-names: localCache
+    caffeine:
+      spec: maximumSize=100,expireAfterAccess=30s
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
