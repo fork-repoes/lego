@@ -8,6 +8,7 @@
 	<name>lego-modules</name>
 	<modules>
 		<module>support</module>
+		<module>services</module>
 	</modules>
 
 	<build>
