@@ -1,17 +1,16 @@
 package com.geekhalo.lego.core.command.support;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@MappedSuperclass
+@Setter(AccessLevel.PRIVATE)
 public class AbstractEntity {
-    @Id
-    private Long id;
-
     @Version
     private Integer vsn;
 
@@ -23,4 +22,21 @@ public class AbstractEntity {
 
     @Column(name = "delete_time")
     private Date deleteAt;
+
+    @PrePersist
+    protected void prePersist(){
+        if (createAt == null){
+            setCreateAt(new Date());
+        }
+    }
+
+    @PreUpdate
+    protected void preUpdate(){
+        setUpdateAt(new Date());
+    }
+
+    @PreRemove
+    protected void preRemove(){
+        setDeleteAt(new Date());
+    }
 }

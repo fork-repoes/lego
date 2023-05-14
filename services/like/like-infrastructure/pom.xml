@@ -8,7 +8,7 @@
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-infrastructure-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../parent/infrastructure-parent.xml</relativePath>
+        <relativePath>../../parent/infrastructure-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo.lego</groupId>
