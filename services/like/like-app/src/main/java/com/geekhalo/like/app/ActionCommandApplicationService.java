@@ -27,6 +27,7 @@ public class ActionCommandApplicationService{
     public void like(Long userId, ActionTarget target){
         Optional<LikeAction> likeActionOptional = this.likeActionRepository.getByUserIdAndTarget(userId, target);
         LikeAction likeAction = likeActionOptional.orElseGet(()-> LikeAction.create(userId, target));
+
         likeAction.mark();
 
         saveAndPublishEvents(likeAction, this.eventPublisher);
@@ -34,6 +35,7 @@ public class ActionCommandApplicationService{
 
     public void unLike(Long userId, ActionTarget target){
         Optional<LikeAction> likeActionOptional = this.likeActionRepository.getByUserIdAndTarget(userId, target);
+
         likeActionOptional.ifPresent(likeAction -> {
             likeAction.cancel();
             saveAndPublishEvents(likeAction, this.eventPublisher);
@@ -41,7 +43,7 @@ public class ActionCommandApplicationService{
     }
 
     private void saveAndPublishEvents(LikeAction likeAction, ApplicationEventPublisher eventPublisher) {
-        likeActionRepository.save(likeAction);
+        likeActionRepository.sync(likeAction);
         likeAction.consumeAndClearEvent(domainEvent -> eventPublisher.publishEvent(domainEvent));
     }
 
@@ -64,7 +66,7 @@ public class ActionCommandApplicationService{
     }
 
     private void saveAndPublishEvents( DislikeAction dislikeAction, ApplicationEventPublisher eventPublisher) {
-        dislikeActionRepository.save(dislikeAction);
+        dislikeActionRepository.sync(dislikeAction);
         dislikeAction.consumeAndClearEvent(domainEvent -> eventPublisher.publishEvent(domainEvent));
     }
 }

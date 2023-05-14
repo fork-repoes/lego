@@ -1,6 +1,6 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.AbstractAggRoot;
+import com.geekhalo.lego.core.command.support.AbstractAggRoot;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

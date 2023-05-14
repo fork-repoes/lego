@@ -1,5 +1,7 @@
-package com.geekhalo.lego.core.command;
+package com.geekhalo.lego.core.command.support;
 
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.DomainEvent;
 import com.geekhalo.lego.core.command.support.AbstractEntity;
 import com.google.common.collect.Lists;
 import lombok.Data;
@@ -14,7 +16,7 @@ import java.util.function.Consumer;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class AbstractAggRoot extends AbstractEntity
-    implements AggRoot<Long>{
+    implements AggRoot<Long> {
     @Transient
     private final List<DomainEvent> events = Lists.newArrayList();
 

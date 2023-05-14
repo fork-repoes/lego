@@ -1,6 +1,8 @@
 package com.geekhalo.like.domain.like;
 
 import com.geekhalo.like.domain.AbstractAction;
+import com.geekhalo.like.domain.AbstractCancelledEvent;
+import com.geekhalo.like.domain.AbstractMarkedEvent;
 import com.geekhalo.like.domain.ActionTarget;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,5 +17,15 @@ public class LikeAction extends AbstractAction {
         LikeAction likeAction = new LikeAction();
         likeAction.init(userId, target);
         return likeAction;
+    }
+
+    @Override
+    protected AbstractCancelledEvent<? extends AbstractAction> createCancelledEvent() {
+        return LikeCancelledEvent.apply(this);
+    }
+
+    @Override
+    protected AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent() {
+        return LikeMarkedEvent.apply(this);
     }
 }

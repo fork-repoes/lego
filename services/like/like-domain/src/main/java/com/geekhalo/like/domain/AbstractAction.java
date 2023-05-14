@@ -1,6 +1,6 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.AbstractAggRoot;
+import com.geekhalo.lego.core.command.support.AbstractAggRoot;
 import com.google.common.base.Preconditions;
 import lombok.*;
 
@@ -20,15 +20,24 @@ public abstract class AbstractAction extends AbstractAggRoot {
         Preconditions.checkArgument(target != null);
         setUserId(userId);
         setTarget(target);
-        mark();
     }
 
     public void cancel(){
-        setStatus(ActionStatus.INVALID);
+        if (getStatus() != ActionStatus.INVALID) {
+            setStatus(ActionStatus.INVALID);
+            addEvent(createCancelledEvent());
+        }
     }
 
     public void mark(){
-        setStatus(ActionStatus.VALID);
+        if (getStatus() != ActionStatus.VALID) {
+            setStatus(ActionStatus.VALID);
+            addEvent(createMarkedEvent());
+        }
     }
+
+    protected abstract AbstractCancelledEvent<? extends AbstractAction> createCancelledEvent();
+
+    protected abstract AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent();
 
 }

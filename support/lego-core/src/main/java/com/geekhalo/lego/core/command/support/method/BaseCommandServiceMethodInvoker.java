@@ -77,7 +77,7 @@ abstract class BaseCommandServiceMethodInvoker<
     protected abstract void callBizMethod(AGG agg, CONTEXT proxy);
 
     protected void syncToRepository(AGG agg, CONTEXT proxy) {
-        this.commandRepository.save(agg);
+        this.commandRepository.sync(agg);
     }
 
     protected void publishEvent(AGG agg, CONTEXT proxy) {

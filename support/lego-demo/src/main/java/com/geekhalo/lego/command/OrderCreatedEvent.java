@@ -1,5 +1,6 @@
 package com.geekhalo.lego.command;
 
+import com.geekhalo.lego.core.command.support.AbstractDomainEvent;
 import lombok.Builder;
 import lombok.Value;
 
@@ -8,8 +9,11 @@ import lombok.Value;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Builder
 @Value
-public class OrderCreatedEvent implements OrderEvent{
-    private final Order order;
+public class OrderCreatedEvent
+        extends AbstractDomainEvent<Long, Order>
+        implements OrderEvent{
+    public OrderCreatedEvent(Order order){
+        super(order);
+    }
 }

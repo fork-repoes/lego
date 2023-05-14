@@ -1,6 +1,10 @@
 package com.geekhalo.like.domain.dislike;
 
-import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.like.domain.AbstractTargetCountRepository;
+import com.geekhalo.like.domain.ActionTarget;
 
-public interface DislikeTargetCountRepository extends CommandRepository<DislikeTargetCount, Long> {
+public interface DislikeTargetCountRepository
+        extends AbstractTargetCountRepository<DislikeTargetCount> {
+
+    void incr(ActionTarget target, int count);
 }
