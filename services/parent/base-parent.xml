@@ -42,6 +42,7 @@
         <jodd-version>5.1.4</jodd-version>
         <mapstruct-version>1.4.2.Final</mapstruct-version>
         <spring-statemachine.version>2.5.0</spring-statemachine.version>
+        <lego.version>0.1.20-add_like_service-SNAPSHOT</lego.version>
     </properties>
     <developers>
         <developer>
@@ -78,6 +79,16 @@
                 <artifactId>spring-data-releasetrain</artifactId>
                 <version>Neumann-SR9</version>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>2.3.9.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>com.geekhalo.lego</groupId>
+                <artifactId>lego-core</artifactId>
+                <version>${lego.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
