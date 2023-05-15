@@ -1,5 +1,6 @@
 package com.geekhalo.lego.cache;
 
+import com.geekhalo.lego.annotation.cache.BatchCacheable;
 import com.geekhalo.lego.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
@@ -32,7 +33,7 @@ public class UserService {
         return user;
     }
 
-    @Cacheable(value = "localCache", cacheManager = "cacheManager")
+    @BatchCacheable(value = "localCache", cacheManager = "cacheManager")
     public List<User> getByIds(List<Long> ids){
         log.info("call get by ids {}", ids);
         return ids.stream()
