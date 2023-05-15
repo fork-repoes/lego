@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Slf4j
 public abstract class AbstractCommandService {
@@ -26,6 +25,7 @@ public abstract class AbstractCommandService {
     /**
      * 创建 Creator，已完成对创建流程的组装
      * @param repository
+     * @param <ID>
      * @param <A>
      * @param <CONTEXT>
      * @return
@@ -37,6 +37,7 @@ public abstract class AbstractCommandService {
     /**
      * 创建 Updater，已完成对更新流程的组装
      * @param aggregateRepository
+     * @param <ID>
      * @param <A>
      * @param <CONTEXT>
      * @return
@@ -45,6 +46,14 @@ public abstract class AbstractCommandService {
         return new Updater<ID, A, CONTEXT>(aggregateRepository);
     }
 
+    /**
+     * 创建 Syncer，已完成对同步流程的组装
+     * @param aggregateRepository
+     * @param <ID>
+     * @param <A>
+     * @param <CONTEXT>
+     * @return
+     */
     protected <ID, A extends AggRoot<ID>, CONTEXT> Syncer<ID, A, CONTEXT> syncerFor(CommandRepository<A, ID> aggregateRepository){
         return new Syncer<ID, A, CONTEXT>(aggregateRepository);
     }
@@ -207,7 +216,7 @@ public abstract class AbstractCommandService {
          * @param loader
          * @return
          */
-        public Updater<ID, A, CONTEXT> loader(Function<CONTEXT, Optional<A>> loader){
+        public Updater<ID, A, CONTEXT> loadBy(Function<CONTEXT, Optional<A>> loader){
             Preconditions.checkArgument(loader != null);
             this.loadFun = loader;
             return this;
@@ -262,7 +271,7 @@ public abstract class AbstractCommandService {
          * @param context
          * @return
          */
-        public A call(CONTEXT context){
+        public A exe(CONTEXT context){
             Preconditions.checkArgument(this.aggregateRepository != null, "aggregateRepository can not be null");
             Preconditions.checkArgument(this.loadFun != null, "loader can not both be null");
             Optional<A> aOptional = null;
@@ -281,10 +290,12 @@ public abstract class AbstractCommandService {
                     // 对聚合进行持久化处理
                     this.aggregateRepository.sync(a);
 
-                    // 发布并清理事件
-                    // 1. 发布领域事件
-                    // 2. 清理领域事件
-                    a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    if(eventPublisher != null) {
+                        // 发布并清理事件
+                        // 1. 发布领域事件
+                        // 2. 清理领域事件
+                        a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    }
 
                     // 操作成功回调
                     this.successFun.accept(a, context);
@@ -299,16 +310,19 @@ public abstract class AbstractCommandService {
     }
 
     protected class Syncer<ID, A extends AggRoot<ID>, CONTEXT> {
+        // 仓库
         private final CommandRepository<A, ID> aggregateRepository;
+        // 用于实例化聚合根
         private Function<CONTEXT, A> instanceFun;
+        // 用于加载聚合根
         private Function<CONTEXT, Optional<A>> loadFun;
-
+        // 执行通用业务逻辑
         private BiConsumer<A, CONTEXT> updater = (a, context) ->{
             if (a instanceof AbstractEntity){
                 ((AbstractEntity) a).preUpdate();
             }
         };
-
+        // 执行创建后业务逻辑
         private BiConsumer<A, CONTEXT> updaterWhenCreate = (a, context) ->{
             if (a instanceof AbstractEntity){
                 ((AbstractEntity)a).prePersist();
@@ -316,39 +330,58 @@ public abstract class AbstractCommandService {
         };
 
 //        private ValidationHandler validationHandler = new ExceptionBasedValidationHandler();
-//        private DomainEventPublisher eventPublisher;
+        // 成功后回调
         private Consumer<Data> successFun = a -> LOGGER.info("success to sync {}", a);
         private BiConsumer<Data, Exception> errorFun = (a, e) -> {
             LOGGER.error("failed to sync {}.", a, e);
             if (e instanceof RuntimeException){
                 throw (RuntimeException) e;
-            }else {
-//                throw new BusinessException(500, e.toString(), e);
             }
+            throw new RuntimeException(e);
         };
 
         Syncer(CommandRepository<A, ID> aggregateRepository) {
             this.aggregateRepository = aggregateRepository;
         }
 
-        public Syncer<ID, A, CONTEXT> instance(Function<CONTEXT, A> instanceFun){
+        /**
+         * 初始化器
+         * @param instanceFun
+         * @return
+         */
+        public Syncer<ID, A, CONTEXT> instanceBy(Function<CONTEXT, A> instanceFun){
             Preconditions.checkArgument(instanceFun != null);
             this.instanceFun = instanceFun;
             return this;
         }
 
+        /**
+         * 加载器
+         * @param loadFun
+         * @return
+         */
         public Syncer<ID, A, CONTEXT> loadBy(Function<CONTEXT, Optional<A>> loadFun){
             Preconditions.checkArgument(loadFun != null);
             this.loadFun = loadFun;
             return this;
         }
 
+        /**
+         * 业务逻辑执行器
+         * @param updater
+         * @return
+         */
         public Syncer<ID, A, CONTEXT> update(BiConsumer<A, CONTEXT> updater){
             Preconditions.checkArgument(updater != null);
             this.updater = updater.andThen(this.updater);
             return this;
         }
 
+        /**
+         * 创建后回调
+         * @param updater
+         * @return
+         */
         public Syncer<ID, A, CONTEXT> updateWhenCreate(BiConsumer<A, CONTEXT> updater){
             Preconditions.checkArgument(updater != null);
             this.updaterWhenCreate = updater.andThen(this.updaterWhenCreate);
@@ -361,13 +394,22 @@ public abstract class AbstractCommandService {
 //            return this;
 //        }
 
-
+        /**
+         * 成功后回调
+         * @param onSuccessFun
+         * @return
+         */
         public Syncer<ID, A, CONTEXT> onSuccess(Consumer<Data> onSuccessFun){
             Preconditions.checkArgument(onSuccessFun != null);
             this.successFun = onSuccessFun.andThen(this.successFun);
             return this;
         }
 
+        /**
+         * 异常回调
+         * @param errorFun
+         * @return
+         */
         public Syncer<ID, A, CONTEXT> onError(BiConsumer<Data, Exception> errorFun){
             Preconditions.checkArgument(errorFun != null);
             this.errorFun = errorFun.andThen(this.errorFun);
@@ -375,49 +417,69 @@ public abstract class AbstractCommandService {
         }
 
 
-        public A call(CONTEXT context){
+        /**
+         * 执行逻辑
+         * @param context
+         * @return
+         */
+        public A exe(CONTEXT context){
             Preconditions.checkArgument(this.aggregateRepository != null, "aggregateRepository can not be null");
             Preconditions.checkArgument(this.loadFun != null, "load fun can not be nul");
             Preconditions.checkArgument(this.instanceFun != null, "instance fun can noe be null");
             A a = null;
             try {
+                // 加载聚合根
                 Optional<A> aOptional = this.loadFun.apply(context);
+
+                // 存在，走更新流程
                 if (aOptional.isPresent()){
                     a = aOptional.get();
-
+                    // 执行业务逻辑
                     updater.accept(a, context);
 
 //                    a.validate(validationHandler);
 //                    if (validationHandler instanceof ValidationChecker){
 //                        ((ValidationChecker)validationHandler).check();
 //                    }
-
+                    // 同步到 DB
                     this.aggregateRepository.sync(a);
 
-                    a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    if (eventPublisher != null) {
+                        // 发布领域事件
+                        // 1. 发布事件
+                        // 2. 清理事件
+                        a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    }
 
-
+                    // 成功毁掉
                     this.successFun.accept(new Data(a.getId(), Action.CREATE, a));
                 }else {
+                    // 创建聚合根
                     a = this.instanceFun.apply(context);
-
+                    // 执行创建逻辑
                     updaterWhenCreate.accept(a, context);
-
+                    // 执行业务逻辑
                     updater.accept(a, context);
 
 //                    a.validate(validationHandler);
 //                    if (validationHandler instanceof ValidationChecker){
 //                        ((ValidationChecker)validationHandler).check();
 //                    }
-
+                    // 保存聚合根
                     this.aggregateRepository.sync(a);
 
-                    a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    if (eventPublisher != null) {
+                        // 发布领域事件
+                        // 1. 发布事件
+                        // 2. 清理事件
+                        a.consumeAndClearEvent(eventPublisher::publishEvent);
+                    }
 
-
+                    // 成功回调
                     this.successFun.accept(new Data(a.getId(), Action.UPDATE, a));
                 }
             }catch (Exception e){
+                // 异常回调
                 this.errorFun.accept(new Data(null, null, a), e);
             }
             return a;
