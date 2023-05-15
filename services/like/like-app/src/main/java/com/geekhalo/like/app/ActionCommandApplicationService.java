@@ -1,5 +1,7 @@
 package com.geekhalo.like.app;
 
+import com.geekhalo.lego.core.command.support.AbstractCommandService;
+import com.geekhalo.like.domain.AbstractAction;
 import com.geekhalo.like.domain.ActionTarget;
 import com.geekhalo.like.domain.dislike.DislikeAction;
 import com.geekhalo.like.domain.dislike.DislikeActionRepository;
@@ -14,10 +16,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class ActionCommandApplicationService{
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
+public class ActionCommandApplicationService extends AbstractCommandService {
+    
     @Autowired
     private LikeActionRepository likeActionRepository;
 
@@ -25,48 +25,33 @@ public class ActionCommandApplicationService{
     private DislikeActionRepository dislikeActionRepository;
 
     public void like(Long userId, ActionTarget target){
-        Optional<LikeAction> likeActionOptional = this.likeActionRepository.getByUserIdAndTarget(userId, target);
-        LikeAction likeAction = likeActionOptional.orElseGet(()-> LikeAction.create(userId, target));
-
-        likeAction.mark();
-
-        saveAndPublishEvents(likeAction, this.eventPublisher);
+        this.syncerFor(this.likeActionRepository)
+                .loadBy(context ->this.likeActionRepository.getByUserIdAndTarget(userId, target))
+                .instance(context -> LikeAction.create(userId, target))
+                .update(((likeAction, context) -> likeAction.mark()))
+                .call(null);
     }
 
     public void unLike(Long userId, ActionTarget target){
-        Optional<LikeAction> likeActionOptional = this.likeActionRepository.getByUserIdAndTarget(userId, target);
-
-        likeActionOptional.ifPresent(likeAction -> {
-            likeAction.cancel();
-            saveAndPublishEvents(likeAction, this.eventPublisher);
-        });
+        this.updaterFor(this.likeActionRepository)
+                .loader(context -> this.likeActionRepository.getByUserIdAndTarget(userId, target))
+                .update((like, context) -> like.cancel())
+                .call(null);
     }
 
-    private void saveAndPublishEvents(LikeAction likeAction, ApplicationEventPublisher eventPublisher) {
-        likeActionRepository.sync(likeAction);
-        likeAction.consumeAndClearEvent(domainEvent -> eventPublisher.publishEvent(domainEvent));
-    }
 
     public void dislike(Long user, ActionTarget target){
-        Optional<DislikeAction> dislikeActionOptional = this.dislikeActionRepository.getByUserIdAndTarget(user, target);
-
-        DislikeAction dislikeAction = dislikeActionOptional.orElseGet(()->DislikeAction.create(user, target));
-        dislikeAction.mark();
-
-        saveAndPublishEvents(dislikeAction, this.eventPublisher);
-
+        this.syncerFor(this.dislikeActionRepository)
+                .loadBy(context -> this.dislikeActionRepository.getByUserIdAndTarget(user, target))
+                .instance(context -> DislikeAction.create(user, target))
+                .update((dislikeAction, context) -> dislikeAction.mark())
+                .call(null);
     }
 
     public void unDislike(Long userId, ActionTarget target){
-        Optional<DislikeAction> dislikeActionOptional = this.dislikeActionRepository.getByUserIdAndTarget(userId, target);
-        dislikeActionOptional.ifPresent(dislikeAction -> {
-            dislikeAction.cancel();
-            saveAndPublishEvents(dislikeAction, this.eventPublisher);
-        });
-    }
-
-    private void saveAndPublishEvents( DislikeAction dislikeAction, ApplicationEventPublisher eventPublisher) {
-        dislikeActionRepository.sync(dislikeAction);
-        dislikeAction.consumeAndClearEvent(domainEvent -> eventPublisher.publishEvent(domainEvent));
+        this.updaterFor(this.dislikeActionRepository)
+                .loader(context -> this.dislikeActionRepository.getByUserIdAndTarget(userId, target))
+                .update((dislikeAction, context) -> dislikeAction.cancel())
+                .call(null);
     }
 }
