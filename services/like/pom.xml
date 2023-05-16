@@ -13,5 +13,11 @@
         <module>like-app</module>
         <module>like-domain</module>
         <module>like-infrastructure</module>
+
+        <module>like-api</module>
+        <module>like-feign-service</module>
+        <module>like-feign-client</module>
+
+        <module>like-bootstrap</module>
     </modules>
 </project>
