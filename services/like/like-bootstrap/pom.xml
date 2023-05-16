@@ -5,26 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.geekhalo.lego</groupId>
-        <artifactId>lego-feignservice-parent</artifactId>
+        <artifactId>lego-bootstrap-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../parent/feignservice-parent.xml</relativePath>
+        <relativePath>../../parent/bootstrap-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
-    <artifactId>lego-like-feignservice</artifactId>
-    <name>lego-like-feignservice</name>
+    <artifactId>lego-like-bootstrap</artifactId>
+    <name>lego-like-bootstrap</name>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
-            <artifactId>lego-like-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.geekhalo.lego</groupId>
-            <artifactId>lego-like-app</artifactId>
+            <artifactId>lego-like-feignservice</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
 </project>
