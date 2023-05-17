@@ -1,4 +1,4 @@
-package com.geekhalo.lego.like.bootstrap;
+package com.geekhalo.like;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

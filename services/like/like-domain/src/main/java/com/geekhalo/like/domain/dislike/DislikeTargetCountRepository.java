@@ -6,5 +6,5 @@ import com.geekhalo.like.domain.ActionTarget;
 public interface DislikeTargetCountRepository
         extends AbstractTargetCountRepository<DislikeTargetCount> {
 
-    void incr(ActionTarget target, int count);
+
 }

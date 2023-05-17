@@ -1,9 +1,9 @@
-package com.geekhale.like.feign.client;
+package com.geekhalo.like.feign.client;
 
 import com.geekhalo.like.api.ActionCommandApi;
-import com.geekhalo.like.api.TargetCountQueryApi;
+import com.geekhalo.like.api.ActionQueryApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(name = "${like.server.name}", path = ActionCommandApi.PATH)
-public interface TargetCountQueryFeignClient extends TargetCountQueryApi {
+public interface ActionQueryFeignClient extends ActionQueryApi {
 }

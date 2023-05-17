@@ -1,4 +1,4 @@
-package com.geekhale.like.feign.client;
+package com.geekhalo.like.feign.client;
 
 import com.geekhalo.like.api.ActionCommandApi;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "dislike_action")
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

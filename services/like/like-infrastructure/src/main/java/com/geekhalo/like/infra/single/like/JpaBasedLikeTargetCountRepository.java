@@ -10,7 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 public interface JpaBasedLikeTargetCountRepository
     extends LikeTargetCountRepository, JpaRepository<LikeTargetCount, Long> {
 
+    @Override
+    default LikeTargetCount sync(LikeTargetCount likeTargetCount){
+        return save(likeTargetCount);
+    }
+
     @Modifying
-    @Query("update LikeTargetCount set count = count + ?2 where target = ?1")
-    void incr(ActionTarget target, int count);
+    @Query("update LikeTargetCount c set c.count = c.count + ?2 where c.target = ?1")
+    void incr(ActionTarget target, long count);
 }

@@ -1,4 +1,4 @@
-package com.geekhale.like.feign.service;
+package com.geekhalo.like.feign.service;
 
 import com.geekhalo.like.api.TargetCountQueryApi;
 

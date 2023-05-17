@@ -1,4 +1,4 @@
-package com.geekhale.like.feign.service;
+package com.geekhalo.like.feign.service;
 
 import com.geekhalo.like.api.ActionCommandApi;
 import com.geekhalo.like.app.ActionCommandApplicationService;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "orderInfo查询接口")
+@Api(tags = "操作接口")
 @RestController
 @RequestMapping(ActionCommandApi.PATH)
 public class ActionCommandFeignService implements ActionCommandApi {

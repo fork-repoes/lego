@@ -34,7 +34,7 @@
         <fastjson-version>1.2.78</fastjson-version>
         <guava-version>31.0.1-jre</guava-version>
         <druid-starter-version>1.2.4</druid-starter-version>
-        <swagger-version>2.9.2</swagger-version>
+<!--        <swagger-version>2.9.2</swagger-version>-->
         <swagger-annotations-version>1.5.14</swagger-annotations-version>
         <swagger-maven-plugin>3.1.7</swagger-maven-plugin>
         <swagger-code-gen-verison>2.3.1</swagger-code-gen-verison>
@@ -177,16 +177,16 @@
                 <artifactId>vavr</artifactId>
                 <version>1.0.0-alpha-3</version>
             </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger-version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.springfox</groupId>-->
+<!--                <artifactId>springfox-swagger2</artifactId>-->
+<!--                <version>${swagger-version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>io.springfox</groupId>-->
+<!--                <artifactId>springfox-swagger-ui</artifactId>-->
+<!--                <version>${swagger-version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
