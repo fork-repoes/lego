@@ -1,11 +1,11 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
-import com.geekhalo.like.domain.ActionTarget;
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.dislike.DislikeTargetCountRepository;
 import com.geekhalo.like.domain.like.LikeTargetCount;
 import com.geekhalo.like.domain.like.LikeTargetCountRepository;
+import com.geekhalo.like.domain.target.ActionTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

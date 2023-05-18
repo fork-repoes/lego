@@ -1,6 +1,8 @@
 package com.geekhalo.like.domain;
 
 import com.geekhalo.lego.core.command.support.AbstractAggRoot;
+import com.geekhalo.like.domain.target.ActionTarget;
+import com.geekhalo.like.domain.user.ActionUser;
 import com.google.common.base.Preconditions;
 import lombok.*;
 
@@ -16,8 +18,8 @@ public abstract class AbstractAction extends AbstractAggRoot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", updatable = false)
-    private Long userId;
+    @Embedded
+    private ActionUser user;
 
     @Embedded
     private ActionTarget target;
@@ -25,21 +27,20 @@ public abstract class AbstractAction extends AbstractAggRoot {
     @Column(name = "status")
     private ActionStatus status;
 
-    protected void init(Long userId, ActionTarget target){
-        Preconditions.checkArgument(userId != null);
-        Preconditions.checkArgument(target != null);
-        setUserId(userId);
-        setTarget(target);
+    protected void init(AbstractActionContext context){
+        Preconditions.checkArgument(context != null);
+        setUser(context.getActionUser());
+        setTarget(context.getActionTarget());
     }
 
-    public void cancel(){
+    public void cancel(CancelActionContext context){
         if (getStatus() != ActionStatus.INVALID) {
             setStatus(ActionStatus.INVALID);
             addEvent(createCancelledEvent());
         }
     }
 
-    public void mark(){
+    public void mark(MarkActionContext context){
         if (getStatus() != ActionStatus.VALID) {
             setStatus(ActionStatus.VALID);
             addEvent(createMarkedEvent());

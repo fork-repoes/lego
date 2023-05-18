@@ -8,14 +8,14 @@ public interface ActionCommandApi {
 
 
     @PostMapping("like")
-    void like(@RequestParam Long userId, @RequestParam Integer targetType, @RequestParam Long targetId);
+    void like(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
 
     @PostMapping("unlike")
-    void unLike(@RequestParam Long userId, @RequestParam Integer targetType, @RequestParam Long targetId);
+    void unLike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
 
     @PostMapping("dislike")
-    void dislike(@RequestParam Long user, @RequestParam Integer targetType, @RequestParam Long targetId);
+    void dislike(@RequestParam Long user, @RequestParam String targetType, @RequestParam Long targetId);
 
     @PostMapping("unDislike")
-    void unDislike(@RequestParam Long userId, @RequestParam Integer targetType, @RequestParam Long targetId);
+    void unDislike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
 }

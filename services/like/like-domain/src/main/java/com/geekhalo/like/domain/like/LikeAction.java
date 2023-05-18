@@ -1,9 +1,9 @@
 package com.geekhalo.like.domain.like;
 
 import com.geekhalo.like.domain.AbstractAction;
+import com.geekhalo.like.domain.AbstractActionContext;
 import com.geekhalo.like.domain.AbstractCancelledEvent;
 import com.geekhalo.like.domain.AbstractMarkedEvent;
-import com.geekhalo.like.domain.ActionTarget;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,9 +18,9 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class LikeAction extends AbstractAction {
 
-    public static LikeAction create(Long userId, ActionTarget target){
+    public static LikeAction create(AbstractActionContext context){
         LikeAction likeAction = new LikeAction();
-        likeAction.init(userId, target);
+        likeAction.init(context);
         return likeAction;
     }
 

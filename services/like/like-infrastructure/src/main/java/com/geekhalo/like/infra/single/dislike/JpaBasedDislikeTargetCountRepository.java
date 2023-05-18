@@ -1,9 +1,8 @@
 package com.geekhalo.like.infra.single.dislike;
 
-import com.geekhalo.like.domain.ActionTarget;
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.dislike.DislikeTargetCountRepository;
-import com.geekhalo.like.domain.like.LikeTargetCount;
+import com.geekhalo.like.domain.target.ActionTarget;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

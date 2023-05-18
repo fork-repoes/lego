@@ -1,7 +1,7 @@
 package com.geekhalo.like.domain.like;
 
 import com.geekhalo.like.domain.AbstractTargetCount;
-import com.geekhalo.like.domain.ActionTarget;
+import com.geekhalo.like.domain.target.ActionTarget;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

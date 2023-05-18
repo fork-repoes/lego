@@ -1,9 +1,9 @@
 package com.geekhalo.like.domain.dislike;
 
 import com.geekhalo.like.domain.AbstractAction;
+import com.geekhalo.like.domain.AbstractActionContext;
 import com.geekhalo.like.domain.AbstractCancelledEvent;
 import com.geekhalo.like.domain.AbstractMarkedEvent;
-import com.geekhalo.like.domain.ActionTarget;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,9 +18,9 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class DislikeAction extends AbstractAction {
 
-    public static DislikeAction create(Long userId, ActionTarget target){
+    public static DislikeAction create(AbstractActionContext context){
         DislikeAction dislikeAction = new DislikeAction();
-        dislikeAction.init(userId, target);
+        dislikeAction.init(context);
         return dislikeAction;
     }
 

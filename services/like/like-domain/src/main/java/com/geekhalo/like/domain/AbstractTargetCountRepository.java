@@ -2,6 +2,7 @@ package com.geekhalo.like.domain;
 
 import com.geekhalo.lego.core.command.CommandRepository;
 import com.geekhalo.like.domain.like.LikeTargetCount;
+import com.geekhalo.like.domain.target.ActionTarget;
 
 import java.util.Optional;
 
