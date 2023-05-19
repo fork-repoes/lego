@@ -1,6 +1,8 @@
 package com.geekhalo.lego.cache;
 
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,11 @@ public class CacheConfiguration {
     public CacheManager cacheManager(){
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         cacheManager.setCacheNames(Arrays.asList("localCache"));
-        return cacheManager;
+        return new CustomCacheManager(cacheManager);
     }
+
+//    @Bean
+//    public Cache localCache(){
+//        return new CaffeineCache();
+//    }
 }

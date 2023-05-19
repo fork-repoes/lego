@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    @Cacheable(value = "localCache", cacheManager = "cacheManager")
+    @Cacheable(value = "localCache")
     public User getById(Long id){
         log.info("call get by id {}", id);
         return createUser(id, 5L);
@@ -32,7 +32,7 @@ public class UserService {
         return user;
     }
 
-    @Cacheable(value = "localCache", cacheManager = "cacheManager")
+    @Cacheable(value = "localCache")
     public List<User> getByIds(List<Long> ids){
         log.info("call get by ids {}", ids);
         return ids.stream()
