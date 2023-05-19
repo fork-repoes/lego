@@ -1,6 +1,5 @@
 package com.geekhalo.lego.command;
 
-import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.DomainEvent;
 
 /**

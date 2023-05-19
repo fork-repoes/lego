@@ -1,6 +1,5 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.DomainEvent;
 import com.geekhalo.lego.core.command.support.AbstractDomainEvent;
 
 public abstract class AbstractMarkedEvent<AGG extends AbstractAction>

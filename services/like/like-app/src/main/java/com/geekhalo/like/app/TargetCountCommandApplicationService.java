@@ -20,19 +20,20 @@ class TargetCountCommandApplicationService extends AbstractCommandService {
     private DislikeTargetCountRepository dislikeTargetCountRepository;
 
     public void incrLike(ActionTarget target, int count){
-        Optional<LikeTargetCount> targetCountOptional = this.likeTargetCountRepository.getByTarget(target);
+        Optional<LikeTargetCount> targetCountOptional = this.likeTargetCountRepository.getByTarget(target.getType(), target.getId());
         if (!targetCountOptional.isPresent()){
             LikeTargetCount likeTargetCount = LikeTargetCount.create(target);
             this.likeTargetCountRepository.sync(likeTargetCount);
         }
-        this.likeTargetCountRepository.incr(target, count);
+        this.likeTargetCountRepository.incr(target.getType(), target.getId(), count);
     }
 
     public void incrDislike(ActionTarget target, int count){
-        Optional<DislikeTargetCount> targetCountOptional = this.dislikeTargetCountRepository.getByTarget(target);
+        Optional<DislikeTargetCount> targetCountOptional = this.dislikeTargetCountRepository.getByTarget(target.getType(), target.getId());
         if (!targetCountOptional.isPresent()){
             DislikeTargetCount targetCount = DislikeTargetCount.create(target);
             this.dislikeTargetCountRepository.sync(targetCount);
         }
+        this.dislikeTargetCountRepository.incr(target.getType(), target.getId(), count);
     }
 }

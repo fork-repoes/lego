@@ -2,6 +2,7 @@ package com.geekhalo.like.domain.target;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Embeddable;
 @Data
 @Setter(AccessLevel.PRIVATE)
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ActionTarget {
     @Column(name = "target_type", updatable = false)
     private String type;

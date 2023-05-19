@@ -1,7 +1,6 @@
 package com.geekhalo.lego.command;
 
 import com.geekhalo.lego.core.command.support.AbstractDomainEvent;
-import lombok.Builder;
 import lombok.Value;
 
 /**

@@ -2,7 +2,6 @@ package com.geekhalo.lego.enums.mybatis;
 
 import com.geekhalo.lego.core.enums.repository.mybatis.CommonEnumTypeHandler;
 import com.geekhalo.lego.enums.NewsStatus;
-import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
 /**

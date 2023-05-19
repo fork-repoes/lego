@@ -2,7 +2,6 @@ package com.geekhalo.like.feign.service;
 
 import com.geekhalo.like.api.ActionCommandApi;
 import com.geekhalo.like.app.ActionCommandApplicationService;
-import com.geekhalo.like.domain.target.ActionTarget;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,25 +19,25 @@ public class ActionCommandFeignService implements ActionCommandApi {
     @Override
     @PostMapping("like")
     public void like(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId){
-        this.commandApplicationService.like(userId, ActionTarget.apply(targetType, targetId));
+        this.commandApplicationService.like(userId, targetType, targetId);
     }
 
     @Override
     @PostMapping("unlike")
     public void unLike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId){
-        this.commandApplicationService.unLike(userId, ActionTarget.apply(targetType, targetId));
+        this.commandApplicationService.unLike(userId, targetType, targetId);
     }
 
     @Override
     @PostMapping("dislike")
     public void dislike(@RequestParam Long user, @RequestParam String targetType, @RequestParam Long targetId){
-        this.commandApplicationService.dislike(user, ActionTarget.apply(targetType, targetId));
+        this.commandApplicationService.dislike(user, targetType, targetId);
     }
 
     @Override
     @PostMapping("unDislike")
     public void unDislike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId){
-        this.commandApplicationService.unDislike(userId, ActionTarget.apply(targetType, targetId));
+        this.commandApplicationService.unDislike(userId, targetType, targetId);
     }
 
 }

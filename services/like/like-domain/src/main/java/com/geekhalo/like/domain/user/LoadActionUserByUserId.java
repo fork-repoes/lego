@@ -7,9 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static com.geekhalo.like.domain.user.LoadActionUserByUserId.BEAN_NAME;
+
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@LazyLoadBy("#{@actionUserLoader.loadByUserId(${userId})}")
+@LazyLoadBy("#{@" + BEAN_NAME + ".loadByUserId(${userId}) }")
 public @interface LoadActionUserByUserId {
+    String BEAN_NAME = "actionUserLoader";
+
     String userId();
 }
