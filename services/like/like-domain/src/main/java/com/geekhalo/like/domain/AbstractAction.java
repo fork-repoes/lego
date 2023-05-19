@@ -25,6 +25,7 @@ public abstract class AbstractAction extends AbstractAggRoot {
     private ActionTarget target;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private ActionStatus status;
 
     protected void init(AbstractActionContext context){

@@ -15,7 +15,4 @@ public interface JpaBasedLikeActionRepository
         return save(likeAction);
     }
 
-    @Override
-    @Query("select a from LikeAction a where a.user.userId = ?1 and a.target.type = ?2 and a.target.id = ?3")
-    Optional<LikeAction> getByUserIdAndTarget(Long userId, String targetType, Long targetId);
 }

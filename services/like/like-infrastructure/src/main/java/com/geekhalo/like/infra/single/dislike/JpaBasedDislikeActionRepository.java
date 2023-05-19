@@ -15,8 +15,5 @@ public interface JpaBasedDislikeActionRepository
         return save(dislikeAction);
     }
 
-    @Override
-    @Query("select a from DislikeAction a where a.user.userId = ?1 and a.target.type = ?2 and a.target.id = ?3")
-    Optional<DislikeAction> getByUserIdAndTarget(Long userId, String targetType, Long targetId);
 
 }
