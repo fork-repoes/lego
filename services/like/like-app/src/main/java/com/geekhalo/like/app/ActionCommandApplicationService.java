@@ -1,6 +1,7 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
+import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.like.domain.CancelActionContext;
 import com.geekhalo.like.domain.MarkActionContext;
 import com.geekhalo.like.domain.dislike.DislikeAction;
@@ -22,6 +23,9 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
     @Autowired
     private DislikeActionRepository dislikeActionRepository;
+
+    @Autowired
+    private LazyLoadProxyFactory lazyLoadProxyFactory;
 
     public void like(Long userId, ActionTarget target){
         MarkActionContext markActionContext = buildMarkActionContext(userId, target);
@@ -61,13 +65,13 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
     private CancelActionContext buildCancelActionContext(Long userId, ActionTarget target) {
         CancelActionContext context = CancelActionContext.apply(userId, target.getType(), target.getId());
-        return context;
+        return this.lazyLoadProxyFactory.createProxyFor(context);
     }
 
     private MarkActionContext buildMarkActionContext(Long userId, ActionTarget target) {
         MarkActionContext context = MarkActionContext.apply(userId, target.getType(), target.getId());
 
-        return context;
+        return this.lazyLoadProxyFactory.createProxyFor(context);
     }
 
 }
