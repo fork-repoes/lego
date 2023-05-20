@@ -12,7 +12,15 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
-    rest:
-      base-path: api/rest
+
+rocketmq:
+  name-server: http://127.0.0.1:9876
+  producer:
+    group: like-service
+
+like:
+  mq:
+    enable: false
+    topic: like-event-topic

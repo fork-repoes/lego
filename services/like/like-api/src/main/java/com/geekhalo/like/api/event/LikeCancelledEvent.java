@@ -14,6 +14,7 @@ import javax.swing.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class LikeCancelledEvent extends AbstractActionEvent {
+    public static final String TAG = "LikeCancelledEvent";
 
     public static LikeCancelledEvent apply(Long userId, String targetType, Long targetId){
         LikeCancelledEvent event = new LikeCancelledEvent();

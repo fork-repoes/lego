@@ -1,0 +1,145 @@
+package com.geekhalo.like;
+
+import com.geekhalo.like.api.*;
+import org.apache.commons.lang3.RandomUtils;
+import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
+import java.util.List;
+
+@SpringBootTest(classes = LikeApplication.class)
+public class ActionTest {
+    private Long userId;
+    private String targetType;
+    private Long targetId;
+
+    @Autowired
+    private ActionCommandApi actionCommandApi;
+    @Autowired
+    private ActionQueryApi actionQueryApi;
+    @Autowired
+    private TargetCountQueryApi targetCountQueryApi;
+
+    @BeforeEach
+    public void init(){
+        this.targetType = "Test";
+        this.userId = RandomUtils.nextLong(0, Long.MAX_VALUE);
+        this.targetId = RandomUtils.nextLong(0, Long.MAX_VALUE);
+    }
+
+    @Test
+    public void likeTest(){
+        List<ActionVO> likeByUserAndType = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
+        List<TargetCountVO> likeCountByTarget = this.targetCountQueryApi.getLikeCountByTarget(this.targetType, Arrays.asList(this.targetId));
+        TargetCountVO targetCountVO = likeCountByTarget.stream()
+                .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                .findFirst()
+                .orElseGet(() -> {
+                    TargetCountVO nullTargetCount = new TargetCountVO();
+                    nullTargetCount.setTargetId(this.targetId);
+                    nullTargetCount.setTargetType(this.targetType);
+                    nullTargetCount.setCount(0L);
+                    return nullTargetCount;
+                });
+
+        this.actionCommandApi.like(this.userId, this.targetType, this.targetId);
+
+        {
+            List<ActionVO> likeByUserAndTypeAfterLike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
+            Assert.assertEquals(likeByUserAndType.size() + 1, likeByUserAndTypeAfterLike.size());
+
+            List<TargetCountVO> likeCountByTargetAfterLike = this.targetCountQueryApi.getLikeCountByTarget(this.targetType, Arrays.asList(this.targetId));
+            TargetCountVO targetCountVOAfterUnlike = likeCountByTargetAfterLike.stream()
+                    .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        TargetCountVO nullTargetCount = new TargetCountVO();
+                        nullTargetCount.setTargetId(this.targetId);
+                        nullTargetCount.setTargetType(this.targetType);
+                        nullTargetCount.setCount(0L);
+                        return nullTargetCount;
+                    });
+            Assert.assertEquals(targetCountVO.getCount() + 1L, targetCountVOAfterUnlike.getCount() + 0L);
+        }
+
+        this.actionCommandApi.unLike(this.userId, this.targetType, this.targetId);
+
+        {
+            List<ActionVO> likeByUserAndTypeAfterUnlike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
+            Assert.assertEquals(likeByUserAndType.size() + 1, likeByUserAndTypeAfterUnlike.size());
+
+            List<TargetCountVO> likeCountByTargetAfterUnlike = this.targetCountQueryApi.getLikeCountByTarget(this.targetType, Arrays.asList(this.targetId));
+            TargetCountVO targetCountVOAfterUnlike = likeCountByTargetAfterUnlike.stream()
+                    .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        TargetCountVO nullTargetCount = new TargetCountVO();
+                        nullTargetCount.setTargetId(this.targetId);
+                        nullTargetCount.setTargetType(this.targetType);
+                        nullTargetCount.setCount(0L);
+                        return nullTargetCount;
+                    });
+            Assert.assertEquals(targetCountVO.getCount(), targetCountVOAfterUnlike.getCount());
+        }
+    }
+
+    @Test
+    public void unlikeTest(){
+        List<ActionVO> dislikeByUserAndType = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
+        List<TargetCountVO> dislikeCountByTarget = this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
+        TargetCountVO targetCountVO = dislikeCountByTarget.stream()
+                .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                .findFirst()
+                .orElseGet(() -> {
+                    TargetCountVO nullTargetCount = new TargetCountVO();
+                    nullTargetCount.setTargetId(this.targetId);
+                    nullTargetCount.setTargetType(this.targetType);
+                    nullTargetCount.setCount(0L);
+                    return nullTargetCount;
+                });
+
+        this.actionCommandApi.dislike(this.userId, this.targetType, this.targetId);
+
+        {
+            List<ActionVO> dislikeByUserAndTypeAfterDislike = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
+            Assert.assertEquals(dislikeByUserAndType.size() + 1, dislikeByUserAndTypeAfterDislike.size());
+
+            List<TargetCountVO> dislikeCountByTargetAfterDislike = this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
+            TargetCountVO targetCountVOAfterDislike = dislikeCountByTargetAfterDislike.stream()
+                    .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        TargetCountVO nullTargetCount = new TargetCountVO();
+                        nullTargetCount.setTargetId(this.targetId);
+                        nullTargetCount.setTargetType(this.targetType);
+                        nullTargetCount.setCount(0L);
+                        return nullTargetCount;
+                    });
+            Assert.assertEquals(targetCountVO.getCount() + 1L, targetCountVOAfterDislike.getCount() + 0L);
+        }
+
+        this.actionCommandApi.unDislike(this.userId, this.targetType, this.targetId);
+
+        {
+            List<ActionVO> likeByUserAndTypeAfterUndislike = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
+            Assert.assertEquals(dislikeByUserAndType.size() + 1, likeByUserAndTypeAfterUndislike.size());
+
+            List<TargetCountVO> likeCountByTargetAfterUnDislike = this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
+            TargetCountVO targetCountVOAfterUnDislike = likeCountByTargetAfterUnDislike.stream()
+                    .filter(targetCountVO1 -> targetCountVO1.getTargetId().equals(this.targetId))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        TargetCountVO nullTargetCount = new TargetCountVO();
+                        nullTargetCount.setTargetId(this.targetId);
+                        nullTargetCount.setTargetType(this.targetType);
+                        nullTargetCount.setCount(0L);
+                        return nullTargetCount;
+                    });
+            Assert.assertEquals(targetCountVO.getCount(), targetCountVOAfterUnDislike.getCount());
+        }
+    }
+}
