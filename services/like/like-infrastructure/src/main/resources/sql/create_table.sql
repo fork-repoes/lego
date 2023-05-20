@@ -10,7 +10,7 @@ create table dislike_action
     target_type varchar(16) not null,
     user_id     bigint      not null,
     constraint unq_user_target
-        unique (user_id, target_id, target_type)
+        unique (user_id, target_type, target_id)
 );
 
 
@@ -41,7 +41,7 @@ create table like_action
     target_type varchar(16) not null,
     user_id     bigint      not null,
     constraint unq_user_target
-        unique (user_id, target_id, target_type)
+        unique (user_id, target_type, target_id)
 );
 
 

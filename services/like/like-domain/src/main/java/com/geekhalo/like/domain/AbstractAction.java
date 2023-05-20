@@ -52,4 +52,7 @@ public abstract class AbstractAction extends AbstractAggRoot {
 
     protected abstract AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent();
 
+    public boolean isValid() {
+        return this.getStatus() == ActionStatus.VALID;
+    }
 }
