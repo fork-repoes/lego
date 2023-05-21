@@ -1,4 +1,4 @@
-package com.geekhalo.like.infra.single.like;
+package com.geekhalo.like.infra.like;
 
 import com.geekhalo.like.domain.like.LikeTargetCount;
 import com.geekhalo.like.domain.like.LikeTargetCountRepository;

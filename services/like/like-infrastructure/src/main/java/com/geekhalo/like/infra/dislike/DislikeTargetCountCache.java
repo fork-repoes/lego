@@ -1,8 +1,8 @@
-package com.geekhalo.like.infra.single.dislike;
+package com.geekhalo.like.infra.dislike;
 
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.target.ActionTarget;
-import com.geekhalo.like.infra.single.BaseTargetCountCache;
+import com.geekhalo.like.infra.BaseTargetCountCache;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

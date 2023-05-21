@@ -1,4 +1,4 @@
-package com.geekhalo.like.infra.single;
+package com.geekhalo.like.infra;
 
 import com.geekhalo.like.domain.AbstractTargetCount;
 import com.geekhalo.like.domain.target.ActionTarget;

@@ -1,4 +1,4 @@
-package com.geekhalo.like.infra.single.dislike;
+package com.geekhalo.like.infra.dislike;
 
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.dislike.DislikeTargetCountRepository;
