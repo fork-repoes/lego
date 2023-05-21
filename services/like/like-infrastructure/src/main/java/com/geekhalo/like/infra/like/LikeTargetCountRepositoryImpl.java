@@ -3,6 +3,7 @@ package com.geekhalo.like.infra.like;
 import com.geekhalo.like.domain.like.LikeTargetCount;
 import com.geekhalo.like.domain.like.LikeTargetCountRepository;
 import com.geekhalo.like.domain.target.ActionTarget;
+import com.geekhalo.like.infra.support.TargetCountCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class LikeTargetCountRepositoryImpl implements LikeTargetCountRepository {
     @Autowired
-    private LikeTargetCountCache cache;
+    private TargetCountCache<LikeTargetCount> cache;
 
     @Autowired
     private LikeTargetCountDao dao;
@@ -30,7 +31,7 @@ public class LikeTargetCountRepositoryImpl implements LikeTargetCountRepository 
 
     @Override
     public List<LikeTargetCount> getByTargetTypeAndTargetIdIn(String type, List<Long> targetIds) {
-        return this.cache.getFromCache(type, targetIds);
+        return this.cache.getByTargetTypeAndTargetIdIn(type, targetIds);
     }
 
     @Override

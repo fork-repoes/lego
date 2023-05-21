@@ -2,17 +2,15 @@ package com.geekhalo.like.infra.like;
 
 import com.geekhalo.like.domain.like.LikeTargetCount;
 import com.geekhalo.like.domain.target.ActionTarget;
-import com.geekhalo.like.infra.BaseTargetCountCache;
+import com.geekhalo.like.infra.support.RedisBasedTargetCountCache;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public class LikeTargetCountCache
-        extends BaseTargetCountCache<LikeTargetCount> {
+        extends RedisBasedTargetCountCache<LikeTargetCount> {
     @Autowired
     private LikeTargetCountDao dao;
 

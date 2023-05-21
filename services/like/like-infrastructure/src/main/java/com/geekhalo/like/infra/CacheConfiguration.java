@@ -1,65 +1,62 @@
 package com.geekhalo.like.infra;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.like.LikeTargetCount;
+import com.geekhalo.like.infra.dislike.DislikeTargetCountCache;
+import com.geekhalo.like.infra.dislike.NullDislikeTargetCountCache;
+import com.geekhalo.like.infra.like.LikeTargetCountCache;
+import com.geekhalo.like.infra.like.NullLikeTargetCountCache;
+import com.geekhalo.like.infra.support.TargetCountCache;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-
 @Configuration
-//@ConditionalOnBean(RedisConnectionFactory.class)
-//@AutoConfigureAfter(RedisAutoConfiguration.class)
 public class CacheConfiguration {
-    @Bean
-//    @ConditionalOnBean(RedisConnectionFactory.class)
-    public RedisTemplate<String, Long> targetCountRedisTemplate(RedisConnectionFactory redisConnectionFactory){
-        RedisTemplate<String, Long> redisTemplate = new RedisTemplate();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
-        return redisTemplate;
-    }
+    @Value("${target.count.dislike.enable:false}")
+    private boolean dislikeCacheEnable;
 
+    @Value("${target.count.like.enable:false}")
+    private boolean likeCacheEnable;
 
-    @Bean
-//    @ConditionalOnBean(RedisConnectionFactory.class)
-    public RedisTemplate<String, DislikeTargetCount> dislikeTargetCountRedisTemplate(RedisConnectionFactory redisConnectionFactory){
-        RedisTemplate<String, DislikeTargetCount> redisTemplate = new RedisTemplate();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Jackson2JsonRedisSerializer<DislikeTargetCount> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(DislikeTargetCount.class);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        return redisTemplate;
+    @Configuration
+    @ConditionalOnClass(RedisOperations.class)
+    static class RedisTemplateConfiguration{
+        @Bean
+        @ConditionalOnMissingBean
+        public RedisTemplate<String, Long> targetCountRedisTemplate(RedisConnectionFactory redisConnectionFactory){
+            RedisTemplate<String, Long> redisTemplate = new RedisTemplate();
+            redisTemplate.setConnectionFactory(redisConnectionFactory);
+            redisTemplate.setKeySerializer(new StringRedisSerializer());
+            redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
+            return redisTemplate;
+        }
     }
 
     @Bean
-//    @ConditionalOnBean(RedisConnectionFactory.class)
-    public RedisTemplate<String, LikeTargetCount> likeTargetCountRedisTemplate(RedisConnectionFactory redisConnectionFactory){
-        RedisTemplate<String, LikeTargetCount> redisTemplate = new RedisTemplate();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Jackson2JsonRedisSerializer<LikeTargetCount> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(LikeTargetCount.class);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        return redisTemplate;
+    public TargetCountCache<DislikeTargetCount> dislikeTargetCountTargetCountCache(){
+        if (this.dislikeCacheEnable){
+            return new DislikeTargetCountCache();
+        }else {
+            return new NullDislikeTargetCountCache();
+        }
     }
+
+    @Bean
+    public TargetCountCache<LikeTargetCount> likeTargetCountTargetCountCache(){
+        if (this.likeCacheEnable){
+            return new LikeTargetCountCache();
+        }else {
+            return new NullLikeTargetCountCache();
+        }
+    }
+
 }

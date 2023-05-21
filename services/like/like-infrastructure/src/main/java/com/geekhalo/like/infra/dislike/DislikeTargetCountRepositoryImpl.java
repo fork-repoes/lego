@@ -3,9 +3,8 @@ package com.geekhalo.like.infra.dislike;
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.dislike.DislikeTargetCountRepository;
 import com.geekhalo.like.domain.target.ActionTarget;
-import lombok.Getter;
+import com.geekhalo.like.infra.support.TargetCountCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,11 +18,7 @@ public class DislikeTargetCountRepositoryImpl
     private DislikeTargetCountDao dao;
 
     @Autowired
-    private DislikeTargetCountCache cache;
-
-    @Value("${target.count.dislike.enable:false}")
-    @Getter
-    private boolean cacheEnable;
+    private TargetCountCache<DislikeTargetCount> cache;
 
 
     @Override
@@ -39,7 +34,7 @@ public class DislikeTargetCountRepositoryImpl
 
     @Override
     public List<DislikeTargetCount> getByTargetTypeAndTargetIdIn(String type, List<Long> targetIds) {
-        return this.cache.getFromCache(type, targetIds);
+        return this.cache.getByTargetTypeAndTargetIdIn(type, targetIds);
     }
 
     @Override

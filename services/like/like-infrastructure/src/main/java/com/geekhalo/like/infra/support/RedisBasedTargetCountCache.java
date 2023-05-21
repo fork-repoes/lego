@@ -1,4 +1,4 @@
-package com.geekhalo.like.infra;
+package com.geekhalo.like.infra.support;
 
 import com.geekhalo.like.domain.AbstractTargetCount;
 import com.geekhalo.like.domain.target.ActionTarget;
@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class BaseTargetCountCache<C extends AbstractTargetCount> {
+public abstract class RedisBasedTargetCountCache<C extends AbstractTargetCount>
+    implements TargetCountCache<C>{
     private static String LUA_SCRIPT =
                     "if redis.call('exists',KEYS[1]) == 0 " +
                         "then return 0 " +
@@ -33,18 +34,21 @@ public abstract class BaseTargetCountCache<C extends AbstractTargetCount> {
 
     protected abstract C buildResult(String type, Long targetId, Long count);
 
+    @Override
     public void incr(ActionTarget target, long count) {
         RedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_SCRIPT, Long.class);
         List<String> keys = Arrays.asList(createCacheKey(target));
         this.redisTemplate.execute(redisScript, keys, count);
     }
 
+    @Override
     public void sync(C entity) {
         String key = createCacheKey(entity.getTarget());
         this.redisTemplate.delete(key);
     }
 
-    public List<C> getFromCache(String type, List<Long> targetIds) {
+    @Override
+    public List<C> getByTargetTypeAndTargetIdIn(String type, List<Long> targetIds) {
         List<String> keys = targetIds.stream()
                 .map(targetId -> createCacheKey(type, targetId))
                 .collect(Collectors.toList());
