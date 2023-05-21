@@ -19,6 +19,7 @@ public class ActionTarget {
     @Column(name = "target_id", updatable = false)
     private Long id;
 
+
     public static ActionTarget apply(String type, Long id){
         ActionTarget actionTarget = new ActionTarget();
         actionTarget.setType(type);

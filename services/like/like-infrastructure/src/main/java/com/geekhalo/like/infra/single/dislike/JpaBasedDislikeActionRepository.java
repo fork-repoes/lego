@@ -11,6 +11,4 @@ public interface JpaBasedDislikeActionRepository
     default DislikeAction sync(DislikeAction dislikeAction){
         return save(dislikeAction);
     }
-
-
 }

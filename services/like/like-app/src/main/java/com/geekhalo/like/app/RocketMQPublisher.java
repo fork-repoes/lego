@@ -9,7 +9,6 @@ import com.geekhalo.like.domain.like.LikeCancelledEvent;
 import com.geekhalo.like.domain.like.LikeMarkedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Configuration
 @ConditionalOnProperty(name = "like.mq.enable", havingValue = "true", matchIfMissing = false)
@@ -38,7 +37,7 @@ public class RocketMQPublisher {
         log.info("Use RocketMQ to Publish Like Event");
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void handle(LikeMarkedEvent event){
         LikeAction likeAction = event.getSource();
         com.geekhalo.like.api.event.LikeMarkedEvent markedEvent =
@@ -48,10 +47,10 @@ public class RocketMQPublisher {
                         likeAction.getTarget().getId());
         String shardingKey = String.valueOf(likeAction.getUser().getUserId());
 
-        asyncSendEvent(com.geekhalo.like.api.event.LikeMarkedEvent.TAG, markedEvent, shardingKey);
+        syncSendEvent(com.geekhalo.like.api.event.LikeMarkedEvent.TAG, markedEvent, shardingKey);
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void handle(LikeCancelledEvent event){
         LikeAction likeAction = event.getSource();
         com.geekhalo.like.api.event.LikeCancelledEvent msgEvent =
@@ -61,10 +60,10 @@ public class RocketMQPublisher {
                         likeAction.getTarget().getId());
         String shardingKey = String.valueOf(likeAction.getUser().getUserId());
 
-        asyncSendEvent(com.geekhalo.like.api.event.LikeCancelledEvent.TAG, msgEvent, shardingKey);
+        syncSendEvent(com.geekhalo.like.api.event.LikeCancelledEvent.TAG, msgEvent, shardingKey);
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void handle(DislikeMarkedEvent event){
         DislikeAction likeAction = event.getSource();
         com.geekhalo.like.api.event.DislikeMarkedEvent msgEvent =
@@ -74,10 +73,10 @@ public class RocketMQPublisher {
                         likeAction.getTarget().getId());
         String shardingKey = String.valueOf(likeAction.getUser().getUserId());
 
-        asyncSendEvent(com.geekhalo.like.api.event.DislikeMarkedEvent.TAG, msgEvent, shardingKey);
+        syncSendEvent(com.geekhalo.like.api.event.DislikeMarkedEvent.TAG, msgEvent, shardingKey);
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void handle(DislikeCancelledEvent event){
         DislikeAction likeAction = event.getSource();
         com.geekhalo.like.api.event.DislikeCancelledEvent msgEvent =
@@ -87,10 +86,10 @@ public class RocketMQPublisher {
                         likeAction.getTarget().getId());
         String shardingKey = String.valueOf(likeAction.getUser().getUserId());
 
-        asyncSendEvent(com.geekhalo.like.api.event.DislikeCancelledEvent.TAG, msgEvent, shardingKey);
+        syncSendEvent(com.geekhalo.like.api.event.DislikeCancelledEvent.TAG, msgEvent, shardingKey);
     }
 
-    private void asyncSendEvent(String tag, Object markedEvent, String shardingKey){
+    private void syncSendEvent(String tag, Object markedEvent, String shardingKey){
         String destination = createDestination(this.topic, tag);
         String data = JSON.toJSONString(markedEvent);
         Message<String> msg = MessageBuilder

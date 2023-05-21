@@ -16,8 +16,12 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class DislikeTargetCount extends AbstractTargetCount {
     public static DislikeTargetCount create(ActionTarget target) {
+        return create(target, 0L);
+    }
+
+    public static DislikeTargetCount create(ActionTarget target, Long count) {
         DislikeTargetCount targetCount = new DislikeTargetCount();
-        targetCount.init(target, 0L);
+        targetCount.init(target, count);
         return targetCount;
     }
 }

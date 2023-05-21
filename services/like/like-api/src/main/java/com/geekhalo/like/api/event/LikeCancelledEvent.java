@@ -3,8 +3,6 @@ package com.geekhalo.like.api.event;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.swing.*;
-
 /**
  * Created by taoli on 2023/5/20.
  * gitee : https://gitee.com/litao851025/lego

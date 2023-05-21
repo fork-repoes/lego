@@ -85,6 +85,10 @@ public class ActionTest {
                     });
             Assert.assertEquals(targetCountVO.getCount(), targetCountVOAfterUnlike.getCount());
         }
+
+        for (int i = 0; i< 100; i ++){
+            this.targetCountQueryApi.getLikeCountByTarget(this.targetType, Arrays.asList(this.targetId));
+        }
     }
 
     @Test
@@ -140,6 +144,9 @@ public class ActionTest {
                         return nullTargetCount;
                     });
             Assert.assertEquals(targetCountVO.getCount(), targetCountVOAfterUnDislike.getCount());
+        }
+        for (int i = 0; i< 100; i ++){
+            this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
         }
     }
 }
