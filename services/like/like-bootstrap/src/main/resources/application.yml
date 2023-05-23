@@ -26,9 +26,20 @@ rocketmq:
 target:
   count:
     dislike:
-      enable: true
+      cache:
+        enable: true
+      async:
+        enable: true
+        topic: dislike-target-count-async-topic
+        consumerGroup: dislike-target-count-async-group
     like:
-      enable: true
+      cache:
+        enable: true
+      async:
+        enable: true
+        topic: like-target-count-async-topic
+        consumerGroup: like-target-count-async-group
+
 like:
   mq:
     enable: false

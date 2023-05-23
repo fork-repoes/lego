@@ -21,10 +21,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class CacheConfiguration {
-    @Value("${target.count.dislike.enable:false}")
+    @Value("${target.count.dislike.cache.enable:false}")
     private boolean dislikeCacheEnable;
 
-    @Value("${target.count.like.enable:false}")
+    @Value("${target.count.like.cache.enable:false}")
     private boolean likeCacheEnable;
 
     @Configuration

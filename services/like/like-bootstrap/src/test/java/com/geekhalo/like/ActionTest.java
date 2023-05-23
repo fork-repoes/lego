@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = LikeApplication.class)
 public class ActionTest {
@@ -32,7 +33,7 @@ public class ActionTest {
     }
 
     @Test
-    public void likeTest(){
+    public void likeTest() throws Exception{
         List<ActionVO> likeByUserAndType = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
         List<TargetCountVO> likeCountByTarget = this.targetCountQueryApi.getLikeCountByTarget(this.targetType, Arrays.asList(this.targetId));
         TargetCountVO targetCountVO = likeCountByTarget.stream()
@@ -47,6 +48,7 @@ public class ActionTest {
                 });
 
         this.actionCommandApi.like(this.userId, this.targetType, this.targetId);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             List<ActionVO> likeByUserAndTypeAfterLike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
@@ -67,7 +69,7 @@ public class ActionTest {
         }
 
         this.actionCommandApi.unLike(this.userId, this.targetType, this.targetId);
-
+        TimeUnit.SECONDS.sleep(1);
         {
             List<ActionVO> likeByUserAndTypeAfterUnlike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
             Assert.assertEquals(likeByUserAndType.size() + 1, likeByUserAndTypeAfterUnlike.size());
@@ -92,7 +94,7 @@ public class ActionTest {
     }
 
     @Test
-    public void unlikeTest(){
+    public void unlikeTest() throws Exception{
         List<ActionVO> dislikeByUserAndType = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
         List<TargetCountVO> dislikeCountByTarget = this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
         TargetCountVO targetCountVO = dislikeCountByTarget.stream()
@@ -107,6 +109,7 @@ public class ActionTest {
                 });
 
         this.actionCommandApi.dislike(this.userId, this.targetType, this.targetId);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             List<ActionVO> dislikeByUserAndTypeAfterDislike = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
@@ -127,7 +130,7 @@ public class ActionTest {
         }
 
         this.actionCommandApi.unDislike(this.userId, this.targetType, this.targetId);
-
+        TimeUnit.SECONDS.sleep(1);
         {
             List<ActionVO> likeByUserAndTypeAfterUndislike = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
             Assert.assertEquals(dislikeByUserAndType.size() + 1, likeByUserAndTypeAfterUndislike.size());
