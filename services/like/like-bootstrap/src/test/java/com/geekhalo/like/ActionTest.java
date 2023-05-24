@@ -94,7 +94,7 @@ public class ActionTest {
     }
 
     @Test
-    public void unlikeTest() throws Exception{
+    public void dislikeTest() throws Exception{
         List<ActionVO> dislikeByUserAndType = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);
         List<TargetCountVO> dislikeCountByTarget = this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
         TargetCountVO targetCountVO = dislikeCountByTarget.stream()

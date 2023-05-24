@@ -27,16 +27,16 @@ target:
   count:
     dislike:
       cache:
-        enable: true
+        enable: false
       async:
-        enable: true
+        enable: false
         topic: dislike-target-count-async-topic
         consumerGroup: dislike-target-count-async-group
     like:
       cache:
-        enable: true
+        enable: false
       async:
-        enable: true
+        enable: false
         topic: like-target-count-async-topic
         consumerGroup: like-target-count-async-group
 
