@@ -1,15 +1,8 @@
 package com.geekhalo.like.infra.dislike;
 
-import com.geekhalo.like.domain.ActionStatus;
 import com.geekhalo.like.domain.dislike.DislikeAction;
 import com.geekhalo.like.domain.dislike.DislikeActionRepository;
-import com.geekhalo.like.domain.user.ActionUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.Date;
 
 public interface JpaBasedDislikeActionRepository
         extends DislikeActionRepository, JpaRepository<DislikeAction, Long> {

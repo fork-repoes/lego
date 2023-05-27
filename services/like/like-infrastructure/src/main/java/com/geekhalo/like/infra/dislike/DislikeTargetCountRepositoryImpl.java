@@ -7,9 +7,7 @@ import com.geekhalo.like.domain.target.ActionTarget;
 import com.geekhalo.like.infra.support.TargetCountCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.ProxyUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

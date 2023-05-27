@@ -2,6 +2,7 @@ package com.geekhalo.lego.core.command.support;
 
 import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,9 @@ public abstract class AbstractCommandService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private ValidateService validateService;
 
     /**
      * 创建 Creator，已完成对创建流程的组装
@@ -150,6 +154,9 @@ public abstract class AbstractCommandService {
 
             A a = null;
             try{
+                // 业务验证
+                validateService.validate(context);
+
                 // 实例化 聚合根
                 a = this.instanceFun.apply(context);
 
@@ -276,6 +283,9 @@ public abstract class AbstractCommandService {
             Preconditions.checkArgument(this.loadFun != null, "loader can not both be null");
             Optional<A> aOptional = null;
             try {
+                // 业务验证
+                validateService.validate(context);
+
                 // 从 DB 中加载 聚合根
                 aOptional = this.loadFun.apply(context);
 
@@ -428,6 +438,9 @@ public abstract class AbstractCommandService {
             Preconditions.checkArgument(this.instanceFun != null, "instance fun can noe be null");
             A a = null;
             try {
+                // 业务验证
+                validateService.validate(context);
+
                 // 加载聚合根
                 Optional<A> aOptional = this.loadFun.apply(context);
 

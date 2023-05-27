@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Data
 @Setter(AccessLevel.PRIVATE)
@@ -19,15 +20,22 @@ public class ActionTarget {
     @Column(name = "target_id", updatable = false)
     private Long id;
 
+    @Transient
+    private boolean valid;
 
     public static ActionTarget apply(String type, Long id){
+        return apply(type, id, true);
+    }
+
+    public static ActionTarget apply(String type, Long id, boolean valid){
         ActionTarget actionTarget = new ActionTarget();
         actionTarget.setType(type);
         actionTarget.setId(id);
+        actionTarget.setValid(valid);
         return actionTarget;
     }
 
-    public void validate(){
-
+    public boolean isValid(){
+        return valid;
     }
 }
