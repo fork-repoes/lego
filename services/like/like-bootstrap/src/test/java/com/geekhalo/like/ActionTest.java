@@ -1,5 +1,6 @@
 package com.geekhalo.like;
 
+import com.geekhalo.lego.core.validator.ValidateException;
 import com.geekhalo.like.api.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Assert;
@@ -152,5 +153,17 @@ public class ActionTest {
         for (int i = 0; i< 100; i ++){
             this.targetCountQueryApi.getDislikeCountByType(this.targetType, Arrays.asList(this.targetId));
         }
+    }
+
+    @Test
+    public void actionUserTest(){
+        ActionCommandParam param = new ActionCommandParam(-this.userId, this.targetType, this.targetId);
+        Assert.assertThrows(ValidateException.class, () -> this.actionCommandApi.like(param));
+    }
+
+    @Test
+    public void actionTargetTest(){
+        ActionCommandParam param = new ActionCommandParam(this.userId, this.targetType, -this.targetId);
+        Assert.assertThrows(ValidateException.class, () -> this.actionCommandApi.like(param));
     }
 }
