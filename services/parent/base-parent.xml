@@ -43,6 +43,9 @@
         <jodd-version>5.1.4</jodd-version>
         <mapstruct-version>1.4.2.Final</mapstruct-version>
         <spring-statemachine.version>2.5.0</spring-statemachine.version>
+        <rocketmq.version>2.2.1</rocketmq.version>
+        <shardingSphere.version>4.1.1</shardingSphere.version>
+        <springfox.version>3.0.0</springfox.version>
         <lego.version>0.1.20-add_like_service-SNAPSHOT</lego.version>
     </properties>
     <developers>
@@ -105,6 +108,21 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-starter-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+                <version>${shardingSphere.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>
