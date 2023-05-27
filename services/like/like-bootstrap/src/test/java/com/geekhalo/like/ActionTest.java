@@ -46,10 +46,9 @@ public class ActionTest {
                     nullTargetCount.setCount(0L);
                     return nullTargetCount;
                 });
-
-        this.actionCommandApi.like(this.userId, this.targetType, this.targetId);
+        ActionCommandParam param = new ActionCommandParam(this.userId, this.targetType, this.targetId);
         TimeUnit.SECONDS.sleep(1);
-
+        this.actionCommandApi.like(param);
         {
             List<ActionVO> likeByUserAndTypeAfterLike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
             Assert.assertEquals(likeByUserAndType.size() + 1, likeByUserAndTypeAfterLike.size());
@@ -68,7 +67,7 @@ public class ActionTest {
             Assert.assertEquals(targetCountVO.getCount() + 1L, targetCountVOAfterUnlike.getCount() + 0L);
         }
 
-        this.actionCommandApi.unLike(this.userId, this.targetType, this.targetId);
+        this.actionCommandApi.unLike(param);
         TimeUnit.SECONDS.sleep(1);
         {
             List<ActionVO> likeByUserAndTypeAfterUnlike = this.actionQueryApi.getLikeByUserAndType(this.userId, this.targetType);
@@ -108,7 +107,9 @@ public class ActionTest {
                     return nullTargetCount;
                 });
 
-        this.actionCommandApi.dislike(this.userId, this.targetType, this.targetId);
+        ActionCommandParam param = new ActionCommandParam(this.userId, this.targetType, this.targetId);
+
+        this.actionCommandApi.dislike(param);
         TimeUnit.SECONDS.sleep(1);
 
         {
@@ -129,7 +130,7 @@ public class ActionTest {
             Assert.assertEquals(targetCountVO.getCount() + 1L, targetCountVOAfterDislike.getCount() + 0L);
         }
 
-        this.actionCommandApi.unDislike(this.userId, this.targetType, this.targetId);
+        this.actionCommandApi.unDislike(param);
         TimeUnit.SECONDS.sleep(1);
         {
             List<ActionVO> likeByUserAndTypeAfterUndislike = this.actionQueryApi.getDislikeByUserAndType(this.userId, this.targetType);

@@ -1,21 +1,24 @@
 package com.geekhalo.like.api;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 public interface ActionCommandApi {
     String PATH = "feignService/action/command";
 
 
     @PostMapping("like")
-    void like(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
+    void like(@RequestBody @Valid  ActionCommandParam param);
 
     @PostMapping("unlike")
-    void unLike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
+    void unLike(@RequestBody @Valid ActionCommandParam param);
 
     @PostMapping("dislike")
-    void dislike(@RequestParam Long user, @RequestParam String targetType, @RequestParam Long targetId);
+    void dislike(@RequestBody @Valid ActionCommandParam param);
 
     @PostMapping("unDislike")
-    void unDislike(@RequestParam Long userId, @RequestParam String targetType, @RequestParam Long targetId);
+    void unDislike(@RequestBody @Valid ActionCommandParam param);
 }
