@@ -6,11 +6,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>2.3.12.RELEASE</version>
-        <relativePath/><!-- lookup parent from repository -->
+        <relativePath /><!-- lookup parent from repository -->
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-base-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.20-SNAPSHOT</version>
     <name>lego-base-parent</name>
 
 
@@ -46,7 +46,7 @@
         <rocketmq.version>2.2.1</rocketmq.version>
         <shardingSphere.version>4.1.1</shardingSphere.version>
         <springfox.version>3.0.0</springfox.version>
-        <lego.version>0.1.20-add_like_service-SNAPSHOT</lego.version>
+        <lego.version>0.1.20-SNAPSHOT</lego.version>
     </properties>
     <developers>
         <developer>
