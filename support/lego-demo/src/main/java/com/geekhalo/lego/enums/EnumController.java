@@ -1,6 +1,5 @@
 package com.geekhalo.lego.enums;
 
-import com.geekhalo.lego.common.enums.CommonEnum;
 import com.geekhalo.lego.core.enums.mvc.CommonEnumVO;
 import com.geekhalo.lego.core.web.RestResult;
 import lombok.Data;

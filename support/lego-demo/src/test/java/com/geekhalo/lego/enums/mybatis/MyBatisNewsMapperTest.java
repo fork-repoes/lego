@@ -2,7 +2,6 @@ package com.geekhalo.lego.enums.mybatis;
 
 import com.geekhalo.lego.DemoApplication;
 import com.geekhalo.lego.enums.NewsStatus;
-import com.geekhalo.lego.enums.jpa.JpaNewsEntity;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -12,10 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by taoli on 2022/12/10.
