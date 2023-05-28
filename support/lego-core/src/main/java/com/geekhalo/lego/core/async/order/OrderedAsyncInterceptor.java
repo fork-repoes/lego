@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 
+import static org.apache.commons.lang3.BooleanUtils.toBoolean;
+
 /**
  * Created by taoli on 2022/9/3.
  * gitee : https://gitee.com/litao851025/lego
@@ -55,6 +57,10 @@ public class OrderedAsyncInterceptor
         // 1. 从方法中解析注解信息
         InvokeCacheItem invokeCacheItem = this.invokeCache.computeIfAbsent(method, this::parseMethod);
 
+        // 未启用，直接调用被注解方法
+        if (!invokeCacheItem.isEnable()){
+            return methodInvocation.proceed();
+        }
 
         // 2. 将请求参数 转换为 MQ
         Object[] arguments = methodInvocation.getArguments();
@@ -96,10 +102,13 @@ public class OrderedAsyncInterceptor
         String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
         Expression expression = expressionParser.parseExpression(asyncForOrderedBasedRocketMQ.shardingKey());
 
+        boolean enable = toBoolean(resolve(asyncForOrderedBasedRocketMQ.enable()));
+
         String topic = resolve(asyncForOrderedBasedRocketMQ.topic());
         String tag = resolve(asyncForOrderedBasedRocketMQ.tag());
 
         return new InvokeCacheItem(
+                enable,
                 parameterNames,
                 expression,
                 topic,
@@ -109,6 +118,7 @@ public class OrderedAsyncInterceptor
 
     @Value
     class InvokeCacheItem{
+        private final boolean enable;
         private final String[] parameterNames;
         private final Expression expression;
         private final String topic;

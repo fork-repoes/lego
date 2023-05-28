@@ -1,8 +1,5 @@
 package com.geekhalo.lego.core.bitop.longop;
 
-import com.geekhalo.lego.core.bitop.intop.IntBitOp;
-import com.geekhalo.lego.core.bitop.intop.IntMaskOp;
-
 /**
  * Created by taoli on 2022/11/26.
  * gitee : https://gitee.com/litao851025/lego

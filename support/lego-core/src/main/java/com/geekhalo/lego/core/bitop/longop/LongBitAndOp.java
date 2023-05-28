@@ -1,7 +1,5 @@
 package com.geekhalo.lego.core.bitop.longop;
 
-import com.geekhalo.lego.core.bitop.intop.IntBitOp;
-
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

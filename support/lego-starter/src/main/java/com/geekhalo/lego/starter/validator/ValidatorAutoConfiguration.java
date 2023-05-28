@@ -72,7 +72,7 @@ public class ValidatorAutoConfiguration {
         return pointcutAdvisor;
     }
 
-    @Autowired
+    @Autowired(required = false)
     public void configMethodValidationOrder(List<MethodValidationPostProcessor> methodValidationPostProcessors){
         methodValidationPostProcessors.forEach(methodValidationPostProcessor ->
                 methodValidationPostProcessor.setBeforeExistingAdvisors(true));

@@ -13,6 +13,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AsyncForOrderedBasedRocketMQ {
+
+    /**
+     * 是否可用
+     * @return
+     */
+    String enable() default "true";
+
     /**
      * MQ topic
      * @return
