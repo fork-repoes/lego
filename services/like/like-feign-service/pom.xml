@@ -4,24 +4,24 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-feignservice-parent</artifactId>
-        <version>0.1.20-SNAPSHOT</version>
+        <version>0.1.20</version>
         <relativePath>../../parent/feignservice-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-feignservice</artifactId>
     <name>lego-like-feignservice</name>
-    <version>0.1.20-SNAPSHOT</version>
+    <version>0.1.20</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-api</artifactId>
-            <version>0.1.20-SNAPSHOT</version>
+            <version>0.1.20</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-app</artifactId>
-            <version>0.1.20-SNAPSHOT</version>
+            <version>0.1.20</version>
         </dependency>
     </dependencies>
 
