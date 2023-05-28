@@ -30,8 +30,12 @@ public class LikeTargetCountRepositoryImpl implements LikeTargetCountRepository 
     @Override
     public void incr(ActionTarget target, long count) {
         this.cache.incr(target, count);
-        ((LikeTargetCountRepositoryImpl) AopContext.currentProxy())
-                .incrForDB(target, count);
+        Object o = AopContext.currentProxy();
+        if (o instanceof LikeTargetCountRepositoryImpl){
+            ((LikeTargetCountRepositoryImpl)o).incrForDB(target, count);
+        }else {
+            this.incrForDB(target, count);
+        }
     }
 
     @AsyncForOrderedBasedRocketMQ(

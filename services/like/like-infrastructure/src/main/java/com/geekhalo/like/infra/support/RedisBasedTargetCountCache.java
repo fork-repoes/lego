@@ -4,6 +4,7 @@ import com.geekhalo.like.domain.AbstractTargetCount;
 import com.geekhalo.like.domain.target.ActionTarget;
 import com.google.common.collect.Lists;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class RedisBasedTargetCountCache<C extends AbstractTargetCount>
     implements TargetCountCache<C>{
     private static String LUA_SCRIPT =
@@ -49,6 +51,7 @@ public abstract class RedisBasedTargetCountCache<C extends AbstractTargetCount>
 
     @Override
     public List<C> getByTargetTypeAndTargetIdIn(String type, List<Long> targetIds) {
+
         List<String> keys = targetIds.stream()
                 .map(targetId -> createCacheKey(type, targetId))
                 .collect(Collectors.toList());
@@ -70,6 +73,7 @@ public abstract class RedisBasedTargetCountCache<C extends AbstractTargetCount>
         }
 
         if (CollectionUtils.isEmpty(missTargetIds)){
+            log.info("load All Data From Cache for {} and {}", type, targetIds);
             return valueFromCache;
         }
 

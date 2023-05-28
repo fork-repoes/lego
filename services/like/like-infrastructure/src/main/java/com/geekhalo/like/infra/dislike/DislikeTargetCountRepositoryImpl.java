@@ -4,6 +4,7 @@ import com.geekhalo.lego.annotation.async.AsyncForOrderedBasedRocketMQ;
 import com.geekhalo.like.domain.dislike.DislikeTargetCount;
 import com.geekhalo.like.domain.dislike.DislikeTargetCountRepository;
 import com.geekhalo.like.domain.target.ActionTarget;
+import com.geekhalo.like.infra.like.LikeTargetCountRepositoryImpl;
 import com.geekhalo.like.infra.support.TargetCountCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -33,8 +34,12 @@ public class DislikeTargetCountRepositoryImpl
     @Override
     public void incr(ActionTarget target, long count) {
         this.cache.incr(target, count);
-        ((DislikeTargetCountRepositoryImpl)AopContext.currentProxy())
-                .incrForDB(target, count);
+        Object o = AopContext.currentProxy();
+        if (o instanceof DislikeTargetCountRepositoryImpl){
+            ((DislikeTargetCountRepositoryImpl)o).incrForDB(target, count);
+        }else {
+            this.incrForDB(target, count);
+        }
     }
 
     @AsyncForOrderedBasedRocketMQ(
@@ -44,6 +49,7 @@ public class DislikeTargetCountRepositoryImpl
             shardingKey = "#target.id",
             consumerGroup = "${target.count.dislike.async.consumerGroup}")
     public void incrForDB(ActionTarget target, long count) {
+        log.info("begin to incr for db target {}, count {}", target, count);
         this.dao.incr(target, count);
         log.info("success to incr for db target {}, count {}", target, count);
     }

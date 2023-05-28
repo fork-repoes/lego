@@ -22,7 +22,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 @Configuration
-@ConditionalOnProperty(name = "like.mq.enable", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "like.event.enable", havingValue = "true", matchIfMissing = false)
 @ConditionalOnMissingBean(RocketMQTemplate.class)
 @ConditionalOnClass(RocketMQTemplate.class)
 @Slf4j
@@ -30,7 +30,7 @@ public class RocketMQPublisher {
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
-    @Value("${like.mq.topic}")
+    @Value("${like.event.topic}")
     private String topic;
 
     public RocketMQPublisher(){
