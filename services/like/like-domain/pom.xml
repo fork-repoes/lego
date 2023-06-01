@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-domain-parent</artifactId>
-        <version>0.1.20</version>
+        <version>0.1.21-archetype_services-SNAPSHOT</version>
         <relativePath>../../parent/domain-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-domain</artifactId>
     <name>lego-like-domain</name>
-    <version>0.1.20</version>
+    <version>0.1.21-archetype_services-SNAPSHOT</version>
 
     <dependencies>
 

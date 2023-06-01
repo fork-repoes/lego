@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd" name="demo"
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fileSets>
+    <fileSet encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>README.md</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  <modules>
+    <module id="${rootArtifactId}-app" dir="__rootArtifactId__-app" name="${rootArtifactId}-app" >
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-domain" dir="__rootArtifactId__-domain" name="${rootArtifactId}-domain">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-infrastructure" dir="__rootArtifactId__-infrastructure" name="${rootArtifactId}-infrastructure">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-api" dir="__rootArtifactId__-api" name="${rootArtifactId}-api" >
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-feign-service" dir="__rootArtifactId__-feign-service" name="${rootArtifactId}-feign-service" >
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-feign-client" dir="__rootArtifactId__-feign-client" name="${rootArtifactId}-feign-client" >
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="${rootArtifactId}-bootstrap" dir="__rootArtifactId__-bootstrap" name="${rootArtifactId}-bootstrap">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+        </fileSet>
+      </fileSets>
+    </module>
+  </modules>
+</archetype-descriptor>
