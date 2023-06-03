@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * 编程就像玩 Lego
  */
 @SpringBootTest(classes = DemoApplication.class)
-class ValidateableOrderApplicationServiceTest {
+class VerifiableOrderApplicationServiceTest {
 
     @Autowired
     private ValidateableOrderApplicationService applicationService;

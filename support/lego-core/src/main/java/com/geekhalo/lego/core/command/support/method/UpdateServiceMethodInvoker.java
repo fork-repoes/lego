@@ -43,8 +43,8 @@ public class UpdateServiceMethodInvoker<
     protected AGG getOrCreateAgg(CONTEXT proxy) {
         CommandForUpdate command = ((ContextForUpdate) proxy).getCommand();
         try {
-            return (AGG) this.getCommandRepository().findById(command.id())
-                    .orElseThrow(() -> new AggNotFoundException(command.id()));
+            return (AGG) this.getCommandRepository().findById(command.key())
+                    .orElseThrow(() -> new AggNotFoundException(command.key()));
         } catch (Throwable e) {
             if (e instanceof RuntimeException){
                 throw (RuntimeException) e;

@@ -1,7 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
-import com.geekhalo.lego.core.validator.FixTypeBeanValidator;
+import com.geekhalo.lego.core.validator.FixTypeBusinessValidator;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Order(1)
 @Component
 public class UserStatusValidator
-        extends FixTypeBeanValidator<CreateOrderContext> {
+        extends FixTypeBusinessValidator<CreateOrderContext> {
 
     @Override
     public void validate(CreateOrderContext context, ValidateErrorHandler validateErrorHandler) {

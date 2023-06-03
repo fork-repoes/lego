@@ -69,7 +69,7 @@ abstract class BaseCommandServiceMethodInvoker<
     }
 
     protected void validateForContext(CONTEXT proxy) {
-        this.validateService.validate(proxy);
+        this.validateService.validateBusiness(proxy);
     }
 
     protected abstract AGG getOrCreateAgg(CONTEXT proxy);

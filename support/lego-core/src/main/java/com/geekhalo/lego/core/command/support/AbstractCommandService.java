@@ -1,7 +1,10 @@
 package com.geekhalo.lego.core.command.support;
 
 import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.Command;
 import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
+import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
 import lombok.Value;
@@ -10,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -24,18 +28,24 @@ public abstract class AbstractCommandService {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
+    private LazyLoadProxyFactory lazyLoadProxyFactory;
+
+    @Autowired
     private ValidateService validateService;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     /**
      * 创建 Creator，已完成对创建流程的组装
      * @param repository
      * @param <ID>
      * @param <A>
-     * @param <CONTEXT>
+     * @param <CMD>>
      * @return
      */
-    protected <ID, A extends AggRoot<ID>, CONTEXT> Creator<ID, A, CONTEXT> creatorFor(CommandRepository<A, ID> repository){
-        return new Creator<ID, A, CONTEXT>(repository);
+    protected <ID, A extends AggRoot<ID>, CMD extends Command> Creator<ID, A, CMD> creatorFor(CommandRepository<A, ID> repository){
+        return new Creator<ID, A, CMD>(repository);
     }
 
     /**
@@ -67,36 +77,18 @@ public abstract class AbstractCommandService {
      * 1. 组装流程
      * 2. 执行流程
      * @param <A>
-     * @param <CONTEXT>
+     * @param <CMD>
      */
-    protected class Creator<ID, A extends AggRoot<ID>, CONTEXT>{
+    protected class Creator<ID, A extends AggRoot<ID>, CMD extends Command>{
         // 标准仓库
-        private final CommandRepository<A, ID> aggregateRepository;
-
-        // 实例化器，用于完成对 聚合 的实例化
-        private Function<CONTEXT, A> instanceFun;
-
-        // 默认的操作成功处理器，在操作成功后进行回调
-        private BiConsumer<A, CONTEXT> successFun = (agg, context)->{
-            LOGGER.info("success to handle {} and sync {} to DB", context, agg);
-        };
-
-        // 默认的异常处理器，在操作失败抛出异常时进行回调
-        private BiConsumer<Exception, CONTEXT> errorFun = (exception, context) -> {
-            LOGGER.error("failed to handle {}", context, exception);
-            if (exception instanceof RuntimeException){
-                throw (RuntimeException) exception;
-            }
-            throw new RuntimeException(exception);
-        };
-
-        // 聚合业务操作方法回调，最主要的扩展点，用于执行 聚合上的业务方法
-        private BiConsumer<A, CONTEXT> updateFun = (a, context) -> {};
+        private final CreateAggCommandHandler commandHandler;
 
 
         Creator(CommandRepository<A, ID> aggregateRepository) {
             Preconditions.checkArgument(aggregateRepository != null);
-            this.aggregateRepository = aggregateRepository;
+            this.commandHandler = new CreateAggCommandHandler(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
+            this.commandHandler.setContextFactory(cmd -> cmd);
+            this.commandHandler.setResultConverter((agg, context) -> context);
         }
 
         /**
@@ -104,9 +96,9 @@ public abstract class AbstractCommandService {
          * @param instanceFun
          * @return
          */
-        public Creator<ID, A, CONTEXT> instance(Function<CONTEXT, A> instanceFun){
+        public Creator<ID, A, CMD> instance(Function<CMD, A> instanceFun){
             Preconditions.checkArgument(instanceFun != null);
-            this.instanceFun = instanceFun;
+            this.commandHandler.setAggFactory(instanceFun);
             return this;
         }
 
@@ -115,9 +107,9 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Creator<ID, A, CONTEXT> update(BiConsumer<A, CONTEXT> updater){
+        public Creator<ID, A, CMD> update(BiConsumer<A, CMD> updater){
             Preconditions.checkArgument(updater != null);
-            this.updateFun = this.updateFun.andThen(updater);
+            this.commandHandler.addBizMethod(updater);
             return this;
         }
 
@@ -126,9 +118,9 @@ public abstract class AbstractCommandService {
          * @param onSuccessFun
          * @return
          */
-        public Creator<ID, A, CONTEXT> onSuccess(BiConsumer<A, CONTEXT>  onSuccessFun){
+        public Creator<ID, A, CMD> onSuccess(BiConsumer<A, CMD>  onSuccessFun){
             Preconditions.checkArgument(onSuccessFun != null);
-            this.successFun = onSuccessFun.andThen(this.successFun);
+            this.commandHandler.addOnSuccess(onSuccessFun);
             return this;
         }
 
@@ -137,49 +129,19 @@ public abstract class AbstractCommandService {
          * @param errorFun
          * @return
          */
-        public Creator<ID, A, CONTEXT> onError(BiConsumer<Exception, CONTEXT>  errorFun){
+        public Creator<ID, A, CMD> onError(BiConsumer<Exception, CMD>  errorFun){
             Preconditions.checkArgument(errorFun != null);
-            this.errorFun = errorFun.andThen(this.errorFun);
+            this.commandHandler.addOnError(errorFun);
             return this;
         }
 
         /**
          * 执行 创建流程
-         * @param context
+         * @param cmd
          * @return
          */
-        public A call(CONTEXT context){
-            Preconditions.checkArgument(this.instanceFun != null, "instance fun can not be null");
-            Preconditions.checkArgument(this.aggregateRepository != null, "aggregateRepository can not be null");
-
-            A a = null;
-            try{
-                // 业务验证
-                validateService.validate(context);
-
-                // 实例化 聚合根
-                a = this.instanceFun.apply(context);
-
-                // 在聚合根上执行业务操作
-                this.updateFun.accept(a, context);
-
-                // 持久化聚合根到 DB
-                this.aggregateRepository.sync(a);
-
-                // 发布领域事件，并进行清理
-                if (eventPublisher != null){
-                    // 1. 发布领域事件
-                    // 2. 清理领域事件
-                    a.consumeAndClearEvent(eventPublisher::publishEvent);
-                }
-
-                // 调用 成功回调器
-                this.successFun.accept(a, context);
-            }catch (Exception e){
-                // 调用 异常回调器
-                this.errorFun.accept(e, context);
-            }
-            return a;
+        public A call(CMD cmd){
+            return (A) commandHandler.handle(cmd);
         }
     }
 
@@ -284,7 +246,7 @@ public abstract class AbstractCommandService {
             Optional<A> aOptional = null;
             try {
                 // 业务验证
-                validateService.validate(context);
+                validateService.validateBusiness(context);
 
                 // 从 DB 中加载 聚合根
                 aOptional = this.loadFun.apply(context);
@@ -439,7 +401,7 @@ public abstract class AbstractCommandService {
             A a = null;
             try {
                 // 业务验证
-                validateService.validate(context);
+                validateService.validateBusiness(context);
 
                 // 加载聚合根
                 Optional<A> aOptional = this.loadFun.apply(context);

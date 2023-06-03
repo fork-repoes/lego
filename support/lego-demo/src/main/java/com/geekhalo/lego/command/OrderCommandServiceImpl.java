@@ -34,7 +34,7 @@ public class OrderCommandServiceImpl implements OrderCommandService{
         CreateOrderContext context = new CreateOrderContext(command);
         CreateOrderContext contextProxy = this.lazyLoadProxyFactory.createProxyFor(context);
 
-        validateService.validate(contextProxy);
+        validateService.validateBusiness(contextProxy);
 
         Order order = Order.create(contextProxy);
 
