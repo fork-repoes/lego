@@ -47,6 +47,7 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
         this.<LikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.likeActionRepository)
                 .loadBy(context -> this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
+                .contextFactory(cmd -> CancelActionContext.apply(cmd))
                 .update((like, context) -> like.cancel(context))
                 .exe(cancelActionCommand);
     }
@@ -72,6 +73,7 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
         this.<DislikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.dislikeActionRepository)
                 .loadBy(context -> this.dislikeActionRepository.getByUserAndTarget(actionUser, actionTarget))
+                .contextFactory(cmd -> CancelActionContext.apply(cmd))
                 .update((dislikeAction, context) -> dislikeAction.cancel(context))
                 .exe(cancelActionCommand);
     }

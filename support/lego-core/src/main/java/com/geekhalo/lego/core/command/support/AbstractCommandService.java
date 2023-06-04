@@ -167,6 +167,11 @@ public abstract class AbstractCommandService {
             this.commandHandler.setResultConverter((agg, context) -> agg);
         }
 
+        public Updater<AGG, CMD, CONTEXT> contextFactory(Function<CMD, CONTEXT> contextFactory){
+            this.commandHandler.setContextFactory(contextFactory);
+            return this;
+        }
+
         /**
          * 设置 聚合对象加载器，用于从 DB 中加载 聚合
          * @param loader
