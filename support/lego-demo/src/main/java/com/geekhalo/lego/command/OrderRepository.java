@@ -12,4 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository("orderRepositoryForCommand")
 public interface OrderRepository extends JpaRepository<Order, Long>,
         CommandRepository<Order, Long> {
+
+    default Order sync(Order entity){
+        return save(entity);
+    }
 }

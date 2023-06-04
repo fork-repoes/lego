@@ -16,9 +16,11 @@ spring:
     username: root
     password: root
   elasticsearch:
-    uris: http://127.0.0.1:9200
+    uris: http://localhost:9200
     connection-timeout: 10s
     socket-timeout: 30s
+    username: elastic
+    password: 4dEP4fXrA1sEoas6RxSN
   jpa:
     hibernate:
       ddl-auto: update
