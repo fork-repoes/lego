@@ -1,9 +1,7 @@
 package com.geekhalo.lego.core.command.support;
 
 import com.geekhalo.lego.core.command.*;
-import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
-import com.geekhalo.lego.core.command.support.handler.SyncAggCommandHandler;
-import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.*;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -38,20 +36,20 @@ public abstract class AbstractCommandService {
     /**
      * 创建 Creator，已完成对创建流程的组装
      * @param repository
-     * @param <ID>
-     * @param <A>
+     * @param <AGG>>
      * @param <CMD>>
+     * @param <CONTEXT>>
      * @return
      */
-    protected <ID, A extends AggRoot<ID>, CMD extends Command> Creator<ID, A, CMD> creatorFor(CommandRepository<A, ID> repository){
-        return new Creator<ID, A, CMD>(repository);
+    protected <AGG extends AggRoot<?>, CMD, CONTEXT> Creator<AGG, CMD, CONTEXT> creatorFor(CommandRepository<AGG, ?> repository){
+        return new Creator<AGG, CMD, CONTEXT>(repository);
     }
 
     /**
      * 创建 Updater，已完成对更新流程的组装
      * @param aggregateRepository
-     * @param <ID>
-     * @param <A>
+     * @param <AGG>>
+     * @param <CMD>>
      * @param <CONTEXT>
      * @return
      */
@@ -73,27 +71,27 @@ public abstract class AbstractCommandService {
     protected <CMD extends Command,
             CONTEXT extends ContextForCommand<CMD>,
             AGG extends AggRoot<?>>
-        Syncer<CMD, CONTEXT, AGG> syncerFor(CommandRepository<AGG, ?> aggregateRepository){
-        return new Syncer<CMD, CONTEXT, AGG> (aggregateRepository);
+        Syncer<AGG, CMD, CONTEXT> syncerFor(CommandRepository<AGG, ?> aggregateRepository){
+        return new Syncer<AGG, CMD, CONTEXT> (aggregateRepository);
     }
 
     /**
      * 创建流程的 Builder，主要：
      * 1. 组装流程
      * 2. 执行流程
-     * @param <A>
+     * @param <AGG>
      * @param <CMD>
      */
-    protected class Creator<ID, A extends AggRoot<ID>, CMD extends Command>{
+    protected class Creator<AGG extends AggRoot<?>, CMD, CONTEXT>{
         // 标准仓库
         private final CreateAggCommandHandler commandHandler;
 
 
-        Creator(CommandRepository<A, ID> aggregateRepository) {
+        Creator(CommandRepository<AGG, ?> aggregateRepository) {
             Preconditions.checkArgument(aggregateRepository != null);
             this.commandHandler = new CreateAggCommandHandler(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
             this.commandHandler.setContextFactory(cmd -> cmd);
-            this.commandHandler.setResultConverter((agg, context) -> context);
+            this.commandHandler.setResultConverter((agg, context) -> agg);
         }
 
         /**
@@ -101,8 +99,7 @@ public abstract class AbstractCommandService {
          * @param instanceFun
          * @return
          */
-        public Creator<ID, A, CMD> instance(Function<CMD, A> instanceFun){
-            Preconditions.checkArgument(instanceFun != null);
+        public Creator<AGG, CMD, CONTEXT> instance(AggFactory<CMD, AGG> instanceFun){
             this.commandHandler.setAggFactory(instanceFun);
             return this;
         }
@@ -112,8 +109,7 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Creator<ID, A, CMD> update(BiConsumer<A, CMD> updater){
-            Preconditions.checkArgument(updater != null);
+        public Creator<AGG, CMD, CONTEXT> update(BiConsumer<AGG, CMD> updater){
             this.commandHandler.addBizMethod(updater);
             return this;
         }
@@ -123,8 +119,7 @@ public abstract class AbstractCommandService {
          * @param onSuccessFun
          * @return
          */
-        public Creator<ID, A, CMD> onSuccess(BiConsumer<A, CMD>  onSuccessFun){
-            Preconditions.checkArgument(onSuccessFun != null);
+        public Creator<AGG, CMD, CONTEXT> onSuccess(BiConsumer<AGG, CMD>  onSuccessFun){
             this.commandHandler.addOnSuccess(onSuccessFun);
             return this;
         }
@@ -134,8 +129,7 @@ public abstract class AbstractCommandService {
          * @param errorFun
          * @return
          */
-        public Creator<ID, A, CMD> onError(BiConsumer<Exception, CMD>  errorFun){
-            Preconditions.checkArgument(errorFun != null);
+        public Creator<AGG, CMD, CONTEXT> onError(BiConsumer<Exception, CMD>  errorFun){
             this.commandHandler.addOnError(errorFun);
             return this;
         }
@@ -145,8 +139,8 @@ public abstract class AbstractCommandService {
          * @param cmd
          * @return
          */
-        public A call(CMD cmd){
-            return (A) commandHandler.handle(cmd);
+        public AGG call(CMD cmd){
+            return (AGG) commandHandler.handle(cmd);
         }
     }
 
@@ -154,7 +148,7 @@ public abstract class AbstractCommandService {
      * 更新流程的 Builder，主要：
      * 1. 组装流程
      * 2. 执行流程
-     * @param <A>
+     * @param <AGG>>
      * @param <CONTEXT>
      */
     protected class Updater<AGG extends AggRoot<?>,
@@ -167,7 +161,7 @@ public abstract class AbstractCommandService {
             this.commandHandler.setResultConverter((agg, context) -> agg);
         }
 
-        public Updater<AGG, CMD, CONTEXT> contextFactory(Function<CMD, CONTEXT> contextFactory){
+        public Updater<AGG, CMD, CONTEXT> contextFactory(ContextFactory<CMD, CONTEXT> contextFactory){
             this.commandHandler.setContextFactory(contextFactory);
             return this;
         }
@@ -234,9 +228,9 @@ public abstract class AbstractCommandService {
     }
 
     protected class Syncer<
+            AGG extends AggRoot<?>,
             CMD extends Command,
-            CONTEXT extends ContextForCommand<CMD>,
-            AGG extends AggRoot<?>> {
+            CONTEXT extends ContextForCommand<CMD>> {
         private final SyncAggCommandHandler<AGG, CMD, CONTEXT, AGG> commandHandler;
 
         Syncer(CommandRepository<AGG, ?> aggregateRepository) {
@@ -244,7 +238,7 @@ public abstract class AbstractCommandService {
             this.commandHandler.setResultConverter((agg, context) -> agg);
         }
 
-        public Syncer< CMD, CONTEXT, AGG> contextFactory(Function<CMD, CONTEXT> contextFactory){
+        public Syncer<AGG, CMD, CONTEXT> contextFactory(ContextFactory<CMD, CONTEXT> contextFactory){
             this.commandHandler.setContextFactory(contextFactory);
             return this;
         }
@@ -254,7 +248,7 @@ public abstract class AbstractCommandService {
          * @param instanceFun
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> instanceBy(Function<CONTEXT, AGG> instanceFun){
+        public Syncer<AGG, CMD, CONTEXT> instanceBy(AggFactory<CONTEXT, AGG> instanceFun){
             this.commandHandler.setAggFactory(instanceFun);
             return this;
         }
@@ -264,7 +258,7 @@ public abstract class AbstractCommandService {
          * @param loadFun
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> loadBy(Function<CMD, Optional<AGG>> loadFun){
+        public Syncer<AGG, CMD, CONTEXT> loadBy(Function<CMD, Optional<AGG>> loadFun){
             this.commandHandler.setAggLoader((repository, cmd) -> loadFun.apply(cmd));
             return this;
         }
@@ -274,7 +268,7 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> update(BiConsumer<AGG, CONTEXT> updater){
+        public Syncer<AGG, CMD, CONTEXT> update(BiConsumer<AGG, CONTEXT> updater){
             this.commandHandler.addBizMethod(updater);
             return this;
         }
@@ -284,7 +278,7 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> updateWhenCreate(BiConsumer<AGG, CONTEXT> updater){
+        public Syncer<AGG, CMD, CONTEXT> updateWhenCreate(BiConsumer<AGG, CONTEXT> updater){
             this.commandHandler.addWhenCreate(updater);
             return this;
         }
@@ -295,7 +289,7 @@ public abstract class AbstractCommandService {
          * @param onSuccessFun
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> onSuccess(BiConsumer<AGG, CONTEXT>  onSuccessFun){
+        public Syncer<AGG, CMD, CONTEXT> onSuccess(BiConsumer<AGG, CONTEXT>  onSuccessFun){
             this.commandHandler.addOnSuccess(onSuccessFun);
             return this;
         }
@@ -305,7 +299,7 @@ public abstract class AbstractCommandService {
          * @param errorFun
          * @return
          */
-        public Syncer< CMD, CONTEXT, AGG> onError(BiConsumer<Exception, CONTEXT> errorFun){
+        public Syncer<AGG, CMD, CONTEXT> onError(BiConsumer<Exception, CONTEXT> errorFun){
             this.commandHandler.addOnError(errorFun);
             return this;
         }

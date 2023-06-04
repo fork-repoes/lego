@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.method;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.ContextFactory;
 import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
@@ -71,7 +72,7 @@ public class UpdateServiceMethodInvokerFactory
 
             Class aggParamType = aggMethod.getParameterTypes()[0];
             if (ContextForUpdate.class.isAssignableFrom(aggParamType)){
-                Function contextFactory = findContextFactory(commandType, aggParamType);
+                ContextFactory contextFactory = findContextFactory(commandType, aggParamType);
                 commandHandler.setContextFactory(contextFactory);
                 commandHandler.addBizMethod((agg, context) -> {
                     try {
@@ -111,7 +112,7 @@ public class UpdateServiceMethodInvokerFactory
     }
 
 
-    private Function findContextFactory(Class commandType, Class aggParamType) {
+    private ContextFactory findContextFactory(Class commandType, Class aggParamType) {
         for (Method method : ReflectionUtils.getAllDeclaredMethods(aggParamType)){
             int modifiers = method.getModifiers();
             if (!Modifier.isStatic(modifiers)){

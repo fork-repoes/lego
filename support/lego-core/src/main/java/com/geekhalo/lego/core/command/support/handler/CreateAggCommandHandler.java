@@ -3,24 +3,20 @@ package com.geekhalo.lego.core.command.support.handler;
 import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
+import com.google.common.base.Preconditions;
 import lombok.Setter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 @Setter
 public class CreateAggCommandHandler<
         AGG extends AggRoot,
-        CMD extends Command,
-        CONTEXT extends ContextForCommand<CMD>,
+        CMD,
+        CONTEXT,
         RESULT>
         extends AbstractAggCommandHandler<AGG, CMD, CONTEXT, RESULT>{
 
-    private Function<CMD, CONTEXT> contextFactory;
-    private Function<CONTEXT, AGG> aggFactory;
-    private BiFunction<AGG, CONTEXT, RESULT> resultConverter;
+    private AggFactory<CONTEXT, AGG> aggFactory;
 
     public CreateAggCommandHandler(ValidateService validateService,
                                    LazyLoadProxyFactory lazyLoadProxyFactory,
@@ -30,19 +26,18 @@ public class CreateAggCommandHandler<
         super(validateService, lazyLoadProxyFactory, commandRepository, eventPublisher, transactionTemplate);
     }
 
-    @Override
-    protected CONTEXT createContext(CMD param) {
-        return this.contextFactory.apply(param);
-    }
 
     @Override
-    protected AGG getOrCreateAgg(CONTEXT context) {
-        return this.aggFactory.apply(context);
+    protected AGG getOrCreateAgg(CMD cmd, CONTEXT context) {
+        return this.aggFactory.create(context);
     }
 
-    @Override
-    protected RESULT convertToResult(AGG agg, CONTEXT proxy) {
-        return this.resultConverter.apply(agg, proxy);
+
+
+
+    public void setAggFactory(AggFactory<CONTEXT, AGG> aggFactory) {
+        Preconditions.checkArgument(aggFactory != null);
+        this.aggFactory = aggFactory;
     }
 
 }

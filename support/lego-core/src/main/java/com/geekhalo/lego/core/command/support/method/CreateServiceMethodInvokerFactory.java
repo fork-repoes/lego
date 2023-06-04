@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.method;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.ContextFactory;
 import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
@@ -71,7 +72,7 @@ public class CreateServiceMethodInvokerFactory
 
             Class aggParamType = aggMethod.getParameterTypes()[0];
             if (ContextForCreate.class.isAssignableFrom(aggParamType)){
-                Function contextFactory = findContextFactory(commandType, aggParamType);
+                ContextFactory contextFactory = findContextFactory(commandType, aggParamType);
                 if (contextFactory == null){
                     continue;
                 }
@@ -152,7 +153,7 @@ public class CreateServiceMethodInvokerFactory
         return new CommandHandlerBasedServiceMethodInvoker(commandHandler);
     }
 
-    private Function findContextFactory(Class commandType, Class aggParamType) {
+    private ContextFactory findContextFactory(Class commandType, Class aggParamType) {
         for (Method method : ReflectionUtils.getAllDeclaredMethods(aggParamType)){
             int modifiers = method.getModifiers();
             if (!Modifier.isStatic(modifiers)){

@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.method;
 
 import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.support.handler.ResultConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -21,7 +22,7 @@ abstract class BaseCommandServiceMethodInvokerFactory {
         this.idClass = idClass;
     }
 
-    protected BiFunction createResultConverter(Class returnType){
+    protected ResultConverter createResultConverter(Class returnType){
         if (Void.class.equals(returnType) || Void.TYPE.equals(returnType)){
             return (agg, context) -> null;
         }

@@ -1,7 +1,6 @@
 package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.*;
-import com.geekhalo.lego.core.command.support.AbstractCommandService;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -10,24 +9,25 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Setter
 public class UpdateAggCommandHandler<
         AGG extends AggRoot,
-        CMD extends Command,
-        CONTEXT extends ContextForCommand<CMD>,
+        CMD,
+        CONTEXT,
         RESULT>
         extends AbstractAggCommandHandler<AGG, CMD, CONTEXT, RESULT>{
 
-    private Function<CMD, CONTEXT> contextFactory;
-    private BiFunction<CommandRepository<?, AGG>, CMD, Optional<AGG>> aggLoader;
-    private BiFunction<AGG, CONTEXT, RESULT> resultConverter;
+    private AggLoader<CommandRepository<?, AGG>, CMD, AGG> aggLoader;
+
     // 聚合丢失处理器，聚合丢失时进行回调
     private Consumer<CONTEXT> onNotExistFun = context ->{
-        throw new AggNotFoundException(context.getCommand());
+        if (context instanceof ContextForCommand) {
+            throw new AggNotFoundException(((ContextForCommand)context).getCommand());
+        }else {
+            throw new AggNotFoundException(context);
+        }
     };
 
     public UpdateAggCommandHandler(ValidateService validateService,
@@ -39,14 +39,8 @@ public class UpdateAggCommandHandler<
     }
 
     @Override
-    protected CONTEXT createContext(CMD param) {
-        return this.contextFactory.apply(param);
-    }
-
-    @Override
-    protected AGG getOrCreateAgg(CONTEXT context) {
-        CMD command = context.getCommand();
-        Optional<AGG> aggOptional = aggLoader.apply(this.getCommandRepository(), command);
+    protected AGG getOrCreateAgg(CMD cmd, CONTEXT context) {
+        Optional<AGG> aggOptional = aggLoader.load(this.getCommandRepository(), cmd);
         if (aggOptional.isPresent()){
             return aggOptional.get();
         }else {
@@ -55,25 +49,9 @@ public class UpdateAggCommandHandler<
         }
     }
 
-
-    @Override
-    protected RESULT convertToResult(AGG agg, CONTEXT proxy) {
-        return this.resultConverter.apply(agg, proxy);
-    }
-
-    public void setContextFactory(Function<CMD, CONTEXT> contextFactory) {
-        Preconditions.checkArgument(contextFactory != null);
-        this.contextFactory = contextFactory;
-    }
-
-    public void setAggLoader(BiFunction<CommandRepository<?, AGG>, CMD, Optional<AGG>> aggLoader) {
+    public void setAggLoader(AggLoader<CommandRepository<?, AGG>, CMD, AGG> aggLoader) {
         Preconditions.checkArgument(aggLoader != null);
         this.aggLoader = aggLoader;
-    }
-
-    public void setResultConverter(BiFunction<AGG, CONTEXT, RESULT> resultConverter) {
-        Preconditions.checkArgument(resultConverter != null);
-        this.resultConverter = resultConverter;
     }
 
     public void addOnNotFound(Consumer<CONTEXT>  onNotExistFun){

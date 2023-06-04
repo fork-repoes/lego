@@ -1,9 +1,7 @@
 package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.AggRoot;
-import com.geekhalo.lego.core.command.Command;
 import com.geekhalo.lego.core.command.CommandRepository;
-import com.geekhalo.lego.core.command.ContextForCommand;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -20,8 +18,8 @@ import java.util.function.BiConsumer;
 
 public abstract class AbstractAggCommandHandler<
         AGG extends AggRoot,
-        CMD extends Command,
-        CONTEXT extends ContextForCommand<CMD>,
+        CMD ,
+        CONTEXT,
         RESULT> implements AggCommandHandler<CMD, RESULT>{
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAggCommandHandler.class);
 
@@ -31,6 +29,9 @@ public abstract class AbstractAggCommandHandler<
     private final CommandRepository commandRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final TransactionTemplate transactionTemplate;
+
+    private ContextFactory<CMD, CONTEXT> contextFactory;
+    private ResultConverter<AGG, CONTEXT, RESULT> resultConverter;
 
     @Setter(AccessLevel.PRIVATE)
     private BiConsumer<AGG, CONTEXT> bizMethod = (a, context) -> {};
@@ -62,7 +63,7 @@ public abstract class AbstractAggCommandHandler<
         Preconditions.checkArgument(lazyLoadProxyFactory != null);
         Preconditions.checkArgument(commandRepository != null);
         Preconditions.checkArgument(eventPublisher != null);
-        Preconditions.checkArgument(transactionTemplate != null);
+//        Preconditions.checkArgument(transactionTemplate != null);
 
         this.validateService = validateService;
         this.lazyLoadProxyFactory = lazyLoadProxyFactory;
@@ -96,7 +97,7 @@ public abstract class AbstractAggCommandHandler<
             validateForContext(contextProxy);
 
             // 6. 创建或加载聚合根对象
-            AGG agg = getOrCreateAgg(contextProxy);
+            AGG agg = getOrCreateAgg(cmd, contextProxy);
 
             // 7. 执行聚合根业务方法
             callBizMethod(agg, contextProxy);
@@ -104,15 +105,25 @@ public abstract class AbstractAggCommandHandler<
             // 8. 执行通用规则校验
             validateAfterBizMethod(agg, contextProxy);
 
-            this.transactionTemplate.execute(status -> {
+            // 如有必要，开启事务保护
+            if (this.transactionTemplate != null) {
+                this.transactionTemplate.execute(status -> {
+                    // 9. 发布领域事件
+                    publishEvent(agg, contextProxy);
+
+                    // 10. 保存至数据库
+                    syncToRepository(agg, contextProxy);
+                    return null;
+
+                });
+            }else {
                 // 9. 发布领域事件
                 publishEvent(agg, contextProxy);
 
                 // 10. 保存至数据库
                 syncToRepository(agg, contextProxy);
                 return null;
-
-            });
+            }
 
             RESULT result = convertToResult(agg, contextProxy);
 
@@ -133,7 +144,9 @@ public abstract class AbstractAggCommandHandler<
         this.validateService.validateParam(Collections.singletonList(cmd));
     }
 
-    protected abstract CONTEXT createContext(CMD cmd);
+    protected CONTEXT createContext(CMD param) {
+        return this.contextFactory.create(param);
+    }
 
     protected CONTEXT createProxy(CONTEXT context){
         return this.lazyLoadProxyFactory.createProxyFor(context);
@@ -143,7 +156,7 @@ public abstract class AbstractAggCommandHandler<
         this.validateService.validateBusiness(context);
     }
 
-    protected abstract AGG getOrCreateAgg(CONTEXT context);
+    protected abstract AGG getOrCreateAgg(CMD cmd, CONTEXT context);
 
     private void callBizMethod(AGG agg, CONTEXT proxy) {
         this.bizMethod.accept(agg, proxy);
@@ -157,7 +170,9 @@ public abstract class AbstractAggCommandHandler<
         agg.consumeAndClearEvent(event -> this.eventPublisher.publishEvent(event));
     }
 
-    protected abstract RESULT convertToResult(AGG agg, CONTEXT proxy);
+    protected RESULT convertToResult(AGG agg, CONTEXT proxy) {
+        return this.resultConverter.convert(agg, proxy);
+    }
 
     public void addBizMethod(BiConsumer<AGG, CONTEXT> bizMethod){
         this.bizMethod = this.bizMethod.andThen(bizMethod);
@@ -181,5 +196,15 @@ public abstract class AbstractAggCommandHandler<
     public void addOnError(BiConsumer<Exception, CONTEXT>  errorFun){
         Preconditions.checkArgument(errorFun != null);
         this.errorFun = errorFun.andThen(this.errorFun);
+    }
+
+    public void setContextFactory(ContextFactory<CMD, CONTEXT> contextFactory) {
+        Preconditions.checkArgument(contextFactory != null);
+        this.contextFactory = contextFactory;
+    }
+
+    public void setResultConverter(ResultConverter<AGG, CONTEXT, RESULT> resultConverter) {
+        Preconditions.checkArgument(resultConverter != null);
+        this.resultConverter = resultConverter;
     }
 }
