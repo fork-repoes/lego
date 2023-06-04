@@ -1,15 +1,15 @@
 package com.geekhalo.like.domain;
 
 
-public class CancelActionContext extends AbstractActionContext{
+public class CancelActionContext extends AbstractActionContext<CancelActionCommand>{
     protected CancelActionContext(){
 
     }
 
 
-    public static CancelActionContext apply(Long userId, String targetType, Long targetId){
+    public static CancelActionContext apply(CancelActionCommand command){
         CancelActionContext context =  new CancelActionContext();
-        context.init(userId, targetType, targetId);
+        context.init(command);
         return context;
     }
 }

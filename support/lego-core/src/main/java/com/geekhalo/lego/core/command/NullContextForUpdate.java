@@ -5,8 +5,8 @@ package com.geekhalo.lego.core.command;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public class NullContextForUpdate<ID, C extends CommandForUpdate<ID>>
-        implements ContextForUpdate<ID, C>{
+public class NullContextForUpdate<C extends CommandForUpdate>
+        implements ContextForUpdate<C>{
     private final C command;
 
     public NullContextForUpdate(C command) {

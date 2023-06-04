@@ -1,9 +1,6 @@
 package com.geekhalo.lego.core.command.support.handler;
 
-import com.geekhalo.lego.core.command.AggRoot;
-import com.geekhalo.lego.core.command.CommandForCreate;
-import com.geekhalo.lego.core.command.CommandRepository;
-import com.geekhalo.lego.core.command.ContextForCreate;
+import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import lombok.Setter;
@@ -15,11 +12,11 @@ import java.util.function.Function;
 
 @Setter
 public class CreateAggCommandHandler<
-        CMD extends CommandForCreate,
-        CONTEXT extends ContextForCreate<CMD>,
         AGG extends AggRoot,
+        CMD extends Command,
+        CONTEXT extends ContextForCommand<CMD>,
         RESULT>
-        extends AbstractAggCommandHandler<CMD, CONTEXT, AGG, RESULT>{
+        extends AbstractAggCommandHandler<AGG, CMD, CONTEXT, RESULT>{
 
     private Function<CMD, CONTEXT> contextFactory;
     private Function<CONTEXT, AGG> aggFactory;

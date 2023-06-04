@@ -1,8 +1,9 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
-import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
+import com.geekhalo.like.domain.CancelActionCommand;
 import com.geekhalo.like.domain.CancelActionContext;
+import com.geekhalo.like.domain.MarkActionCommand;
 import com.geekhalo.like.domain.MarkActionContext;
 import com.geekhalo.like.domain.dislike.DislikeAction;
 import com.geekhalo.like.domain.dislike.DislikeActionRepository;
@@ -25,66 +26,62 @@ public class ActionCommandApplicationService extends AbstractCommandService {
     @Autowired
     private DislikeActionRepository dislikeActionRepository;
 
-    @Autowired
-    private LazyLoadProxyFactory lazyLoadProxyFactory;
-
     public void like(Long userId, String targetType, Long targetId){
-        MarkActionContext markActionContext = buildMarkActionContext(userId, targetType, targetId);
+        MarkActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<Long, LikeAction, MarkActionContext>syncerFor(this.likeActionRepository)
-                .loadBy(context ->this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
+        this.<MarkActionCommand, MarkActionContext, LikeAction>syncerFor(this.likeActionRepository)
+                .loadBy(command ->this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
+                .contextFactory(command -> MarkActionContext.apply(command))
                 .instanceBy(context -> LikeAction.create(context))
                 .update(((likeAction, context) -> likeAction.mark(context)))
-                .exe(markActionContext);
+                .exe(markActionCommand);
     }
 
 
     public void unLike(Long userId, String targetType, Long targetId){
-        CancelActionContext cancelActionContext = buildCancelActionContext(userId, targetType, targetId);
+        CancelActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<Long, LikeAction, CancelActionContext>updaterFor(this.likeActionRepository)
+        this.<LikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.likeActionRepository)
                 .loadBy(context -> this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .update((like, context) -> like.cancel(context))
-                .exe(cancelActionContext);
+                .exe(cancelActionCommand);
     }
 
 
     public void dislike(Long userId, String targetType, Long targetId){
-        MarkActionContext markActionContext = buildMarkActionContext(userId, targetType, targetId);
+        MarkActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<Long, DislikeAction, MarkActionContext>syncerFor(this.dislikeActionRepository)
+        this.<MarkActionCommand, MarkActionContext, DislikeAction>syncerFor(this.dislikeActionRepository)
                 .loadBy(context -> this.dislikeActionRepository.getByUserAndTarget(actionUser, actionTarget))
+                .contextFactory(command -> MarkActionContext.apply(command))
                 .instanceBy(context -> DislikeAction.create(context))
                 .update((dislikeAction, context) -> dislikeAction.mark(context))
-                .exe(markActionContext);
+                .exe(markActionCommand);
     }
 
     public void unDislike(Long userId, String targetType, Long targetId){
-        CancelActionContext cancelActionContext = buildCancelActionContext(userId, targetType, targetId);
+        CancelActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<Long, DislikeAction, CancelActionContext>updaterFor(this.dislikeActionRepository)
+        this.<DislikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.dislikeActionRepository)
                 .loadBy(context -> this.dislikeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .update((dislikeAction, context) -> dislikeAction.cancel(context))
-                .exe(cancelActionContext);
+                .exe(cancelActionCommand);
     }
 
-    private CancelActionContext buildCancelActionContext(Long userId, String targetType, Long targetId) {
-        CancelActionContext context = CancelActionContext.apply(userId, targetType, targetId);
-        return this.lazyLoadProxyFactory.createProxyFor(context);
+    private CancelActionCommand buildCancelActionCommand(Long userId, String targetType, Long targetId) {
+        return CancelActionCommand.apply(userId, targetType, targetId);
     }
 
-    private MarkActionContext buildMarkActionContext(Long userId, String targetType, Long targetId) {
-        MarkActionContext context = MarkActionContext.apply(userId, targetType, targetId);
-
-        return this.lazyLoadProxyFactory.createProxyFor(context);
+    private MarkActionCommand buildMarkActionCommand(Long userId, String targetType, Long targetId) {
+        return MarkActionCommand.apply(userId, targetType, targetId);
     }
 
 }

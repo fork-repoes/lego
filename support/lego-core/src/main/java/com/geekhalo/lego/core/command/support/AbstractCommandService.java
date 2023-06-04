@@ -1,13 +1,12 @@
 package com.geekhalo.lego.core.command.support;
 
-import com.geekhalo.lego.core.command.AggRoot;
-import com.geekhalo.lego.core.command.Command;
-import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.SyncAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +55,11 @@ public abstract class AbstractCommandService {
      * @param <CONTEXT>
      * @return
      */
-    protected <ID, A extends AggRoot<ID>, CONTEXT> Updater<ID, A, CONTEXT> updaterFor(CommandRepository<A, ID> aggregateRepository){
-        return new Updater<ID, A, CONTEXT>(aggregateRepository);
+    protected <AGG extends AggRoot<?>,
+            CMD extends Command,
+            CONTEXT extends ContextForCommand<CMD>>
+        Updater<AGG, CMD, CONTEXT> updaterFor(CommandRepository<AGG, ?> aggregateRepository){
+        return new Updater<AGG, CMD, CONTEXT>(aggregateRepository);
     }
 
     /**
@@ -65,11 +67,14 @@ public abstract class AbstractCommandService {
      * @param aggregateRepository
      * @param <ID>
      * @param <A>
-     * @param <CONTEXT>
+     * @param <CMD>
      * @return
      */
-    protected <ID, A extends AggRoot<ID>, CONTEXT> Syncer<ID, A, CONTEXT> syncerFor(CommandRepository<A, ID> aggregateRepository){
-        return new Syncer<ID, A, CONTEXT>(aggregateRepository);
+    protected <CMD extends Command,
+            CONTEXT extends ContextForCommand<CMD>,
+            AGG extends AggRoot<?>>
+        Syncer<CMD, CONTEXT, AGG> syncerFor(CommandRepository<AGG, ?> aggregateRepository){
+        return new Syncer<CMD, CONTEXT, AGG> (aggregateRepository);
     }
 
     /**
@@ -152,32 +157,14 @@ public abstract class AbstractCommandService {
      * @param <A>
      * @param <CONTEXT>
      */
-    protected class Updater<ID, A extends AggRoot<ID>, CONTEXT> {
-        // 标准仓库
-        private final CommandRepository<A, ID> aggregateRepository;
-        // 聚合加载器，用于从 DB 中加载 聚合对象
-        private Function<CONTEXT, Optional<A>> loadFun;
-        // 聚合丢失处理器，聚合丢失时进行回调
-        private Consumer<CONTEXT> onNotExistFun = context -> {};
-        // 成功回调器，链式模式，在操作成功时调用
-        private BiConsumer<A, CONTEXT> successFun = (agg, context)->{
-            LOGGER.info("success to handle {} and sync {} to DB", context, agg);
-        };
+    protected class Updater<AGG extends AggRoot<?>,
+            CMD extends Command,
+            CONTEXT extends ContextForCommand<CMD>> {
+        private final UpdateAggCommandHandler<AGG, CMD, CONTEXT, AGG> commandHandler;
 
-        // 异常回调器，链式模式，在操作失败抛出异常时调用
-        private BiConsumer<Exception, CONTEXT> errorFun = (exception, context) -> {
-            LOGGER.error("failed to handle {}", context, exception);
-            if (exception instanceof RuntimeException){
-                throw (RuntimeException) exception;
-            }
-            throw new RuntimeException(exception);
-        };
-        // 业务更新器，对聚合进行业务操作
-        private BiConsumer<A, CONTEXT> updateFun = (a, context) -> {};
-
-
-        Updater(CommandRepository<A, ID> aggregateRepository) {
-            this.aggregateRepository = aggregateRepository;
+        Updater(CommandRepository<AGG, ?> aggregateRepository) {
+            this.commandHandler = new UpdateAggCommandHandler<>(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
+            this.commandHandler.setResultConverter((agg, context) -> agg);
         }
 
         /**
@@ -185,9 +172,8 @@ public abstract class AbstractCommandService {
          * @param loader
          * @return
          */
-        public Updater<ID, A, CONTEXT> loadBy(Function<CONTEXT, Optional<A>> loader){
-            Preconditions.checkArgument(loader != null);
-            this.loadFun = loader;
+        public Updater<AGG, CMD, CONTEXT> loadBy(Function<CMD, Optional<AGG>> loader){
+            this.commandHandler.setAggLoader(((aggCommandRepository, cmd) -> loader.apply(cmd)));
             return this;
         }
 
@@ -196,9 +182,8 @@ public abstract class AbstractCommandService {
          * @param updateFun
          * @return
          */
-        public Updater<ID, A, CONTEXT> update(BiConsumer<A, CONTEXT> updateFun){
-            Preconditions.checkArgument(updateFun != null);
-            this.updateFun = updateFun.andThen(this.updateFun);
+        public Updater<AGG, CMD, CONTEXT> update(BiConsumer<AGG, CONTEXT> updateFun){
+            this.commandHandler.addBizMethod(updateFun);
             return this;
         }
 
@@ -207,9 +192,8 @@ public abstract class AbstractCommandService {
          * @param onSuccessFun
          * @return
          */
-        public Updater<ID, A, CONTEXT> onSuccess(BiConsumer<A, CONTEXT>  onSuccessFun){
-            Preconditions.checkArgument(onSuccessFun != null);
-            this.successFun = onSuccessFun.andThen(this.successFun);
+        public Updater<AGG, CMD, CONTEXT> onSuccess(BiConsumer<AGG, CONTEXT>  onSuccessFun){
+            this.commandHandler.addOnSuccess(onSuccessFun);
             return this;
         }
 
@@ -218,9 +202,8 @@ public abstract class AbstractCommandService {
          * @param errorFun
          * @return
          */
-        public Updater<ID, A, CONTEXT> onError(BiConsumer<Exception, CONTEXT>  errorFun){
-            Preconditions.checkArgument(errorFun != null);
-            this.errorFun = errorFun.andThen(this.errorFun);
+        public Updater<AGG, CMD, CONTEXT> onError(BiConsumer<Exception, CONTEXT>  errorFun){
+            this.commandHandler.addOnError(errorFun);
             return this;
         }
 
@@ -229,9 +212,8 @@ public abstract class AbstractCommandService {
          * @param onNotExistFun
          * @return
          */
-        public Updater<ID, A, CONTEXT> onNotFound(Consumer<CONTEXT>  onNotExistFun){
-            Preconditions.checkArgument(onNotExistFun != null);
-            this.onNotExistFun = onNotExistFun.andThen(this.onNotExistFun);
+        public Updater<AGG, CMD, CONTEXT> onNotFound(Consumer<CONTEXT>  onNotExistFun){
+            this.commandHandler.addOnNotFound(onNotExistFun);
             return this;
         }
 
@@ -240,80 +222,26 @@ public abstract class AbstractCommandService {
          * @param context
          * @return
          */
-        public A exe(CONTEXT context){
-            Preconditions.checkArgument(this.aggregateRepository != null, "aggregateRepository can not be null");
-            Preconditions.checkArgument(this.loadFun != null, "loader can not both be null");
-            Optional<A> aOptional = null;
-            try {
-                // 业务验证
-                validateService.validateBusiness(context);
+        public AGG exe(CMD cmd){
+            return commandHandler.handle(cmd);
 
-                // 从 DB 中加载 聚合根
-                aOptional = this.loadFun.apply(context);
-
-                if (!aOptional.isPresent()){
-                    // 聚合根不存在，回调 聚合丢失处理器
-                    this.onNotExistFun.accept(context);
-                }else {
-                    A a = aOptional.get();
-                    // 在聚合之上，执行业务操作
-                    updateFun.accept(a, context);
-
-                    // 对聚合进行持久化处理
-                    this.aggregateRepository.sync(a);
-
-                    if(eventPublisher != null) {
-                        // 发布并清理事件
-                        // 1. 发布领域事件
-                        // 2. 清理领域事件
-                        a.consumeAndClearEvent(eventPublisher::publishEvent);
-                    }
-
-                    // 操作成功回调
-                    this.successFun.accept(a, context);
-                }
-
-            }catch (Exception e){
-                // 异常回调
-                this.errorFun.accept(e, context);
-            }
-            return aOptional.get();
         }
     }
 
-    protected class Syncer<ID, A extends AggRoot<ID>, CONTEXT> {
-        // 仓库
-        private final CommandRepository<A, ID> aggregateRepository;
-        // 用于实例化聚合根
-        private Function<CONTEXT, A> instanceFun;
-        // 用于加载聚合根
-        private Function<CONTEXT, Optional<A>> loadFun;
-        // 执行通用业务逻辑
-        private BiConsumer<A, CONTEXT> updater = (a, context) ->{
-            if (a instanceof AbstractEntity){
-                ((AbstractEntity) a).preUpdate();
-            }
-        };
-        // 执行创建后业务逻辑
-        private BiConsumer<A, CONTEXT> updaterWhenCreate = (a, context) ->{
-            if (a instanceof AbstractEntity){
-                ((AbstractEntity)a).prePersist();
-            }
-        };
+    protected class Syncer<
+            CMD extends Command,
+            CONTEXT extends ContextForCommand<CMD>,
+            AGG extends AggRoot<?>> {
+        private final SyncAggCommandHandler<AGG, CMD, CONTEXT, AGG> commandHandler;
 
-//        private ValidationHandler validationHandler = new ExceptionBasedValidationHandler();
-        // 成功后回调
-        private Consumer<Data> successFun = a -> LOGGER.info("success to sync {}", a);
-        private BiConsumer<Data, Exception> errorFun = (a, e) -> {
-            LOGGER.error("failed to sync {}.", a, e);
-            if (e instanceof RuntimeException){
-                throw (RuntimeException) e;
-            }
-            throw new RuntimeException(e);
-        };
+        Syncer(CommandRepository<AGG, ?> aggregateRepository) {
+            this.commandHandler = new SyncAggCommandHandler(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
+            this.commandHandler.setResultConverter((agg, context) -> agg);
+        }
 
-        Syncer(CommandRepository<A, ID> aggregateRepository) {
-            this.aggregateRepository = aggregateRepository;
+        public Syncer< CMD, CONTEXT, AGG> contextFactory(Function<CMD, CONTEXT> contextFactory){
+            this.commandHandler.setContextFactory(contextFactory);
+            return this;
         }
 
         /**
@@ -321,9 +249,8 @@ public abstract class AbstractCommandService {
          * @param instanceFun
          * @return
          */
-        public Syncer<ID, A, CONTEXT> instanceBy(Function<CONTEXT, A> instanceFun){
-            Preconditions.checkArgument(instanceFun != null);
-            this.instanceFun = instanceFun;
+        public Syncer< CMD, CONTEXT, AGG> instanceBy(Function<CONTEXT, AGG> instanceFun){
+            this.commandHandler.setAggFactory(instanceFun);
             return this;
         }
 
@@ -332,9 +259,8 @@ public abstract class AbstractCommandService {
          * @param loadFun
          * @return
          */
-        public Syncer<ID, A, CONTEXT> loadBy(Function<CONTEXT, Optional<A>> loadFun){
-            Preconditions.checkArgument(loadFun != null);
-            this.loadFun = loadFun;
+        public Syncer< CMD, CONTEXT, AGG> loadBy(Function<CMD, Optional<AGG>> loadFun){
+            this.commandHandler.setAggLoader((repository, cmd) -> loadFun.apply(cmd));
             return this;
         }
 
@@ -343,9 +269,8 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Syncer<ID, A, CONTEXT> update(BiConsumer<A, CONTEXT> updater){
-            Preconditions.checkArgument(updater != null);
-            this.updater = updater.andThen(this.updater);
+        public Syncer< CMD, CONTEXT, AGG> update(BiConsumer<AGG, CONTEXT> updater){
+            this.commandHandler.addBizMethod(updater);
             return this;
         }
 
@@ -354,26 +279,19 @@ public abstract class AbstractCommandService {
          * @param updater
          * @return
          */
-        public Syncer<ID, A, CONTEXT> updateWhenCreate(BiConsumer<A, CONTEXT> updater){
-            Preconditions.checkArgument(updater != null);
-            this.updaterWhenCreate = updater.andThen(this.updaterWhenCreate);
+        public Syncer< CMD, CONTEXT, AGG> updateWhenCreate(BiConsumer<AGG, CONTEXT> updater){
+            this.commandHandler.addWhenCreate(updater);
             return this;
         }
 
-//        public Syncer<ID, A, CONTEXT> validate(ValidationHandler handler){
-//            Preconditions.checkArgument(handler != null);
-//            this.validationHandler = handler;
-//            return this;
-//        }
 
         /**
          * 成功后回调
          * @param onSuccessFun
          * @return
          */
-        public Syncer<ID, A, CONTEXT> onSuccess(Consumer<Data> onSuccessFun){
-            Preconditions.checkArgument(onSuccessFun != null);
-            this.successFun = onSuccessFun.andThen(this.successFun);
+        public Syncer< CMD, CONTEXT, AGG> onSuccess(BiConsumer<AGG, CONTEXT>  onSuccessFun){
+            this.commandHandler.addOnSuccess(onSuccessFun);
             return this;
         }
 
@@ -382,92 +300,21 @@ public abstract class AbstractCommandService {
          * @param errorFun
          * @return
          */
-        public Syncer<ID, A, CONTEXT> onError(BiConsumer<Data, Exception> errorFun){
-            Preconditions.checkArgument(errorFun != null);
-            this.errorFun = errorFun.andThen(this.errorFun);
+        public Syncer< CMD, CONTEXT, AGG> onError(BiConsumer<Exception, CONTEXT> errorFun){
+            this.commandHandler.addOnError(errorFun);
             return this;
         }
 
 
         /**
          * 执行逻辑
-         * @param context
+         * @param cmd
          * @return
          */
-        public A exe(CONTEXT context){
-            Preconditions.checkArgument(this.aggregateRepository != null, "aggregateRepository can not be null");
-            Preconditions.checkArgument(this.loadFun != null, "load fun can not be nul");
-            Preconditions.checkArgument(this.instanceFun != null, "instance fun can noe be null");
-            A a = null;
-            try {
-                // 业务验证
-                validateService.validateBusiness(context);
-
-                // 加载聚合根
-                Optional<A> aOptional = this.loadFun.apply(context);
-
-                // 存在，走更新流程
-                if (aOptional.isPresent()){
-                    a = aOptional.get();
-                    // 执行业务逻辑
-                    updater.accept(a, context);
-
-//                    a.validate(validationHandler);
-//                    if (validationHandler instanceof ValidationChecker){
-//                        ((ValidationChecker)validationHandler).check();
-//                    }
-                    // 同步到 DB
-                    this.aggregateRepository.sync(a);
-
-                    if (eventPublisher != null) {
-                        // 发布领域事件
-                        // 1. 发布事件
-                        // 2. 清理事件
-                        a.consumeAndClearEvent(eventPublisher::publishEvent);
-                    }
-
-                    // 成功毁掉
-                    this.successFun.accept(new Data(a.getId(), Action.CREATE, a));
-                }else {
-                    // 创建聚合根
-                    a = this.instanceFun.apply(context);
-                    // 执行创建逻辑
-                    updaterWhenCreate.accept(a, context);
-                    // 执行业务逻辑
-                    updater.accept(a, context);
-
-//                    a.validate(validationHandler);
-//                    if (validationHandler instanceof ValidationChecker){
-//                        ((ValidationChecker)validationHandler).check();
-//                    }
-                    // 保存聚合根
-                    this.aggregateRepository.sync(a);
-
-                    if (eventPublisher != null) {
-                        // 发布领域事件
-                        // 1. 发布事件
-                        // 2. 清理事件
-                        a.consumeAndClearEvent(eventPublisher::publishEvent);
-                    }
-
-                    // 成功回调
-                    this.successFun.accept(new Data(a.getId(), Action.UPDATE, a));
-                }
-            }catch (Exception e){
-                // 异常回调
-                this.errorFun.accept(new Data(null, null, a), e);
-            }
-            return a;
+        public AGG exe(CMD cmd) {
+            return this.commandHandler.handle(cmd);
         }
 
-        @Value
-        class Data{
-            private final ID id;
-            private final Action action;
-            private final A a;
-        }
     }
-    enum Action{
-        CREATE, UPDATE
-    }
+
 }

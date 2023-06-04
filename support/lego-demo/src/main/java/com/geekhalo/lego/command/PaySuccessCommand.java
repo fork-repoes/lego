@@ -9,15 +9,11 @@ import lombok.Data;
  * 编程就像玩 Lego
  */
 @Data
-public class PaySuccessCommand implements CommandForUpdate<Long> {
+public class PaySuccessCommand implements CommandForUpdate {
     private Long orderId;
 
     private String chanel;
 
     private Long price;
 
-    @Override
-    public Long key() {
-        return orderId;
-    }
 }

@@ -1,5 +1,7 @@
 package com.geekhalo.like.domain;
 
+import com.geekhalo.lego.core.command.ContextForCommand;
+import com.geekhalo.lego.core.command.ContextForUpdate;
 import com.geekhalo.like.domain.target.ActionTarget;
 import com.geekhalo.like.domain.target.LoadActionTargetByTarget;
 import com.geekhalo.like.domain.user.ActionUser;
@@ -12,24 +14,19 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public abstract class AbstractActionContext {
-    private Long userId;
-    private String targetType;
-    private Long targetId;
+public abstract class AbstractActionContext<CMD extends AbstractActionCommand>
+        implements ContextForCommand<CMD> {
+    private CMD command;
 
-    @LoadActionUserByUserId(userId = "userId")
+    @LoadActionUserByUserId(userId = "command.userId")
     private ActionUser actionUser;
 
-    @LoadActionTargetByTarget(targetType = "targetType", targetId = "targetId")
+    @LoadActionTargetByTarget(targetType = "command.targetType", targetId = "command.targetId")
     private ActionTarget actionTarget;
 
-    protected void init(Long userId, String targetType, Long targetId) {
-        Preconditions.checkArgument(userId != null);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(targetType));
-        Preconditions.checkArgument(targetType != null);
-        this.userId = userId;
-        this.targetType = targetType;
-        this.targetId = targetId;
+    protected void init(CMD command) {
+        Preconditions.checkArgument(command != null);
+        this.command = command;
     }
 
 }

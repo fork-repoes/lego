@@ -4,7 +4,6 @@ import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.Command;
 import com.geekhalo.lego.core.command.CommandRepository;
 import com.geekhalo.lego.core.command.ContextForCommand;
-import com.geekhalo.lego.core.command.support.AbstractCommandService;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -20,9 +19,9 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 
 public abstract class AbstractAggCommandHandler<
+        AGG extends AggRoot,
         CMD extends Command,
         CONTEXT extends ContextForCommand<CMD>,
-        AGG extends AggRoot,
         RESULT> implements AggCommandHandler<CMD, RESULT>{
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAggCommandHandler.class);
 

@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.method;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
@@ -34,6 +36,8 @@ public class CreateServiceMethodInvokerFactory
     private CommandRepository commandRepository;
     @Setter
     private ApplicationEventPublisher eventPublisher;
+    @Setter
+    private TransactionTemplate transactionTemplate;
 
     public CreateServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass,
                                              Class idClass) {
@@ -49,10 +53,9 @@ public class CreateServiceMethodInvokerFactory
         Class commandType = method.getParameterTypes()[0];
         Class returnType = method.getReturnType();
 
-        CreateServiceMethodInvoker invoker = new CreateServiceMethodInvoker<>(this.lazyLoadProxyFactory,
-                this.validateService,
-                this.commandRepository,
-                this.eventPublisher);
+        CreateAggCommandHandler commandHandler = new
+                CreateAggCommandHandler(this.validateService, this.lazyLoadProxyFactory, this.commandRepository, this.eventPublisher, this.transactionTemplate);
+
 
         // 在静态方法中查找
         boolean findMethod = false;
@@ -72,8 +75,8 @@ public class CreateServiceMethodInvokerFactory
                 if (contextFactory == null){
                     continue;
                 }
-                invoker.setContextFactory(contextFactory);
-                invoker.setAggFactory(context -> {
+                commandHandler.setContextFactory(contextFactory);
+                commandHandler.setAggFactory(context -> {
                     try {
                         return MethodUtils.invokeStaticMethod(this.getAggClass(), aggMethod.getName(), context);
                     } catch (Exception e) {
@@ -85,8 +88,8 @@ public class CreateServiceMethodInvokerFactory
                 break;
             }
             if (CommandForCreate.class.isAssignableFrom(aggParamType)){
-                invoker.setContextFactory(command -> NullContextForCreate.apply((CommandForCreate) command));
-                invoker.setAggFactory(context->{
+                commandHandler.setContextFactory(command -> NullContextForCreate.apply((CommandForCreate) command));
+                commandHandler.setAggFactory(context->{
                     NullContextForCreate contextForCreate = (NullContextForCreate) context;
                     CommandForCreate command = contextForCreate.getCommand();
                     try {
@@ -110,7 +113,7 @@ public class CreateServiceMethodInvokerFactory
             Class paramType = constructor.getParameterTypes()[0];
             if (ContextForCreate.class.isAssignableFrom(paramType)){
 
-                invoker.setAggFactory(context -> {
+                commandHandler.setAggFactory(context -> {
                     try {
                         return MethodUtils.invokeMethod(this.getAggClass(), constructor.getName(), context);
                     } catch (Exception e) {
@@ -122,8 +125,8 @@ public class CreateServiceMethodInvokerFactory
                 break;
             }
             if (CommandForCreate.class.isAssignableFrom(paramType)){
-                invoker.setContextFactory(command -> NullContextForCreate.apply((CommandForCreate) command));
-                invoker.setAggFactory(context->{
+                commandHandler.setContextFactory(command -> NullContextForCreate.apply((CommandForCreate) command));
+                commandHandler.setAggFactory(context->{
                     NullContextForCreate contextForCreate = (NullContextForCreate) context;
                     CommandForCreate command = contextForCreate.getCommand();
                     try {
@@ -142,11 +145,11 @@ public class CreateServiceMethodInvokerFactory
             return null;
         }
 
-        invoker.setBizMethod((agg, context) -> {});
+        commandHandler.addBizMethod((agg, context) -> {});
 
-        invoker.setResultConverter(createResultConverter(returnType));
+        commandHandler.setResultConverter(createResultConverter(returnType));
 
-        return invoker;
+        return new CommandHandlerBasedServiceMethodInvoker(commandHandler);
     }
 
     private Function findContextFactory(Class commandType, Class aggParamType) {

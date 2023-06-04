@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.method;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
@@ -34,6 +36,8 @@ public class UpdateServiceMethodInvokerFactory
     private CommandRepository commandRepository;
     @Setter
     private ApplicationEventPublisher eventPublisher;
+    @Setter
+    private TransactionTemplate transactionTemplate;
 
     public UpdateServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass,
                                              Class idClass) {
@@ -49,10 +53,8 @@ public class UpdateServiceMethodInvokerFactory
         Class commandType = method.getParameterTypes()[0];
         Class returnType = method.getReturnType();
 
-        UpdateServiceMethodInvoker invoker = new UpdateServiceMethodInvoker<>(this.lazyLoadProxyFactory,
-                this.validateService,
-                this.commandRepository,
-                this.eventPublisher);
+        UpdateAggCommandHandler commandHandler =
+                new UpdateAggCommandHandler<>(this.validateService, this.lazyLoadProxyFactory, this.commandRepository,this.eventPublisher,this.transactionTemplate);
 
         // 在静态方法中查找
         boolean findMethod = false;
@@ -70,8 +72,8 @@ public class UpdateServiceMethodInvokerFactory
             Class aggParamType = aggMethod.getParameterTypes()[0];
             if (ContextForUpdate.class.isAssignableFrom(aggParamType)){
                 Function contextFactory = findContextFactory(commandType, aggParamType);
-                invoker.setContextFactory(contextFactory);
-                invoker.setBizMethod((agg, context) -> {
+                commandHandler.setContextFactory(contextFactory);
+                commandHandler.addBizMethod((agg, context) -> {
                     try {
                         MethodUtils.invokeMethod(agg, aggMethod.getName(), context);
                     } catch (Exception e) {
@@ -83,8 +85,8 @@ public class UpdateServiceMethodInvokerFactory
                 break;
             }
             if (CommandForUpdate.class.isAssignableFrom(aggParamType)){
-                invoker.setContextFactory(command -> NullContextForUpdate.apply((CommandForUpdate) command));
-                invoker.setBizMethod((agg, context) -> {
+                commandHandler.setContextFactory(command -> NullContextForUpdate.apply((CommandForUpdate) command));
+                commandHandler.addBizMethod((agg, context) -> {
                     NullContextForUpdate contextForUpdate = (NullContextForUpdate) context;
                     CommandForUpdate command = contextForUpdate.getCommand();
                     try {
@@ -103,9 +105,9 @@ public class UpdateServiceMethodInvokerFactory
             return null;
         }
 
-        invoker.setResultConverter(createResultConverter(returnType));
+        commandHandler.setResultConverter(createResultConverter(returnType));
 
-        return invoker;
+        return new CommandHandlerBasedServiceMethodInvoker(commandHandler);
     }
 
 

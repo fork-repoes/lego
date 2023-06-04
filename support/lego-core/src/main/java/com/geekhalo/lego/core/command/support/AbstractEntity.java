@@ -24,7 +24,7 @@ public class AbstractEntity {
     private Date deleteAt;
 
     @PrePersist
-    protected void prePersist(){
+    public void prePersist(){
         if (createAt == null){
             setCreateAt(new Date());
         }

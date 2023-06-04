@@ -1,14 +1,14 @@
 package com.geekhalo.like.domain;
 
-public class MarkActionContext extends AbstractActionContext{
+public class MarkActionContext extends AbstractActionContext<MarkActionCommand>{
     protected MarkActionContext(){
 
     }
 
 
-    public static MarkActionContext apply(Long userId, String targetType, Long targetId){
+    public static MarkActionContext apply(MarkActionCommand command){
         MarkActionContext context = new MarkActionContext();
-        context.init(userId, targetType, targetId);
+        context.init(command);
         return context;
     }
 }
