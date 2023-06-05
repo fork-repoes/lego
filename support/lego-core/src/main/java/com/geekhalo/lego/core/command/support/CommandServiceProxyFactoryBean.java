@@ -56,7 +56,7 @@ public class CommandServiceProxyFactoryBean<B>
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        commandServiceProxyFactory.setQueryService(this.commandService);
+        commandServiceProxyFactory.setCommandService(this.commandService);
         commandServiceProxyFactory.setClassLoader(this.classLoader);
         commandServiceProxyFactory.setApplicationContext(this.applicationContext);
         commandServiceProxyFactory.setLazyLoadProxyFactory(this.lazyLoadProxyFactory);

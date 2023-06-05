@@ -33,33 +33,34 @@ import java.util.Set;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Setter(AccessLevel.PROTECTED)
 public class CommandServiceProxyFactory {
-    @Setter(AccessLevel.PROTECTED)
+
     private ClassLoader classLoader;
-    @Setter(AccessLevel.PROTECTED)
-    private Class queryService;
-    @Setter(AccessLevel.PROTECTED)
+    private Class commandService;
     private ApplicationContext applicationContext;
-    @Setter(AccessLevel.PROTECTED)
     private LazyLoadProxyFactory lazyLoadProxyFactory;
-    @Setter(AccessLevel.PROTECTED)
     private ValidateService validateService;
 
 
     public <T> T createCommandService(){
-        CommandServiceMetadata metadata = CommandServiceMetadata.fromCommandService(queryService);
+        CommandServiceMetadata metadata = CommandServiceMetadata.fromCommandService(commandService);
 
         Object target = createTargetQueryService(metadata);
         ProxyFactory result = new ProxyFactory();
 
+        // 设置代理的目标对象
         result.setTarget(target);
+        // 设置代理类实现的 接口
         result.setInterfaces(metadata.getCommandServiceClass(), ProxyObject.class, TransactionalProxy.class);
 
-        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
+        // 对 default 方法进行拦截和转发
+        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(commandService)) {
             result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
         }
 
-        Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(queryService));
+        // 收集所有的方法，初始化时进行校验
+        Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(commandService));
         methods.addAll(Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(ProxyObject.class)));
 
         // 对所有的实现进行封装，基于拦截器进行请求转发
