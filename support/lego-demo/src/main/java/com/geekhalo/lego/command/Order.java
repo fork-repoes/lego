@@ -57,6 +57,10 @@ public class Order implements AggRoot<Long> {
     @JoinColumn(name = "order_id")
     private List<PayRecord> payRecords = Lists.newArrayList();
 
+    public static Order createForSync(SyncOrderByIdContext context){
+        return create(context);
+    }
+
     public static Order create(CreateOrderContext contextProxy) {
         Order order = new Order();
         order.setUserId(contextProxy.getCommand().getUserId());
@@ -92,7 +96,7 @@ public class Order implements AggRoot<Long> {
         this.items.add(orderItem);
     }
 
-    public void paySuccess(PaySuccessCommand paySuccessCommand){
+    public void paySuccess(PayByIdSuccessCommand paySuccessCommand){
         PayRecord payRecord = PayRecord.create(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
         this.payRecords.add(payRecord);
 
@@ -110,5 +114,9 @@ public class Order implements AggRoot<Long> {
 
     public void cancel() {
         setStatus(OrderStatus.CANCELLED);
+    }
+
+    public void applySync(SyncOrderByIdContext context) {
+        setStatus(OrderStatus.SYNC);
     }
 }

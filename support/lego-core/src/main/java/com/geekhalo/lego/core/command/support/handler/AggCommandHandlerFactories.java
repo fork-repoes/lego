@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.command.support.handler;
 
+import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.support.handler.aggfactory.SmartAggFactories;
 import com.geekhalo.lego.core.command.support.handler.aggfactory.SmartAggFactory;
 import com.geekhalo.lego.core.command.support.handler.aggloader.SmartAggLoader;
@@ -96,6 +97,43 @@ public class AggCommandHandlerFactories{
         commandHandler.setResultConverter(resultConverter);
         commandHandler.setContextFactory(contextFactory);
         commandHandler.setAggLoader(aggLoader);
+
+        commandHandler.validate();
+        return commandHandler;
+    }
+
+    public SyncAggCommandHandler createSyncAggCommandHandler(Class<? extends AggRoot> aggClass, Class cmdClass, Class contextClass, Class resultClass) {
+        SmartAggSyncer aggSyncer = this.smartAggSyncers.findAggSyncerOrNull(aggClass);
+        if (aggSyncer == null){
+            return null;
+        }
+
+        ResultConverter resultConverter = this.smartResultConverters.findResultConverter(aggClass, contextClass, resultClass);
+        if (resultConverter == null){
+            return null;
+        }
+
+        ContextFactory contextFactory = this.smartContextFactories.findContextFactoryOrNull(cmdClass, contextClass);
+        if (contextFactory == null){
+            return null;
+        }
+
+        SmartAggLoader aggLoader = this.smartAggLoaders.findAggLoaderOrNull(cmdClass, aggClass);
+        if (aggLoader == null){
+            return null;
+        }
+
+        SmartAggFactory aggFactory = this.smartAggFactories.findAggFactoryOrNull(contextClass, aggClass);
+        if (aggFactory == null){
+            return null;
+        }
+
+        SyncAggCommandHandler commandHandler = new SyncAggCommandHandler(this.validateService, this.lazyLoadProxyFactory, this.eventPublisher, this.transactionTemplate);
+        commandHandler.setAggSyncer(aggSyncer);
+        commandHandler.setResultConverter(resultConverter);
+        commandHandler.setContextFactory(contextFactory);
+        commandHandler.setAggLoader(aggLoader);
+        commandHandler.setAggFactory(aggFactory);
 
         commandHandler.validate();
         return commandHandler;

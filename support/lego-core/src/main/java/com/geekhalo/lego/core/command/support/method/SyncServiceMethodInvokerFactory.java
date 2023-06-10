@@ -1,9 +1,11 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.CommandForSync;
 import com.geekhalo.lego.core.command.support.handler.CommandHandler;
-import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
+import com.geekhalo.lego.core.command.support.handler.SyncAggCommandHandler;
 import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
 import com.google.common.collect.Lists;
@@ -22,11 +24,11 @@ import static com.geekhalo.lego.core.utils.BeanUtil.isSetter;
  * 编程就像玩 Lego
  */
 @Slf4j
-public class UpdateServiceMethodInvokerFactory
+public class SyncServiceMethodInvokerFactory
         extends BaseCommandServiceMethodInvokerFactory
         implements ServiceMethodInvokerFactory {
 
-    public UpdateServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass) {
+    public SyncServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass) {
         super(aggClass);
     }
 
@@ -37,7 +39,7 @@ public class UpdateServiceMethodInvokerFactory
         }
 
         Class commandType = method.getParameterTypes()[0];
-        if (!CommandForUpdate.class.isAssignableFrom(commandType)){
+        if (!CommandForSync.class.isAssignableFrom(commandType)){
             return null;
         }
 
@@ -67,16 +69,15 @@ public class UpdateServiceMethodInvokerFactory
         }
 
         autoRegisterAggLoaders(commandType);
-
         List<CommandHandler> result = Lists.newArrayList();
         for (BizMethodContext context : contexts){
-            UpdateAggCommandHandler updateAggCommandHandler = this.getCommandHandlerFactory()
-                    .createUpdateAggCommandHandler(getAggClass(), commandType, context.getContextClass(), returnType);
-            if (updateAggCommandHandler == null){
+            SyncAggCommandHandler commandHandler = this.getCommandHandlerFactory()
+                    .createSyncAggCommandHandler(getAggClass(), commandType, context.getContextClass(), returnType);
+            if (commandHandler == null){
                 continue;
             }
-            result.add(updateAggCommandHandler);
-            updateAggCommandHandler.addBizMethod(DefaultBizMethod.apply(context.getMethod()));
+            result.add(commandHandler);
+            commandHandler.addBizMethod(DefaultBizMethod.apply(context.getMethod()));
         }
 
         if (result.size() != 1){
@@ -86,5 +87,4 @@ public class UpdateServiceMethodInvokerFactory
 
         return new CommandHandlerBasedServiceMethodInvoker(result.get(0));
     }
-
 }

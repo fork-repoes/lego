@@ -74,7 +74,7 @@ public abstract class AbstractCommandService {
      * @return
      */
     protected <CMD extends Command,
-            CONTEXT extends ContextForCommand<CMD>,
+            CONTEXT,
             AGG extends AggRoot<?>>
         Syncer<AGG, CMD, CONTEXT> syncerFor(CommandRepository<AGG, ?> aggregateRepository){
         return new Syncer<AGG, CMD, CONTEXT> (aggregateRepository);

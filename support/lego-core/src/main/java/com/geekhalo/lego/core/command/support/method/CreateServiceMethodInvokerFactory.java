@@ -39,6 +39,10 @@ public class CreateServiceMethodInvokerFactory
         }
 
         Class commandType = method.getParameterTypes()[0];
+        if (!CommandForCreate.class.isAssignableFrom(commandType)){
+            return null;
+        }
+
         Class returnType = method.getReturnType();
         List<Class> context = Lists.newArrayList();
         for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
@@ -68,6 +72,8 @@ public class CreateServiceMethodInvokerFactory
             log.info("Failed to find create Method for command {} on class {}", commandType, getAggClass());
             return null;
         }
+
+        autoRegisterAggLoaders(commandType);
 
         List<CommandHandler> result = context.stream()
                 .map(contextType -> this.getCommandHandlerFactory()

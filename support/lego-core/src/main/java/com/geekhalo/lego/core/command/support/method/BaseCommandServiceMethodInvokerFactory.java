@@ -1,10 +1,11 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.AggRoot;
-import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.command.support.handler.AggCommandHandlerFactories;
 import com.geekhalo.lego.core.command.support.handler.CommandParser;
 import com.geekhalo.lego.core.command.support.handler.aggfactory.SmartAggFactories;
+import com.geekhalo.lego.core.command.support.handler.aggloader.IDBasedAggLoader;
+import com.geekhalo.lego.core.command.support.handler.aggloader.KeyBasedAggLoader;
 import com.geekhalo.lego.core.command.support.handler.aggloader.SmartAggLoaders;
 import com.geekhalo.lego.core.command.support.handler.aggsyncer.SmartAggSyncer;
 import com.geekhalo.lego.core.command.support.handler.aggsyncer.SmartAggSyncers;
@@ -15,6 +16,7 @@ import com.geekhalo.lego.core.command.support.handler.converter.SmartResultConve
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +27,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 /**
  * Created by taoli on 2022/10/3.
@@ -34,6 +37,8 @@ import java.lang.reflect.Method;
 @Getter(AccessLevel.PROTECTED)
 @Setter(AccessLevel.PUBLIC)
 abstract class BaseCommandServiceMethodInvokerFactory {
+    private static final Set<Class> REGISTERED_COMMAND_TYPE = Sets.newHashSet();
+
     private final Class<? extends AggRoot> aggClass;
     @Autowired
     private CommandParser commandParser;
@@ -44,6 +49,8 @@ abstract class BaseCommandServiceMethodInvokerFactory {
 
     @Setter(AccessLevel.PUBLIC)
     private CommandRepository commandRepository;
+    @Autowired
+    private SmartAggLoaders smartAggLoaders;
 
     protected BaseCommandServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass) {
         Preconditions.checkArgument(aggClass != null, "Agg Class Can not be null");
@@ -55,6 +62,27 @@ abstract class BaseCommandServiceMethodInvokerFactory {
         this.smartAggSyncers.addAggSyncer(new SmartCommandRepositoryBasedAggSyncer(this.commandRepository, this.aggClass));
     }
 
+    protected void autoRegisterAggLoaders(Class commandType) {
+        if (REGISTERED_COMMAND_TYPE.contains(commandType)){
+            return;
+        }
+        REGISTERED_COMMAND_TYPE.add(commandType);
+
+        if (CommandForSync.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
+            this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
+                    (CommandWithKeyRepository) getCommandRepository(), cmd -> ((CommandForSync) cmd).getKey()));
+        }
+
+        if (CommandForUpdateById.class.isAssignableFrom(commandType)){
+            this.smartAggLoaders.addSmartAggLoader(IDBasedAggLoader.apply(commandType, getAggClass(),
+                    getCommandRepository(), cmd -> ((CommandForUpdateById)cmd).getId()));
+        }
+
+        if (CommandForUpdateByKey.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
+            this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
+                    (CommandWithKeyRepository) getCommandRepository(), cmd -> ((CommandForUpdateByKey)cmd).getKey()));
+        }
+    }
 
 
     @Value

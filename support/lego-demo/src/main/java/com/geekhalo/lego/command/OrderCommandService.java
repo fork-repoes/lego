@@ -11,5 +11,7 @@ import com.geekhalo.lego.core.command.NoCommandService;
 public interface OrderCommandService extends CustomOrderCommandService{
     Order create(CreateOrderCommand command);
 
-    void paySuccess(PaySuccessCommand command);
+    void paySuccess(PayByIdSuccessCommand command);
+
+    Order syncByOrderId(SyncOrderByIdCommand command);
 }

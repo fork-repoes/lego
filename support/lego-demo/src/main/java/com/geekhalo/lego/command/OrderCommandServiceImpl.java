@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * Created by taoli on 2022/10/2.
@@ -44,12 +45,26 @@ public class OrderCommandServiceImpl implements OrderCommandService{
     }
 
     @Override
-    public void paySuccess(PaySuccessCommand command) {
+    public void paySuccess(PayByIdSuccessCommand command) {
         Order order = this.orderRepository.findById(command.getOrderId())
                 .orElseThrow(() -> new AggNotFoundException(command.getOrderId()));
         order.paySuccess(command);
         this.orderRepository.save(order);
         order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
+    }
+
+    @Override
+    public Order syncByOrderId(SyncOrderByIdCommand command) {
+        Optional<Order> orderOpt = this.orderRepository.findById(command.getKey());
+        SyncOrderByIdContext context = this.lazyLoadProxyFactory.createProxyFor(new SyncOrderByIdContext(command));
+        this.validateService.validateRule(context);
+
+        Order order = orderOpt.orElseGet(() -> Order.createForSync(context));
+
+        order.applySync(context);
+        order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
+        this.orderRepository.save(order);
+        return order;
     }
 
     @Override

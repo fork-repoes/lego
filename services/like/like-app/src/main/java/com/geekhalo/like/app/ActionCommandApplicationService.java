@@ -1,9 +1,9 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
-import com.geekhalo.like.domain.CancelActionCommand;
+import com.geekhalo.like.domain.CancelByIdActionCommand;
 import com.geekhalo.like.domain.CancelActionContext;
-import com.geekhalo.like.domain.MarkActionCommand;
+import com.geekhalo.like.domain.MarkByIdActionCommand;
 import com.geekhalo.like.domain.MarkActionContext;
 import com.geekhalo.like.domain.dislike.DislikeAction;
 import com.geekhalo.like.domain.dislike.DislikeActionRepository;
@@ -27,11 +27,11 @@ public class ActionCommandApplicationService extends AbstractCommandService {
     private DislikeActionRepository dislikeActionRepository;
 
     public void like(Long userId, String targetType, Long targetId){
-        MarkActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
+        MarkByIdActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<MarkActionCommand, MarkActionContext, LikeAction>syncerFor(this.likeActionRepository)
+        this.<MarkByIdActionCommand, MarkActionContext, LikeAction>syncerFor(this.likeActionRepository)
                 .loadBy(command ->this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .contextFactory(command -> MarkActionContext.apply(command))
                 .instanceBy(context -> LikeAction.create(context))
@@ -41,11 +41,11 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
 
     public void unLike(Long userId, String targetType, Long targetId){
-        CancelActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
+        CancelByIdActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<LikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.likeActionRepository)
+        this.<LikeAction, CancelByIdActionCommand, CancelActionContext>updaterFor(this.likeActionRepository)
                 .loadBy(context -> this.likeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .contextFactory(cmd -> CancelActionContext.apply(cmd))
                 .update((like, context) -> like.cancel(context))
@@ -54,11 +54,11 @@ public class ActionCommandApplicationService extends AbstractCommandService {
 
 
     public void dislike(Long userId, String targetType, Long targetId){
-        MarkActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
+        MarkByIdActionCommand markActionCommand = buildMarkActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<MarkActionCommand, MarkActionContext, DislikeAction>syncerFor(this.dislikeActionRepository)
+        this.<MarkByIdActionCommand, MarkActionContext, DislikeAction>syncerFor(this.dislikeActionRepository)
                 .loadBy(context -> this.dislikeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .contextFactory(command -> MarkActionContext.apply(command))
                 .instanceBy(context -> DislikeAction.create(context))
@@ -67,23 +67,23 @@ public class ActionCommandApplicationService extends AbstractCommandService {
     }
 
     public void unDislike(Long userId, String targetType, Long targetId){
-        CancelActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
+        CancelByIdActionCommand cancelActionCommand = buildCancelActionCommand(userId, targetType, targetId);
         ActionUser actionUser = ActionUser.apply(userId);
         ActionTarget actionTarget = ActionTarget.apply(targetType, targetId);
 
-        this.<DislikeAction, CancelActionCommand, CancelActionContext>updaterFor(this.dislikeActionRepository)
+        this.<DislikeAction, CancelByIdActionCommand, CancelActionContext>updaterFor(this.dislikeActionRepository)
                 .loadBy(context -> this.dislikeActionRepository.getByUserAndTarget(actionUser, actionTarget))
                 .contextFactory(cmd -> CancelActionContext.apply(cmd))
                 .update((dislikeAction, context) -> dislikeAction.cancel(context))
                 .exe(cancelActionCommand);
     }
 
-    private CancelActionCommand buildCancelActionCommand(Long userId, String targetType, Long targetId) {
-        return CancelActionCommand.apply(userId, targetType, targetId);
+    private CancelByIdActionCommand buildCancelActionCommand(Long userId, String targetType, Long targetId) {
+        return CancelByIdActionCommand.apply(userId, targetType, targetId);
     }
 
-    private MarkActionCommand buildMarkActionCommand(Long userId, String targetType, Long targetId) {
-        return MarkActionCommand.apply(userId, targetType, targetId);
+    private MarkByIdActionCommand buildMarkActionCommand(Long userId, String targetType, Long targetId) {
+        return MarkByIdActionCommand.apply(userId, targetType, targetId);
     }
 
 }

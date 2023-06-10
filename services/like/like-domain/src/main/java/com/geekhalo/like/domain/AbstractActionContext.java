@@ -1,7 +1,5 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.ContextForCommand;
-import com.geekhalo.lego.core.command.ContextForUpdate;
 import com.geekhalo.like.domain.target.ActionTarget;
 import com.geekhalo.like.domain.target.LoadActionTargetByTarget;
 import com.geekhalo.like.domain.user.ActionUser;
@@ -10,12 +8,10 @@ import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public abstract class AbstractActionContext<CMD extends AbstractActionCommand>
-        implements ContextForCommand<CMD> {
+public abstract class AbstractActionContext<CMD extends AbstractByIdActionCommand>{
     private CMD command;
 
     @LoadActionUserByUserId(userId = "command.userId")

@@ -5,6 +5,6 @@ package com.geekhalo.lego.core.command;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-public interface CommandForSync extends Command{
-
+public interface CommandForSync<KEY> extends Command{
+    KEY getKey();
 }

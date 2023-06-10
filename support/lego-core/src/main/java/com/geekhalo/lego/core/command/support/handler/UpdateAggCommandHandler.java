@@ -24,11 +24,7 @@ public class UpdateAggCommandHandler<
 
     // 聚合丢失处理器，聚合丢失时进行回调
     private Consumer<CONTEXT> onNotExistFun = context ->{
-        if (context instanceof ContextForCommand) {
-            throw new AggNotFoundException(((ContextForCommand)context).getCommand());
-        }else {
-            throw new AggNotFoundException(context);
-        }
+        throw new AggNotFoundException(context);
     };
 
     public UpdateAggCommandHandler(ValidateService validateService,

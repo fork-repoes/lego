@@ -4,6 +4,7 @@ import com.geekhalo.lego.core.command.CommandRepository;
 import com.geekhalo.lego.core.command.CommandServiceMethodLostException;
 import com.geekhalo.lego.core.command.NoCommandService;
 import com.geekhalo.lego.core.command.support.method.CreateServiceMethodInvokerFactory;
+import com.geekhalo.lego.core.command.support.method.SyncServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.command.support.method.UpdateServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
@@ -89,8 +90,13 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
 
         CommandRepository repository = (CommandRepository) this.applicationContext.getBean(repositoryClass);
 
+        MethodDispatcherInterceptor syncMethodDispatcherInterceptor = createSyncMethodDispatcherInterceptor(methods, repository, metadata);
+        result.addAdvice(syncMethodDispatcherInterceptor);
+
+
         MethodDispatcherInterceptor createMethodDispatcher = createCreateMethodDispatcherInterceptor(methods, repository, metadata);
         result.addAdvice(createMethodDispatcher);
+
 
         MethodDispatcherInterceptor updateMethodDispatcher = createUpdateMethodDispatcherInterceptor(methods, repository, metadata);
         result.addAdvice(updateMethodDispatcher);
@@ -128,6 +134,26 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
 
         UpdateServiceMethodInvokerFactory methodInvokerFactory = new UpdateServiceMethodInvokerFactory(metadata.getDomainClass());
+        methodInvokerFactory.setCommandRepository(repository);
+        this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
+        methodInvokerFactory.init();
+
+        Iterator<Method> iterator = methods.iterator();
+        while (iterator.hasNext()){
+            Method callMethod = iterator.next();
+            ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
+            if (exeMethod != null){
+                methodDispatcher.register(callMethod, exeMethod);
+                iterator.remove();
+            }
+        }
+        return methodDispatcher;
+    }
+
+    private MethodDispatcherInterceptor createSyncMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
+        MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
+
+        SyncServiceMethodInvokerFactory methodInvokerFactory = new SyncServiceMethodInvokerFactory(metadata.getDomainClass());
         methodInvokerFactory.setCommandRepository(repository);
         this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
         methodInvokerFactory.init();

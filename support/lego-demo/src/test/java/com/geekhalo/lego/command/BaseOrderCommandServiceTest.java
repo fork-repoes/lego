@@ -59,6 +59,51 @@ abstract class BaseOrderCommandServiceTest {
     }
 
     @Test
+    public void sync(){
+        {
+            SyncOrderByIdCommand command = getSyncOrderCommand(-1L);
+
+            Long orderId = this.orderCommandService().syncByOrderId(command).getId();
+
+            Order order = this.orderRepository.findById(orderId).orElse(null);
+
+            Assertions.assertNotNull(order);
+            Assertions.assertNotNull(order.getAddress());
+            Assertions.assertNotNull(order.getItems());
+            Assertions.assertEquals(command.getProducts().size(), order.getItems().size());
+            Assertions.assertEquals(OrderStatus.SYNC, order.getStatus());
+
+
+            List<Object> events = this.eventListeners.getEvents();
+            Assertions.assertTrue(CollectionUtils.isNotEmpty(events));
+            Object event = this.eventListeners.getEvents().get(0);
+            Assertions.assertTrue(event instanceof OrderCreatedEvent);
+        }
+        {
+            CreateOrderCommand createCommand = getCreateOrderCommand();
+            Long orderId = this.orderCommandService().create(createCommand).getId();
+
+            this.eventListeners.clear();
+
+            SyncOrderByIdCommand command = getSyncOrderCommand(orderId);
+
+            this.orderCommandService().syncByOrderId(command).getId();
+
+            Order order = this.orderRepository.findById(orderId).orElse(null);
+
+            Assertions.assertNotNull(order);
+            Assertions.assertNotNull(order.getAddress());
+            Assertions.assertNotNull(order.getItems());
+            Assertions.assertEquals(command.getProducts().size(), order.getItems().size());
+            Assertions.assertEquals(OrderStatus.SYNC, order.getStatus());
+
+
+            List<Object> events = this.eventListeners.getEvents();
+            Assertions.assertTrue(CollectionUtils.isEmpty(events));
+        }
+    }
+
+    @Test
     void paySuccess() {
 
         CreateOrderCommand command = getCreateOrderCommand();
@@ -69,7 +114,7 @@ abstract class BaseOrderCommandServiceTest {
             Assertions.assertEquals(OrderStatus.NONE, order.getStatus());
         }
 
-        PaySuccessCommand paySuccessCommand = new PaySuccessCommand();
+        PayByIdSuccessCommand paySuccessCommand = new PayByIdSuccessCommand();
         paySuccessCommand.setOrderId(orderId);
         paySuccessCommand.setChanel("微信");
         paySuccessCommand.setPrice(48L);
@@ -114,6 +159,36 @@ abstract class BaseOrderCommandServiceTest {
 
     private CreateOrderCommand getCreateOrderCommand() {
         CreateOrderCommand command = new CreateOrderCommand();
+        command.setUserId(100L);
+        command.setUserAddress(10000L);
+        List<ProductForBuy> products = Lists.newArrayList();
+        {
+            ProductForBuy product = new ProductForBuy();
+            product.setProductId(1000L);
+            product.setAmount(1);
+            products.add(product);
+        }
+
+        {
+            ProductForBuy product = new ProductForBuy();
+            product.setProductId(1100L);
+            product.setAmount(2);
+            products.add(product);
+        }
+
+        {
+            ProductForBuy product = new ProductForBuy();
+            product.setProductId(1200L);
+            product.setAmount(3);
+            products.add(product);
+        }
+
+        command.setProducts(products);
+        return command;
+    }
+
+    private SyncOrderByIdCommand getSyncOrderCommand(Long orderId) {
+        SyncOrderByIdCommand command = new SyncOrderByIdCommand(orderId);
         command.setUserId(100L);
         command.setUserAddress(10000L);
         List<ProductForBuy> products = Lists.newArrayList();

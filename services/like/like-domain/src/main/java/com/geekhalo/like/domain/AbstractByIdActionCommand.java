@@ -1,11 +1,6 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.Command;
-import com.geekhalo.lego.core.command.CommandForUpdate;
-import com.geekhalo.like.domain.target.ActionTarget;
-import com.geekhalo.like.domain.target.LoadActionTargetByTarget;
-import com.geekhalo.like.domain.user.ActionUser;
-import com.geekhalo.like.domain.user.LoadActionUserByUserId;
+import com.geekhalo.lego.core.command.CommandForUpdateById;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public abstract class AbstractActionCommand implements CommandForUpdate{
+public abstract class AbstractByIdActionCommand implements CommandForUpdateById {
     private Long userId;
     private String targetType;
     private Long targetId;
