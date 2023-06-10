@@ -1,7 +1,5 @@
 package com.geekhalo.lego.core.validator;
 
-import com.geekhalo.lego.common.validator.ValidateErrors;
-import com.geekhalo.lego.common.validator.ValidateErrorsHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.aopalliance.intercept.MethodInterceptor;

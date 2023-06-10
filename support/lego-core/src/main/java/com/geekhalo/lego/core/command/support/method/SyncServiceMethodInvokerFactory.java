@@ -4,7 +4,6 @@ import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.CommandForSync;
 import com.geekhalo.lego.core.command.support.handler.CommandHandler;
 import com.geekhalo.lego.core.command.support.handler.SyncAggCommandHandler;
-import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
 import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;

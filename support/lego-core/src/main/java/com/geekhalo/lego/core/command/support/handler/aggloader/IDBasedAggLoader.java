@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.command.support.handler.aggloader;
 
-import com.geekhalo.lego.core.command.CommandForUpdateById;
 import com.geekhalo.lego.core.command.CommandRepository;
 
 import java.util.Optional;

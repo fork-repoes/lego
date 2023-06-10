@@ -1,6 +1,5 @@
 package com.geekhalo.lego.command;
 
-import com.geekhalo.lego.core.command.CommandRepository;
 import com.geekhalo.lego.core.command.CommandWithKeyRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

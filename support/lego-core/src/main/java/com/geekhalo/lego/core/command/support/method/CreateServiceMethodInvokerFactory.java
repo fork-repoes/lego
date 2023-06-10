@@ -1,8 +1,8 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.CommandForCreate;
 import com.geekhalo.lego.core.command.support.handler.CommandHandler;
-import com.geekhalo.lego.core.command.support.handler.AggCommandHandlerFactories;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
 import com.google.common.collect.Lists;

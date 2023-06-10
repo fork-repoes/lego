@@ -1,9 +1,10 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.CommandForUpdate;
 import com.geekhalo.lego.core.command.support.handler.CommandHandler;
-import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
 import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
 import com.google.common.collect.Lists;

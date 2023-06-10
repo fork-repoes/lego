@@ -1,10 +1,10 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
-import com.geekhalo.like.domain.CancelByIdActionCommand;
 import com.geekhalo.like.domain.CancelActionContext;
-import com.geekhalo.like.domain.MarkByIdActionCommand;
+import com.geekhalo.like.domain.CancelByIdActionCommand;
 import com.geekhalo.like.domain.MarkActionContext;
+import com.geekhalo.like.domain.MarkByIdActionCommand;
 import com.geekhalo.like.domain.dislike.DislikeAction;
 import com.geekhalo.like.domain.dislike.DislikeActionRepository;
 import com.geekhalo.like.domain.like.LikeAction;

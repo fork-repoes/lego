@@ -1,6 +1,6 @@
 package com.geekhalo.lego.core.command.support.handler;
 
-import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.AggRoot;
 import com.geekhalo.lego.core.command.support.AbstractEntity;
 import com.geekhalo.lego.core.command.support.handler.aggfactory.AggFactory;
 import com.geekhalo.lego.core.command.support.handler.aggloader.AggLoader;

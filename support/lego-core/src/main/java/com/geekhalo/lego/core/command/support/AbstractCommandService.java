@@ -1,12 +1,16 @@
 package com.geekhalo.lego.core.command.support;
 
-import com.geekhalo.lego.core.command.*;
-import com.geekhalo.lego.core.command.support.handler.*;
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.Command;
+import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.support.handler.CreateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.SyncAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
 import com.geekhalo.lego.core.command.support.handler.aggfactory.AggFactory;
+import com.geekhalo.lego.core.command.support.handler.aggsyncer.CommandRepositoryBasedAggSyncer;
 import com.geekhalo.lego.core.command.support.handler.contextfactory.ContextFactory;
 import com.geekhalo.lego.core.command.support.handler.contextfactory.EqualsContextFactory;
 import com.geekhalo.lego.core.command.support.handler.converter.AggResultConverter;
-import com.geekhalo.lego.core.command.support.handler.aggsyncer.CommandRepositoryBasedAggSyncer;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;

@@ -1,23 +1,7 @@
 package com.geekhalo.lego.core.command.support;
 
-import com.geekhalo.lego.core.command.CommandRepository;
-import com.geekhalo.lego.core.command.support.handler.AggCommandHandlerFactories;
-import com.geekhalo.lego.core.command.support.handler.CommandParser;
-import com.geekhalo.lego.core.command.support.handler.aggfactory.SmartAggFactories;
-import com.geekhalo.lego.core.command.support.handler.aggsyncer.SmartAggSyncers;
-import com.geekhalo.lego.core.command.support.handler.contextfactory.SmartContextFactories;
-import com.geekhalo.lego.core.command.support.handler.converter.SmartResultConverters;
-import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
-import com.geekhalo.lego.core.validator.ValidateService;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Created by taoli on 2022/10/2.
