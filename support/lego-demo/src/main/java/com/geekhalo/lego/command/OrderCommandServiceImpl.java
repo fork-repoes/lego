@@ -30,7 +30,7 @@ public class OrderCommandServiceImpl implements OrderCommandService{
     private ValidateService validateService;
 
     @Override
-    public Long create(CreateOrderCommand command) {
+    public Order create(CreateOrderCommand command) {
         CreateOrderContext context = new CreateOrderContext(command);
         CreateOrderContext contextProxy = this.lazyLoadProxyFactory.createProxyFor(context);
 
@@ -40,7 +40,7 @@ public class OrderCommandServiceImpl implements OrderCommandService{
 
         this.orderRepository.save(order);
         order.consumeAndClearEvent(event -> eventPublisher.publishEvent(event));
-        return order.getId();
+        return order;
     }
 
     @Override

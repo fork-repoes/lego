@@ -1,9 +1,9 @@
-package com.geekhalo.lego.core.command.support.handler;
+package com.geekhalo.lego.core.command.support.handler.contextfactory;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class EqualsSmartContextFactory implements SmartContextFactory{
+public class EqualsSmartContextFactory implements SmartContextFactory {
     @Override
     public Object create(Object o) {
         return o;

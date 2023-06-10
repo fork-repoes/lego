@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.command.support.handler;
+package com.geekhalo.lego.core.command.support.handler.converter;
 
 import com.geekhalo.lego.core.command.AggRoot;
 import com.google.common.collect.Lists;

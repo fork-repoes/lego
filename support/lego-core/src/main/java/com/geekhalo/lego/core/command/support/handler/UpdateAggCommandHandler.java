@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.aggloader.AggLoader;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -19,7 +20,7 @@ public class UpdateAggCommandHandler<
         RESULT>
         extends AbstractAggCommandHandler<AGG, CMD, CONTEXT, RESULT>{
 
-    private AggLoader<CommandRepository<?, AGG>, CMD, AGG> aggLoader;
+    private AggLoader<CMD, AGG> aggLoader;
 
     // 聚合丢失处理器，聚合丢失时进行回调
     private Consumer<CONTEXT> onNotExistFun = context ->{
@@ -32,15 +33,14 @@ public class UpdateAggCommandHandler<
 
     public UpdateAggCommandHandler(ValidateService validateService,
                                    LazyLoadProxyFactory lazyLoadProxyFactory,
-                                   CommandRepository commandRepository,
                                    ApplicationEventPublisher eventPublisher,
                                    TransactionTemplate transactionTemplate) {
-        super(validateService, lazyLoadProxyFactory, commandRepository, eventPublisher, transactionTemplate);
+        super(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
     }
 
     @Override
     protected AGG getOrCreateAgg(CMD cmd, CONTEXT context) {
-        Optional<AGG> aggOptional = aggLoader.load(this.getCommandRepository(), cmd);
+        Optional<AGG> aggOptional = aggLoader.load(cmd);
         if (aggOptional.isPresent()){
             return aggOptional.get();
         }else {
@@ -49,7 +49,13 @@ public class UpdateAggCommandHandler<
         }
     }
 
-    public void setAggLoader(AggLoader<CommandRepository<?, AGG>, CMD, AGG> aggLoader) {
+    @Override
+    public void validate(){
+        super.validate();
+        Preconditions.checkArgument(this.aggLoader != null, "Agg Loader Can not be null");
+    }
+
+    public void setAggLoader(AggLoader<CMD, AGG> aggLoader) {
         Preconditions.checkArgument(aggLoader != null);
         this.aggLoader = aggLoader;
     }

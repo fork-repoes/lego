@@ -5,21 +5,22 @@ import com.geekhalo.lego.core.command.CommandServiceMethodLostException;
 import com.geekhalo.lego.core.command.NoCommandService;
 import com.geekhalo.lego.core.command.support.method.CreateServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.command.support.method.UpdateServiceMethodInvokerFactory;
-import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.proxy.DefaultProxyObject;
 import com.geekhalo.lego.core.support.proxy.ProxyObject;
-import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.interceptor.TransactionalProxy;
 import org.springframework.util.ReflectionUtils;
 
@@ -33,20 +34,19 @@ import java.util.Set;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Setter(AccessLevel.PROTECTED)
-public class CommandServiceProxyFactory {
-
+@Setter(AccessLevel.PRIVATE)
+@Component
+public class CommandServiceProxyFactory implements BeanClassLoaderAware {
     private ClassLoader classLoader;
-    private Class commandService;
+
+    @Autowired
     private ApplicationContext applicationContext;
-    private LazyLoadProxyFactory lazyLoadProxyFactory;
-    private ValidateService validateService;
 
 
-    public <T> T createCommandService(){
+    public <T> T createCommandService(Class commandService){
         CommandServiceMetadata metadata = CommandServiceMetadata.fromCommandService(commandService);
 
-        Object target = createTargetQueryService(metadata);
+        Object target = createTargetService(metadata);
         ProxyFactory result = new ProxyFactory();
 
         // 设置代理的目标对象
@@ -86,6 +86,7 @@ public class CommandServiceProxyFactory {
 
         // 3. 自动解析方法封装
         Class repositoryClass = metadata.getRepositoryClass();
+
         CommandRepository repository = (CommandRepository) this.applicationContext.getBean(repositoryClass);
 
         MethodDispatcherInterceptor createMethodDispatcher = createCreateMethodDispatcherInterceptor(methods, repository, metadata);
@@ -107,11 +108,10 @@ public class CommandServiceProxyFactory {
     private MethodDispatcherInterceptor createCreateMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
 
-        CreateServiceMethodInvokerFactory methodInvokerFactory = new CreateServiceMethodInvokerFactory(metadata.getDomainClass(), metadata.getIdClass());
-        methodInvokerFactory.setLazyLoadProxyFactory(this.lazyLoadProxyFactory);
-        methodInvokerFactory.setValidateService(this.validateService);
-        methodInvokerFactory.setEventPublisher(this.applicationContext);
+        CreateServiceMethodInvokerFactory methodInvokerFactory = new CreateServiceMethodInvokerFactory(metadata.getDomainClass());
         methodInvokerFactory.setCommandRepository(repository);
+        this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
+        methodInvokerFactory.init();
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
@@ -127,11 +127,11 @@ public class CommandServiceProxyFactory {
     private MethodDispatcherInterceptor createUpdateMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
 
-        UpdateServiceMethodInvokerFactory methodInvokerFactory = new UpdateServiceMethodInvokerFactory(metadata.getDomainClass(), metadata.getIdClass());
-        methodInvokerFactory.setLazyLoadProxyFactory(this.lazyLoadProxyFactory);
-        methodInvokerFactory.setValidateService(this.validateService);
-        methodInvokerFactory.setEventPublisher(this.applicationContext);
+        UpdateServiceMethodInvokerFactory methodInvokerFactory = new UpdateServiceMethodInvokerFactory(metadata.getDomainClass());
         methodInvokerFactory.setCommandRepository(repository);
+        this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
+        methodInvokerFactory.init();
+
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
@@ -160,7 +160,12 @@ public class CommandServiceProxyFactory {
         return targetMethodDispatcher;
     }
 
-    private Object createTargetQueryService(CommandServiceMetadata metadata) {
+    private Object createTargetService(CommandServiceMetadata metadata) {
         return new Object();
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

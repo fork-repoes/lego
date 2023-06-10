@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.command.support.handler;
+package com.geekhalo.lego.core.command.support.handler.converter;
 
 @FunctionalInterface
 public interface ResultConverter<AGG, CONTEXT, RESULT> {

@@ -1,4 +1,4 @@
-package com.geekhalo.lego.core.command.support.handler;
+package com.geekhalo.lego.core.command.support.handler.contextfactory;
 
 @FunctionalInterface
 public interface ContextFactory<CMD, CONTENT> {

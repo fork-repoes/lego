@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.aggfactory.AggFactory;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -20,10 +21,9 @@ public class CreateAggCommandHandler<
 
     public CreateAggCommandHandler(ValidateService validateService,
                                    LazyLoadProxyFactory lazyLoadProxyFactory,
-                                   CommandRepository commandRepository,
                                    ApplicationEventPublisher eventPublisher,
                                    TransactionTemplate transactionTemplate) {
-        super(validateService, lazyLoadProxyFactory, commandRepository, eventPublisher, transactionTemplate);
+        super(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
     }
 
 
@@ -32,8 +32,11 @@ public class CreateAggCommandHandler<
         return this.aggFactory.create(context);
     }
 
-
-
+    @Override
+    public void validate(){
+        super.validate();
+        Preconditions.checkArgument(this.aggFactory != null, "Agg Factory Can not be null");
+    }
 
     public void setAggFactory(AggFactory<CONTEXT, AGG> aggFactory) {
         Preconditions.checkArgument(aggFactory != null);

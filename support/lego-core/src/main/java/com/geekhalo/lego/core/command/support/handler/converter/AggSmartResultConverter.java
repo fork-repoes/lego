@@ -1,11 +1,11 @@
-package com.geekhalo.lego.core.command.support.handler;
+package com.geekhalo.lego.core.command.support.handler.converter;
 
 import com.geekhalo.lego.core.command.AggRoot;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AggResultConverter<AGG extends AggRoot>
-        implements SmartResultConverter<AGG, Object, AGG>{
+public class AggSmartResultConverter<AGG extends AggRoot>
+        implements SmartResultConverter<AGG, Object, AGG> {
 
     @Override
     public AGG convert(AGG agg, Object o) {

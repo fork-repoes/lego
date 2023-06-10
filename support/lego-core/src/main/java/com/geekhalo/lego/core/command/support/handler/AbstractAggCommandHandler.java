@@ -1,12 +1,13 @@
 package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.AggRoot;
-import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.support.handler.aggsyncer.AggSyncer;
+import com.geekhalo.lego.core.command.support.handler.contextfactory.ContextFactory;
+import com.geekhalo.lego.core.command.support.handler.converter.ResultConverter;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.Collections;
 import java.util.function.BiConsumer;
 
+@Setter(AccessLevel.PRIVATE)
 public abstract class AbstractAggCommandHandler<
         AGG extends AggRoot,
         CMD ,
@@ -23,28 +25,35 @@ public abstract class AbstractAggCommandHandler<
         RESULT> implements AggCommandHandler<CMD, RESULT>{
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAggCommandHandler.class);
 
+    // 懒加载代理工厂，对 Context 进行功能加强
     private final LazyLoadProxyFactory lazyLoadProxyFactory;
+    // 验证器，为流程的不同阶段提供验证支持
     private final ValidateService validateService;
-    @Getter(AccessLevel.PROTECTED)
-    private final CommandRepository commandRepository;
+
+    // 内部领域事件分发器，用于发布领域事件
     private final ApplicationEventPublisher eventPublisher;
+
+    // 事务管理器，为 null 时，不进行事务保护
     private final TransactionTemplate transactionTemplate;
 
+    // 聚合同步器
+    private AggSyncer<AGG> aggSyncer;
+
+    // Context 工厂，用于将 Command 对象转换为 Context 对象
     private ContextFactory<CMD, CONTEXT> contextFactory;
+    // 结果转换器，从 Context 或 Agg 中提取信息，将其转换为返回结果
     private ResultConverter<AGG, CONTEXT, RESULT> resultConverter;
 
-    @Setter(AccessLevel.PRIVATE)
+    // 业务处理链，可以同时执行多个业务
     private BiConsumer<AGG, CONTEXT> bizMethod = (a, context) -> {};
 
 
     // 默认的操作成功处理器，在操作成功后进行回调
-    @Setter(AccessLevel.PRIVATE)
     private BiConsumer<AGG, CONTEXT> successFun = (agg, context)->{
         LOGGER.info("success to handle {} and sync {} to DB", context, agg);
     };
 
     // 默认的异常处理器，在操作失败抛出异常时进行回调
-    @Setter(AccessLevel.PRIVATE)
     private BiConsumer<Exception, CONTEXT> errorFun = (exception, context) -> {
         LOGGER.error("failed to handle {}", context, exception);
         if (exception instanceof RuntimeException){
@@ -56,23 +65,24 @@ public abstract class AbstractAggCommandHandler<
 
     protected AbstractAggCommandHandler(ValidateService validateService,
                                         LazyLoadProxyFactory lazyLoadProxyFactory,
-                                        CommandRepository commandRepository,
                                         ApplicationEventPublisher eventPublisher,
                                         TransactionTemplate transactionTemplate) {
         Preconditions.checkArgument(validateService != null);
         Preconditions.checkArgument(lazyLoadProxyFactory != null);
-        Preconditions.checkArgument(commandRepository != null);
         Preconditions.checkArgument(eventPublisher != null);
-//        Preconditions.checkArgument(transactionTemplate != null);
 
         this.validateService = validateService;
         this.lazyLoadProxyFactory = lazyLoadProxyFactory;
-        this.commandRepository = commandRepository;
         this.eventPublisher = eventPublisher;
         this.transactionTemplate = transactionTemplate;
     }
 
 
+    /**
+     * 顶层模版方法，用于控制主流程
+     * @param cmd
+     * @return
+     */
     @Override
     public RESULT handle(CMD cmd) {
         CONTEXT contextToCache = null;
@@ -122,7 +132,6 @@ public abstract class AbstractAggCommandHandler<
 
                 // 10. 保存至数据库
                 syncToRepository(agg, contextProxy);
-                return null;
             }
 
             RESULT result = convertToResult(agg, contextProxy);
@@ -135,45 +144,108 @@ public abstract class AbstractAggCommandHandler<
         return null;
     }
 
+    /**
+     * 验证器，对组件完整性进行验证
+     */
+    public void validate(){
+        Preconditions.checkArgument(this.contextFactory != null, "Context Factory Can not be null");
+        Preconditions.checkArgument(this.resultConverter != null, "Result Converter Can not be null");
+        Preconditions.checkArgument(this.aggSyncer != null, "Agg Syncer Can not be null");
+    }
+
+    /**
+     * 规则验证器，在执行业务方法后，验证规则避免
+     * @param agg
+     * @param context
+     */
     protected void validateAfterBizMethod(AGG agg, CONTEXT context){
         this.validateService.validateRule(agg);
     }
 
 
+    /**
+     * Command 验证器，主要完成对入参的交易
+     * @param cmd
+     */
     protected void validateForCommand(CMD cmd) {
         this.validateService.validateParam(Collections.singletonList(cmd));
     }
 
+    /**
+     * 创建 Context 对象
+     * @param param
+     * @return
+     */
     protected CONTEXT createContext(CMD param) {
         return this.contextFactory.create(param);
     }
 
+    /**
+     * 创建 Context 代理对象，进行功能加强
+     * @param context
+     * @return
+     */
     protected CONTEXT createProxy(CONTEXT context){
         return this.lazyLoadProxyFactory.createProxyFor(context);
     }
 
+    /**
+     * 业务校验
+     * @param context
+     */
     protected void validateForContext(CONTEXT context) {
         this.validateService.validateBusiness(context);
     }
 
+    /**
+     * 获取或创建 聚合根对象
+     * @param cmd
+     * @param context
+     * @return
+     */
     protected abstract AGG getOrCreateAgg(CMD cmd, CONTEXT context);
 
+    /**
+     * 调用业务方法
+     * @param agg
+     * @param proxy
+     */
     private void callBizMethod(AGG agg, CONTEXT proxy) {
         this.bizMethod.accept(agg, proxy);
     }
 
-    protected void syncToRepository(AGG agg, CONTEXT context) {
-        this.commandRepository.sync(agg);
+    /**
+     * 将聚合根同步到底层存储引擎
+     * @param agg
+     * @param context
+     */
+    protected void syncToRepository(AGG agg, CONTEXT context){
+        this.aggSyncer.sync(agg);
     }
 
+    /**
+     * 发布领域事件
+     * @param agg
+     * @param context
+     */
     protected void publishEvent(AGG agg, CONTEXT context) {
         agg.consumeAndClearEvent(event -> this.eventPublisher.publishEvent(event));
     }
 
+    /**
+     * 转换最后的执行结果
+     * @param agg
+     * @param proxy
+     * @return
+     */
     protected RESULT convertToResult(AGG agg, CONTEXT proxy) {
         return this.resultConverter.convert(agg, proxy);
     }
 
+    /**
+     * 添加业务调用
+     * @param bizMethod
+     */
     public void addBizMethod(BiConsumer<AGG, CONTEXT> bizMethod){
         this.bizMethod = this.bizMethod.andThen(bizMethod);
     }
@@ -198,11 +270,28 @@ public abstract class AbstractAggCommandHandler<
         this.errorFun = errorFun.andThen(this.errorFun);
     }
 
+    /**
+     * 设置聚合同步器
+     * @param aggSyncer
+     */
+    public void setAggSyncer(AggSyncer<AGG> aggSyncer){
+        Preconditions.checkArgument(aggSyncer != null);
+        this.aggSyncer = aggSyncer;
+    }
+
+    /**
+     * 设置 Context 工厂
+     * @param contextFactory
+     */
     public void setContextFactory(ContextFactory<CMD, CONTEXT> contextFactory) {
         Preconditions.checkArgument(contextFactory != null);
         this.contextFactory = contextFactory;
     }
 
+    /**
+     * 设置结果转换器
+     * @param resultConverter
+     */
     public void setResultConverter(ResultConverter<AGG, CONTEXT, RESULT> resultConverter) {
         Preconditions.checkArgument(resultConverter != null);
         this.resultConverter = resultConverter;

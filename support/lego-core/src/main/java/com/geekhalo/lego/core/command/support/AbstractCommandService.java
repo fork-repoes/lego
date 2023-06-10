@@ -2,6 +2,11 @@ package com.geekhalo.lego.core.command.support;
 
 import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.command.support.handler.*;
+import com.geekhalo.lego.core.command.support.handler.aggfactory.AggFactory;
+import com.geekhalo.lego.core.command.support.handler.contextfactory.ContextFactory;
+import com.geekhalo.lego.core.command.support.handler.contextfactory.EqualsContextFactory;
+import com.geekhalo.lego.core.command.support.handler.converter.AggResultConverter;
+import com.geekhalo.lego.core.command.support.handler.aggsyncer.CommandRepositoryBasedAggSyncer;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -54,8 +59,8 @@ public abstract class AbstractCommandService {
      * @return
      */
     protected <AGG extends AggRoot<?>,
-            CMD extends Command,
-            CONTEXT extends ContextForCommand<CMD>>
+            CMD,
+            CONTEXT>
         Updater<AGG, CMD, CONTEXT> updaterFor(CommandRepository<AGG, ?> aggregateRepository){
         return new Updater<AGG, CMD, CONTEXT>(aggregateRepository);
     }
@@ -63,9 +68,9 @@ public abstract class AbstractCommandService {
     /**
      * 创建 Syncer，已完成对同步流程的组装
      * @param aggregateRepository
-     * @param <ID>
-     * @param <A>
      * @param <CMD>
+     * @param <CONTEXT>
+     * @param <AGG>
      * @return
      */
     protected <CMD extends Command,
@@ -89,9 +94,10 @@ public abstract class AbstractCommandService {
 
         Creator(CommandRepository<AGG, ?> aggregateRepository) {
             Preconditions.checkArgument(aggregateRepository != null);
-            this.commandHandler = new CreateAggCommandHandler(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
-            this.commandHandler.setContextFactory(cmd -> cmd);
-            this.commandHandler.setResultConverter((agg, context) -> agg);
+            this.commandHandler = new CreateAggCommandHandler(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
+            this.commandHandler.setContextFactory(EqualsContextFactory.getInstance());
+            this.commandHandler.setResultConverter(AggResultConverter.getInstance());
+            this.commandHandler.setAggSyncer(new CommandRepositoryBasedAggSyncer(aggregateRepository));
         }
 
         /**
@@ -140,6 +146,7 @@ public abstract class AbstractCommandService {
          * @return
          */
         public AGG call(CMD cmd){
+            this.commandHandler.validate();
             return (AGG) commandHandler.handle(cmd);
         }
     }
@@ -152,13 +159,14 @@ public abstract class AbstractCommandService {
      * @param <CONTEXT>
      */
     protected class Updater<AGG extends AggRoot<?>,
-            CMD extends Command,
-            CONTEXT extends ContextForCommand<CMD>> {
+            CMD,
+            CONTEXT> {
         private final UpdateAggCommandHandler<AGG, CMD, CONTEXT, AGG> commandHandler;
 
         Updater(CommandRepository<AGG, ?> aggregateRepository) {
-            this.commandHandler = new UpdateAggCommandHandler<>(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
-            this.commandHandler.setResultConverter((agg, context) -> agg);
+            this.commandHandler = new UpdateAggCommandHandler<>(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
+            this.commandHandler.setAggSyncer(new CommandRepositoryBasedAggSyncer(aggregateRepository));
+            this.commandHandler.setResultConverter(AggResultConverter.getInstance());
         }
 
         public Updater<AGG, CMD, CONTEXT> contextFactory(ContextFactory<CMD, CONTEXT> contextFactory){
@@ -172,7 +180,7 @@ public abstract class AbstractCommandService {
          * @return
          */
         public Updater<AGG, CMD, CONTEXT> loadBy(Function<CMD, Optional<AGG>> loader){
-            this.commandHandler.setAggLoader(((aggCommandRepository, cmd) -> loader.apply(cmd)));
+            this.commandHandler.setAggLoader(((cmd) -> loader.apply(cmd)));
             return this;
         }
 
@@ -218,10 +226,11 @@ public abstract class AbstractCommandService {
 
         /**
          * 执行更新流程
-         * @param context
+         * @param cmd
          * @return
          */
         public AGG exe(CMD cmd){
+            this.commandHandler.validate();
             return commandHandler.handle(cmd);
 
         }
@@ -229,13 +238,14 @@ public abstract class AbstractCommandService {
 
     protected class Syncer<
             AGG extends AggRoot<?>,
-            CMD extends Command,
-            CONTEXT extends ContextForCommand<CMD>> {
+            CMD,
+            CONTEXT> {
         private final SyncAggCommandHandler<AGG, CMD, CONTEXT, AGG> commandHandler;
 
         Syncer(CommandRepository<AGG, ?> aggregateRepository) {
-            this.commandHandler = new SyncAggCommandHandler(validateService, lazyLoadProxyFactory, aggregateRepository, eventPublisher, transactionTemplate);
-            this.commandHandler.setResultConverter((agg, context) -> agg);
+            this.commandHandler = new SyncAggCommandHandler(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
+            this.commandHandler.setResultConverter(AggResultConverter.getInstance());
+            this.commandHandler.setAggSyncer(new CommandRepositoryBasedAggSyncer<>(aggregateRepository));
         }
 
         public Syncer<AGG, CMD, CONTEXT> contextFactory(ContextFactory<CMD, CONTEXT> contextFactory){
@@ -259,7 +269,7 @@ public abstract class AbstractCommandService {
          * @return
          */
         public Syncer<AGG, CMD, CONTEXT> loadBy(Function<CMD, Optional<AGG>> loadFun){
-            this.commandHandler.setAggLoader((repository, cmd) -> loadFun.apply(cmd));
+            this.commandHandler.setAggLoader((cmd) -> loadFun.apply(cmd));
             return this;
         }
 
@@ -311,6 +321,7 @@ public abstract class AbstractCommandService {
          * @return
          */
         public AGG exe(CMD cmd) {
+            this.commandHandler.validate();
             return this.commandHandler.handle(cmd);
         }
 

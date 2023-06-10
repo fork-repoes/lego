@@ -41,7 +41,7 @@ abstract class BaseOrderCommandServiceTest {
     void create() {
         CreateOrderCommand command = getCreateOrderCommand();
 
-        Long orderId = this.orderCommandService().create(command);
+        Long orderId = this.orderCommandService().create(command).getId();
 
         Order order = this.orderRepository.findById(orderId).orElse(null);
 
@@ -62,7 +62,7 @@ abstract class BaseOrderCommandServiceTest {
     void paySuccess() {
 
         CreateOrderCommand command = getCreateOrderCommand();
-        Long orderId = this.orderCommandService().create(command);
+        Long orderId = this.orderCommandService().create(command).getId();
 
         {
             Order order = this.orderRepository.findById(orderId).orElse(null);
@@ -96,7 +96,7 @@ abstract class BaseOrderCommandServiceTest {
     void cancel() {
 
         CreateOrderCommand command = getCreateOrderCommand();
-        Long orderId = this.orderCommandService().create(command);
+        Long orderId = this.orderCommandService().create(command).getId();
 
         {
             Order order = this.orderRepository.findById(orderId).orElse(null);

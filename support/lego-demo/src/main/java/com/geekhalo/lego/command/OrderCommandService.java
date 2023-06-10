@@ -9,7 +9,7 @@ import com.geekhalo.lego.core.command.NoCommandService;
  */
 @NoCommandService
 public interface OrderCommandService extends CustomOrderCommandService{
-    Long create(CreateOrderCommand command);
+    Order create(CreateOrderCommand command);
 
     void paySuccess(PaySuccessCommand command);
 }

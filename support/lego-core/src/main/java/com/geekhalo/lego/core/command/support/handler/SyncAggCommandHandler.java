@@ -2,6 +2,8 @@ package com.geekhalo.lego.core.command.support.handler;
 
 import com.geekhalo.lego.core.command.*;
 import com.geekhalo.lego.core.command.support.AbstractEntity;
+import com.geekhalo.lego.core.command.support.handler.aggfactory.AggFactory;
+import com.geekhalo.lego.core.command.support.handler.aggloader.AggLoader;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
@@ -20,7 +22,7 @@ public class SyncAggCommandHandler<
 
     private AggFactory<CONTEXT, AGG> aggFactory;
 
-    private AggLoader<CommandRepository<?, ?>, CMD, AGG> aggLoader;
+    private AggLoader<CMD, AGG> aggLoader;
 
     private BiConsumer<AGG, CONTEXT> updaterWhenCreate = (a, context) ->{
         if (a instanceof AbstractEntity){
@@ -30,16 +32,15 @@ public class SyncAggCommandHandler<
 
     public SyncAggCommandHandler(ValidateService validateService,
                                  LazyLoadProxyFactory lazyLoadProxyFactory,
-                                 CommandRepository commandRepository,
                                  ApplicationEventPublisher eventPublisher,
                                  TransactionTemplate transactionTemplate) {
-        super(validateService, lazyLoadProxyFactory, commandRepository, eventPublisher, transactionTemplate);
+        super(validateService, lazyLoadProxyFactory, eventPublisher, transactionTemplate);
     }
 
     @Override
     protected AGG getOrCreateAgg(CMD cmd, CONTEXT context) {
         try {
-            Optional<AGG> aggOptional = aggLoader.load(this.getCommandRepository(), cmd);
+            Optional<AGG> aggOptional = aggLoader.load(cmd);
             if (aggOptional.isPresent()){
                 return aggOptional.get();
             }else {
@@ -57,6 +58,12 @@ public class SyncAggCommandHandler<
         }
     }
 
+    @Override
+    public void validate(){
+        super.validate();
+        Preconditions.checkArgument(this.aggFactory != null, "Agg Factory Can not be null");
+        Preconditions.checkArgument(this.aggLoader != null, "Agg Loader Can not be null");
+    }
 
     public void addWhenCreate(BiConsumer<AGG, CONTEXT> updater){
         Preconditions.checkArgument(updater != null);
@@ -70,7 +77,7 @@ public class SyncAggCommandHandler<
 
 
 
-    public void setAggLoader(AggLoader<CommandRepository<?, ?>, CMD, AGG> aggLoader) {
+    public void setAggLoader(AggLoader<CMD, AGG> aggLoader) {
         Preconditions.checkArgument(aggLoader != null);
         this.aggLoader = aggLoader;
     }
