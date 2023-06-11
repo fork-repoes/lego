@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class SmartAggSyncers{
     private List<SmartAggSyncer> aggSyncers = Lists.newArrayList();
 

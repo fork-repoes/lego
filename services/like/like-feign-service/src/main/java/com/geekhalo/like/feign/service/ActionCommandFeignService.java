@@ -2,7 +2,12 @@ package com.geekhalo.like.feign.service;
 
 import com.geekhalo.like.api.ActionCommandApi;
 import com.geekhalo.like.api.ActionCommandParam;
-import com.geekhalo.like.app.ActionCommandApplicationService;
+import com.geekhalo.like.app.DislikeCommandApplicationService;
+import com.geekhalo.like.app.LikeCommandApplicationService;
+import com.geekhalo.like.domain.dislike.DislikeActionCommand;
+import com.geekhalo.like.domain.dislike.UndislikeActionCommand;
+import com.geekhalo.like.domain.like.LikeActionCommand;
+import com.geekhalo.like.domain.like.UnlikeActionCommand;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -19,30 +24,36 @@ import javax.validation.Valid;
 @Validated
 public class ActionCommandFeignService implements ActionCommandApi {
     @Autowired
-    private ActionCommandApplicationService commandApplicationService;
+    private LikeCommandApplicationService likeCommandApplicationService;
+    @Autowired
+    private DislikeCommandApplicationService dislikeCommandApplicationService;
 
     @Override
     @PostMapping("like")
     public void like(@RequestBody @Valid ActionCommandParam param){
-        this.commandApplicationService.like(param.getUserId(), param.getTargetType(), param.getTargetId());
+        LikeActionCommand command = LikeActionCommand.apply(param.getUserId(), param.getTargetType(), param.getTargetId());
+        this.likeCommandApplicationService.like(command);
     }
 
     @Override
     @PostMapping("unlike")
     public void unLike(@RequestBody @Valid ActionCommandParam param){
-        this.commandApplicationService.unLike(param.getUserId(), param.getTargetType(), param.getTargetId());
+        UnlikeActionCommand command = UnlikeActionCommand.apply(param.getUserId(), param.getTargetType(), param.getTargetId());
+        this.likeCommandApplicationService.unLike(command);
     }
 
     @Override
     @PostMapping("dislike")
     public void dislike(@RequestBody @Valid ActionCommandParam param){
-        this.commandApplicationService.dislike(param.getUserId(), param.getTargetType(), param.getTargetId());
+        DislikeActionCommand command = DislikeActionCommand.apply(param.getUserId(), param.getTargetType(), param.getTargetId());
+        this.dislikeCommandApplicationService.dislike(command);
     }
 
     @Override
     @PostMapping("unDislike")
     public void unDislike(@RequestBody @Valid ActionCommandParam param){
-        this.commandApplicationService.unDislike(param.getUserId(), param.getTargetType(), param.getTargetId());
+        UndislikeActionCommand command = UndislikeActionCommand.apply(param.getUserId(), param.getTargetType(), param.getTargetId());
+        this.dislikeCommandApplicationService.unDislike(command);
     }
 
 }

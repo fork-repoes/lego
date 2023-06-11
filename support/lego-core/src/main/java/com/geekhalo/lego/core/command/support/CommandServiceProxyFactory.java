@@ -14,6 +14,7 @@ import com.geekhalo.lego.core.support.proxy.ProxyObject;
 import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.aop.framework.ProxyFactory;
@@ -36,7 +37,7 @@ import java.util.Set;
  * 编程就像玩 Lego
  */
 @Setter(AccessLevel.PRIVATE)
-@Component
+@Slf4j
 public class CommandServiceProxyFactory implements BeanClassLoaderAware {
     private ClassLoader classLoader;
 
@@ -91,21 +92,24 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         CommandRepository repository = (CommandRepository) this.applicationContext.getBean(repositoryClass);
 
         MethodDispatcherInterceptor syncMethodDispatcherInterceptor = createSyncMethodDispatcherInterceptor(methods, repository, metadata);
+        log.info("Auto Register SyncMethod for {} : {}", commandService, syncMethodDispatcherInterceptor);
         result.addAdvice(syncMethodDispatcherInterceptor);
 
 
         MethodDispatcherInterceptor createMethodDispatcher = createCreateMethodDispatcherInterceptor(methods, repository, metadata);
+        log.info("Auto Register CreateMethod for {} : {}", commandService, createMethodDispatcher);
         result.addAdvice(createMethodDispatcher);
 
 
         MethodDispatcherInterceptor updateMethodDispatcher = createUpdateMethodDispatcherInterceptor(methods, repository, metadata);
+        log.info("Auto Register UpdateMethod for {} : {}", commandService, updateMethodDispatcher);
         result.addAdvice(updateMethodDispatcher);
 
 
         if (CollectionUtils.isNotEmpty(methods)){
+            log.error("Method Lost for {}, lost method is {}", commandService, methods);
             throw new CommandServiceMethodLostException(methods);
         }
-
 
         T proxy = (T) result.getProxy(classLoader);
         return proxy;

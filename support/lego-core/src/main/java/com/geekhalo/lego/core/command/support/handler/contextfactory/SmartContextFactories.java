@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class SmartContextFactories {
     private final List<SmartContextFactory> smartContextFactories = Lists.newArrayList();
 

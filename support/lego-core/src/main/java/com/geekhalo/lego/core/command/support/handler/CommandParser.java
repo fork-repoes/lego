@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-@Component
 public class CommandParser {
     private final Set<Class> parsedAggClass = Sets.newHashSet();
     private final Set<Class> parsedContextClass = Sets.newHashSet();
@@ -24,6 +23,10 @@ public class CommandParser {
     @Autowired
     private SmartContextFactories smartContextFactories;
 
+    /**
+     * 解析 Context，并注册 ContextFactory
+     * @param context
+     */
     public void parseContext(Class context){
         if (this.parsedContextClass.contains(context)){
             return;
@@ -32,15 +35,16 @@ public class CommandParser {
         this.parsedContextClass.add(context);
 
         for (Method aggMethod : context.getDeclaredMethods()) {
+            int parameterCount = aggMethod.getParameterCount();
+            if (parameterCount != 1) {
+                // 参数不为 1，直接跳过
+                continue;
+            }
+
+            Class paramClass = aggMethod.getParameterTypes()[0];
             int modifiers = aggMethod.getModifiers();
             // 静态方法
             if (Modifier.isStatic(modifiers)) {
-                int parameterCount = aggMethod.getParameterCount();
-                if (parameterCount != 1) {
-                    // 参数不为 1，直接跳过
-                    continue;
-                }
-                Class paramClass = aggMethod.getParameterTypes()[0];
                 StaticMethodBasedSmartContextFactory contextFactory = new StaticMethodBasedSmartContextFactory(paramClass, context, aggMethod);
                 this.smartContextFactories.addSmartContextFactory(contextFactory);
             }
@@ -56,28 +60,35 @@ public class CommandParser {
         }
     }
 
+    /**
+     * 解析 聚合根，并注册相关的 AggFactory
+     * @param agg
+     */
     public void parseAgg(Class agg) {
         if (this.parsedAggClass.contains(agg)){
             return;
         }
         this.parsedAggClass.add(agg);
 
-        // 扫描静态方法
         for (Method aggMethod : agg.getDeclaredMethods()) {
+            int parameterCount = aggMethod.getParameterCount();
+            if (parameterCount != 1) {
+                // 参数不为 1，直接跳过
+                continue;
+            }
+
+            Class paramClass = aggMethod.getParameterTypes()[0];
             int modifiers = aggMethod.getModifiers();
-            // 静态方法
+            // 静态方法，注册为 AggFactory 方法
             if (Modifier.isStatic(modifiers)) {
-                int parameterCount = aggMethod.getParameterCount();
-                if (parameterCount != 1) {
-                    // 参数不为 1，直接跳过
-                    continue;
-                }
-                Class paramClass = aggMethod.getParameterTypes()[0];
                 StaticMethodBasedSmartAggFactory aggFactory = new StaticMethodBasedSmartAggFactory(paramClass, agg, aggMethod);
                 this.smartAggFactories.addSmartAggFactory(aggFactory);
                 parseContext(paramClass);
+            }else {
+                parseContext(paramClass);
             }
         }
+        // 单参数构造函数，自动注册为 AggFactory
         for (Constructor constructor : agg.getConstructors()){
             if (constructor.getParameterCount() != 1){
                 // 参数不为 1，直接跳过

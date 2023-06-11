@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public abstract class AbstractActionContext<CMD extends AbstractByIdActionCommand>{
+public abstract class AbstractActionContext<CMD extends AbstractActionCommand>{
     private CMD command;
 
     @LoadActionUserByUserId(userId = "command.userId")

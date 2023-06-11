@@ -72,14 +72,14 @@ public abstract class AbstractCommandService {
     /**
      * 创建 Syncer，已完成对同步流程的组装
      * @param aggregateRepository
+     * @param <AGG>
      * @param <CMD>
      * @param <CONTEXT>
-     * @param <AGG>
      * @return
      */
-    protected <CMD extends Command,
-            CONTEXT,
-            AGG extends AggRoot<?>>
+    protected <AGG extends AggRoot<?>,
+            CMD extends Command,
+            CONTEXT>
         Syncer<AGG, CMD, CONTEXT> syncerFor(CommandRepository<AGG, ?> aggregateRepository){
         return new Syncer<AGG, CMD, CONTEXT> (aggregateRepository);
     }

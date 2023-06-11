@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Setter
-@Component
 public class AggCommandHandlerFactories{
     @Autowired
     private ValidateService validateService;

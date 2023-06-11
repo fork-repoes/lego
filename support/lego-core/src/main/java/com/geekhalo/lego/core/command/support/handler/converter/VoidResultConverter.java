@@ -2,7 +2,6 @@ package com.geekhalo.lego.core.command.support.handler.converter;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class VoidResultConverter implements SmartResultConverter<Object, Object, Void> {
     @Override
     public Void convert(Object o, Object o2) {

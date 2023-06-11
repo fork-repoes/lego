@@ -2,7 +2,6 @@ package com.geekhalo.lego.core.command.support.handler.converter;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class BooleanResultConverter implements SmartResultConverter<Object, Object, Boolean> {
     @Override
     public Boolean convert(Object o, Object o2) {

@@ -3,7 +3,6 @@ package com.geekhalo.lego.core.command.support.handler.converter;
 import com.geekhalo.lego.core.command.AggRoot;
 import org.springframework.stereotype.Component;
 
-@Component
 public class AggSmartResultConverter<AGG extends AggRoot>
         implements SmartResultConverter<AGG, Object, AGG> {
 

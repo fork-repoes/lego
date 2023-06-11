@@ -34,23 +34,21 @@ public abstract class AbstractAction extends AbstractAggRoot {
         setTarget(context.getActionTarget());
     }
 
-    public void cancel(CancelActionContext context){
+    protected boolean cancel(){
         if (getStatus() != ActionStatus.INVALID) {
             setStatus(ActionStatus.INVALID);
-            addEvent(createCancelledEvent());
+            return true;
         }
+        return false;
     }
 
-    public void mark(MarkActionContext context){
+    protected boolean mark(){
         if (getStatus() != ActionStatus.VALID) {
             setStatus(ActionStatus.VALID);
-            addEvent(createMarkedEvent());
+            return true;
         }
+        return false;
     }
-
-    protected abstract AbstractCancelledEvent<? extends AbstractAction> createCancelledEvent();
-
-    protected abstract AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent();
 
     public boolean isValid() {
         return this.getStatus() == ActionStatus.VALID;

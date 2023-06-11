@@ -18,19 +18,21 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class LikeAction extends AbstractAction {
 
-    public static LikeAction create(AbstractActionContext context){
+    public static LikeAction create(LikeActionContext context){
         LikeAction likeAction = new LikeAction();
         likeAction.init(context);
         return likeAction;
     }
 
-    @Override
-    protected AbstractCancelledEvent<? extends AbstractAction> createCancelledEvent() {
-        return LikeCancelledEvent.apply(this);
+    public void like(LikeActionContext context){
+        if (mark()){
+            addEvent(LikeMarkedEvent.apply(this));
+        }
     }
 
-    @Override
-    protected AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent() {
-        return LikeMarkedEvent.apply(this);
+    public void unlike(UnlikeActionContext context){
+        if (cancel()){
+            addEvent(LikeCancelledEvent.apply(this));
+        }
     }
 }
