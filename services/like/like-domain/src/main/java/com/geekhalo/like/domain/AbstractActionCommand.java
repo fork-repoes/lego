@@ -1,7 +1,5 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.CommandForSync;
-import com.geekhalo.lego.core.command.CommandForUpdateById;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;

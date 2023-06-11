@@ -28,4 +28,9 @@ public class StaticMethodBasedSmartAggFactory
         }
     }
 
+    @Override
+    public String toString(){
+        return this.method.toString();
+    }
+
 }

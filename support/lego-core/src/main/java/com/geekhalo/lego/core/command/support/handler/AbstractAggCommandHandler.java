@@ -7,7 +7,9 @@ import com.geekhalo.lego.core.command.support.handler.converter.ResultConverter;
 import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
 import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 @Setter(AccessLevel.PRIVATE)
+@Getter(AccessLevel.PROTECTED)
 public abstract class AbstractAggCommandHandler<
         AGG extends AggRoot,
         CMD ,
@@ -45,7 +49,7 @@ public abstract class AbstractAggCommandHandler<
     private ResultConverter<AGG, CONTEXT, RESULT> resultConverter;
 
     // 业务处理链，可以同时执行多个业务
-    private BiConsumer<AGG, CONTEXT> bizMethod = (a, context) -> {};
+    private List<BiConsumer<AGG, CONTEXT>> bizMethods = Lists.newArrayList();
 
 
     // 默认的操作成功处理器，在操作成功后进行回调
@@ -211,7 +215,7 @@ public abstract class AbstractAggCommandHandler<
      * @param proxy
      */
     private void callBizMethod(AGG agg, CONTEXT proxy) {
-        this.bizMethod.accept(agg, proxy);
+        this.bizMethods.forEach(bizMethod -> bizMethod.accept(agg, proxy));
     }
 
     /**
@@ -247,7 +251,7 @@ public abstract class AbstractAggCommandHandler<
      * @param bizMethod
      */
     public void addBizMethod(BiConsumer<AGG, CONTEXT> bizMethod){
-        this.bizMethod = this.bizMethod.andThen(bizMethod);
+        this.bizMethods.add(bizMethod);
     }
 
     /**

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Created by taoli on 2022/10/3.
@@ -60,17 +61,17 @@ abstract class BaseCommandServiceMethodInvokerFactory {
 
         if (CommandForSync.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
             this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
-                    (CommandWithKeyRepository) getCommandRepository(), cmd -> ((CommandForSync) cmd).getKey()));
+                    (CommandWithKeyRepository) getCommandRepository(), new CommandForSyncFetcher() ));
         }
 
         if (CommandForUpdateById.class.isAssignableFrom(commandType)){
             this.smartAggLoaders.addSmartAggLoader(IDBasedAggLoader.apply(commandType, getAggClass(),
-                    getCommandRepository(), cmd -> ((CommandForUpdateById)cmd).getId()));
+                    getCommandRepository(), new CommandForUpdateByIdFetcher() ));
         }
 
         if (CommandForUpdateByKey.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
             this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
-                    (CommandWithKeyRepository) getCommandRepository(), cmd -> ((CommandForUpdateByKey)cmd).getKey()));
+                    (CommandWithKeyRepository) getCommandRepository(), new CommandForUpdateByKeyFetcher()));
         }
     }
 
@@ -79,5 +80,45 @@ abstract class BaseCommandServiceMethodInvokerFactory {
     protected class BizMethodContext{
         private final Class contextClass;
         private final Method method;
+    }
+
+    private static class CommandForUpdateByIdFetcher implements Function{
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForUpdateById)cmd).getId();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForUpdateById.getId()";
+        }
+    }
+
+    private static class CommandForUpdateByKeyFetcher implements Function{
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForUpdateByKey)cmd).getKey();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForUpdateByKey.getKey()";
+        }
+    }
+
+
+    private static class CommandForSyncFetcher implements Function {
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForSync) cmd).getKey();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForSync.getKey()";
+        }
     }
 }

@@ -1,16 +1,9 @@
 package com.geekhalo.like.app;
 
 import com.geekhalo.lego.core.command.support.AbstractCommandService;
-import com.geekhalo.like.domain.CancelActionContext;
-import com.geekhalo.like.domain.CancelActionCommand;
-import com.geekhalo.like.domain.MarkActionContext;
-import com.geekhalo.like.domain.MarkActionCommand;
 import com.geekhalo.like.domain.dislike.*;
 import com.geekhalo.like.domain.like.*;
-import com.geekhalo.like.domain.target.ActionTarget;
-import com.geekhalo.like.domain.user.ActionUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 

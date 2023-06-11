@@ -1,6 +1,5 @@
 package com.geekhalo.like.domain.dislike;
 
-import com.geekhalo.like.domain.AbstractActionCommand;
 import com.geekhalo.like.domain.CancelActionCommand;
 
 public class UndislikeActionCommand extends CancelActionCommand {

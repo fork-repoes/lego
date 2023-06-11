@@ -82,4 +82,18 @@ public class SyncAggCommandHandler<
         this.aggLoader = aggLoader;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\tSyncCommand:\n")
+                .append("\t\t").append("ContextFactory:").append("\t").append(this.getContextFactory()).append("\n")
+                .append("\t\t").append("AggFactory:").append("\t").append(this.aggFactory).append("\n")
+                .append("\t\t").append("AggLoader:").append("\t").append(this.aggLoader).append("\n")
+                .append("\t\t").append("BizMethods:").append("\t").append(this.getBizMethods()).append("\n")
+                .append("\t\t").append("AggSyncer:").append("\t").append(this.getAggSyncer()).append("\n")
+                .append("\t\t").append("ResultConverter").append("\t").append(this.getResultConverter()).append("\n");
+        return stringBuilder.toString();
+    }
+
+
 }

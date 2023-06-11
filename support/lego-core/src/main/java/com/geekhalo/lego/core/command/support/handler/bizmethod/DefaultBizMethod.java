@@ -25,4 +25,9 @@ public class DefaultBizMethod<AGG, CONTEXT> implements BiConsumer<AGG, CONTEXT>{
     public static DefaultBizMethod apply(Method method){
         return new DefaultBizMethod(method);
     }
+
+    @Override
+    public String toString(){
+        return method.toString();
+    }
 }

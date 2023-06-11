@@ -22,7 +22,6 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.interceptor.TransactionalProxy;
 import org.springframework.util.ReflectionUtils;
 

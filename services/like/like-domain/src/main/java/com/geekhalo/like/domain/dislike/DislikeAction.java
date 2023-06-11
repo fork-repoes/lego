@@ -1,13 +1,6 @@
 package com.geekhalo.like.domain.dislike;
 
 import com.geekhalo.like.domain.AbstractAction;
-import com.geekhalo.like.domain.AbstractActionContext;
-import com.geekhalo.like.domain.AbstractCancelledEvent;
-import com.geekhalo.like.domain.AbstractMarkedEvent;
-import com.geekhalo.like.domain.like.LikeActionContext;
-import com.geekhalo.like.domain.like.LikeCancelledEvent;
-import com.geekhalo.like.domain.like.LikeMarkedEvent;
-import com.geekhalo.like.domain.like.UnlikeActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

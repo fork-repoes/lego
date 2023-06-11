@@ -8,7 +8,6 @@ import com.geekhalo.lego.core.command.support.handler.contextfactory.SmartContex
 import com.geekhalo.lego.core.command.support.handler.contextfactory.StaticMethodBasedSmartContextFactory;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

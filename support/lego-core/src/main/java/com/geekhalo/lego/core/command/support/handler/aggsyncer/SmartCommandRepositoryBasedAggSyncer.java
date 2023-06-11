@@ -27,4 +27,14 @@ public class SmartCommandRepositoryBasedAggSyncer<AGG extends AggRoot<?>>
     public boolean apply(Class aggClass) {
         return this.aggClass.equals(aggClass);
     }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.aggClass)
+                .append("\t")
+                .append(this.repository.getClass())
+                .append(".sync(").append(this.aggClass).append(")");
+        return stringBuilder.toString();
+    }
 }

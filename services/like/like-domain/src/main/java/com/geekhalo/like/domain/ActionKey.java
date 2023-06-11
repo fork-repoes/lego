@@ -2,7 +2,6 @@ package com.geekhalo.like.domain;
 
 import com.geekhalo.like.domain.target.ActionTarget;
 import com.geekhalo.like.domain.user.ActionUser;
-import lombok.Data;
 import lombok.Value;
 
 @Value

@@ -27,4 +27,16 @@ public class KeyBasedAggLoader
     public static KeyBasedAggLoader apply(Class cmdClass, Class aggClass, CommandWithKeyRepository repository, Function keyFetcher){
         return new KeyBasedAggLoader(cmdClass, aggClass, repository, keyFetcher);
     }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.aggClass).append("\t")
+                .append(this.commandRepository.getClass())
+                .append(".")
+                .append("findByKey(")
+                .append(this.keyFetcher)
+                .append(")");
+        return stringBuilder.toString();
+    }
 }

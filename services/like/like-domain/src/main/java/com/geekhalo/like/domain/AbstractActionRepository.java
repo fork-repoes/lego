@@ -1,6 +1,5 @@
 package com.geekhalo.like.domain;
 
-import com.geekhalo.lego.core.command.CommandRepository;
 import com.geekhalo.lego.core.command.CommandWithKeyRepository;
 import com.geekhalo.like.domain.target.ActionTarget;
 import com.geekhalo.like.domain.user.ActionUser;

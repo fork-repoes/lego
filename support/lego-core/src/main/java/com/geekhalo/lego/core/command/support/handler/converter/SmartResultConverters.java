@@ -4,7 +4,6 @@ import com.geekhalo.lego.core.command.AggRoot;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
