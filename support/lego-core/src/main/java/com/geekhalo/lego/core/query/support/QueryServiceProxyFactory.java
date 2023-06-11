@@ -4,12 +4,14 @@ import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.NoQueryService;
 import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
+import com.geekhalo.lego.core.query.support.handler.filler.SmartResultFillers;
 import com.geekhalo.lego.core.query.support.method.QueryServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.proxy.DefaultProxyObject;
 import com.geekhalo.lego.core.support.proxy.ProxyObject;
+import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
@@ -40,7 +42,9 @@ public class QueryServiceProxyFactory {
     @Setter
     private ApplicationContext applicationContext;
     @Setter
-    private JoinService joinService;
+    private ValidateService validateService;
+    @Setter
+    private SmartResultFillers smartResultFillers;
 
 
     public <T> T createQueryService(){
@@ -98,7 +102,7 @@ public class QueryServiceProxyFactory {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
         Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
         QueryServiceMethodInvokerFactory queryServiceMethodAdapterFactory = new QueryServiceMethodInvokerFactory(repository,
-                this.joinService,
+                validateService, this.smartResultFillers,
                 metadata,
                 Lists.newArrayList(beansOfType.values()));
         Iterator<Method> iterator = methods.iterator();

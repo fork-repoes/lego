@@ -1,6 +1,8 @@
 package com.geekhalo.lego.core.query.support;
 
 import com.geekhalo.lego.core.joininmemory.JoinService;
+import com.geekhalo.lego.core.query.support.handler.filler.SmartResultFillers;
+import com.geekhalo.lego.core.validator.ValidateService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -28,7 +30,10 @@ public class QueryServiceProxyFactoryBean<B>
     private ClassLoader classLoader;
 
     @Autowired
-    private JoinService joinService;
+    private SmartResultFillers smartResultFillers;
+
+    @Autowired
+    private ValidateService validateService;
 
     public QueryServiceProxyFactoryBean(Class queryService) {
         this.queryService = queryService;
@@ -54,7 +59,8 @@ public class QueryServiceProxyFactoryBean<B>
         queryServiceFactory.setQueryService(this.queryService);
         queryServiceFactory.setClassLoader(this.classLoader);
         queryServiceFactory.setApplicationContext(this.applicationContext);
-        queryServiceFactory.setJoinService(this.joinService);
+        queryServiceFactory.setSmartResultFillers(this.smartResultFillers);
+        queryServiceFactory.setValidateService(this.validateService);
     }
 
     @Override

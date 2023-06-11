@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.query;
 
 import com.geekhalo.lego.core.query.support.QueryServiceBeanDefinitionRegistrar;
+import com.geekhalo.lego.core.query.support.QueryConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -14,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(QueryServiceBeanDefinitionRegistrar.class)
+@Import({QueryServiceBeanDefinitionRegistrar.class, QueryConfiguration.class})
 public @interface EnableQueryService {
     /**
      * 扫描包

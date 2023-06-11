@@ -1,13 +1,18 @@
 package com.geekhalo.lego.core.query.support.method;
 
-import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.support.QueryServiceMetadata;
+import com.geekhalo.lego.core.query.support.handler.DefaultQueryHandler;
+import com.geekhalo.lego.core.query.support.handler.converter.*;
+import com.geekhalo.lego.core.query.support.handler.executor.MethodBasedQueryExecutor;
+import com.geekhalo.lego.core.query.support.handler.executor.QueryExecutor;
+import com.geekhalo.lego.core.query.support.handler.filler.ResultFiller;
+import com.geekhalo.lego.core.query.support.handler.filler.SmartResultFillers;
 import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
+import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.collect.Lists;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
@@ -15,10 +20,8 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -29,17 +32,20 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFactory {
     private final Object repository;
-    private final JoinService joinService;
+    private final ValidateService validateService;
+    private final SmartResultFillers smartResultFillers;
     private final QueryServiceMetadata metadata;
     private final List<QueryResultConverter> queryResultConverters;
 
 
     public QueryServiceMethodInvokerFactory(Object repository,
-                                            JoinService joinService,
+                                            ValidateService validateService,
+                                            SmartResultFillers smartResultFillers,
                                             QueryServiceMetadata metadata,
                                             List<QueryResultConverter> queryResultConverters) {
         this.repository = repository;
-        this.joinService = joinService;
+        this.validateService = validateService;
+        this.smartResultFillers = smartResultFillers;
         this.metadata = metadata;
         this.queryResultConverters = queryResultConverters;
     }
@@ -51,51 +57,34 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
             return null;
         }
 
-        Function<Object[], Object> queryExecutor = new MethodBasedQueryExecutor(this.repository, matchingMethod);
+        QueryExecutor queryExecutor = new MethodBasedQueryExecutor(this.repository, matchingMethod);
 
-        Function converter = createResultConverter(method, matchingMethod);
+        ResultConverter converter = createResultConverter(method, matchingMethod);
 
-        Function filler = createFiller(method.getReturnType());
+        ResultFiller filler = this.smartResultFillers.findResultFiller(method.getReturnType());
 
-        return new QueryServiceMethodInvoker<>(queryExecutor, converter, filler);
+        DefaultQueryHandler defaultQueryHandler = new DefaultQueryHandler<>(this.validateService,
+                queryExecutor, converter, filler);
+
+        return new QueryServiceMethodInvoker<>(defaultQueryHandler);
     }
 
-    private Function createFiller(Class<?> returnType) {
-        if (List.class.isAssignableFrom(returnType)){
-            return data -> {
-                this.joinService.joinInMemory((List<? extends Object>) data);
-                return data;
-            };
-        }else if (Page.class.isAssignableFrom(returnType)){
-            return data ->{
-                Page page = (Page) data;
-                this.joinService.joinInMemory(page.getContent());
-                return data;
-            };
-        }else {
-            return data -> {
-                this.joinService.joinInMemory(data);
-                return data;
-            };
-        }
-    }
-
-    private Function createResultConverter(Method method, Method matchingMethod) {
+    private ResultConverter createResultConverter(Method method, Method matchingMethod) {
         Class<?> returnType = method.getReturnType();
         if (List.class.isAssignableFrom(returnType)){
             Class itemClass = findItemClass(method);
             Class entityClass = this.metadata.getDomainClass();
-            Function itemConverter = findItemConverter(entityClass, itemClass);
+            ResultConverter itemConverter = findItemConverter(entityClass, itemClass);
 
             return new ListConverter(itemConverter);
         }else if (Page.class.isAssignableFrom(returnType)){
             Class itemClass = findItemClass(method);
             Class entityClass = this.metadata.getDomainClass();
-            Function itemConverter = findItemConverter(entityClass, itemClass);
+            ResultConverter itemConverter = findItemConverter(entityClass, itemClass);
 
             return new PageConverter(itemConverter);
         }else if(returnType.isAssignableFrom(matchingMethod.getReturnType())){
-            return Function.identity();
+            return EqualConverter.getInstance();
         }else {
             return findItemConverter(this.metadata.getDomainClass(), returnType);
         }
@@ -143,38 +132,9 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
         return allMatchMethods.get(0);
     }
 
-    private Function findItemConverter(Class entityClass, Class itemClass) {
+    private ResultConverter findItemConverter(Class entityClass, Class itemClass) {
         if (entityClass == itemClass){
             return data -> data;
-        }
-        Method[] allDeclaredMethods = ReflectionUtils.getAllDeclaredMethods(itemClass);
-        for (Method method : allDeclaredMethods){
-            int modifiers = method.getModifiers();
-            if (Modifier.isStatic(modifiers)){
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length == 1 && parameterTypes[0] == entityClass){
-                    return entity -> {
-                        try {
-                            return MethodUtils.invokeStaticMethod(itemClass, method.getName(), entity);
-                        } catch (Exception e) {
-                            log.error("failed to invoker static method {}.{} use {}", itemClass, method, entity);
-                        }
-                        return null;
-                    };
-                }
-            }
-        }
-
-        Constructor matchingAccessibleConstructor = ConstructorUtils.getMatchingAccessibleConstructor(itemClass, entityClass);
-        if (matchingAccessibleConstructor != null){
-            return entity -> {
-                try {
-                    return ConstructorUtils.invokeConstructor(itemClass, entity);
-                } catch (Exception e) {
-                    log.error("failed to invoke Constructor {} use {}", itemClass, entity);
-                }
-                return null;
-            };
         }
 
         for (QueryResultConverter queryResultConverter : this.queryResultConverters){
@@ -183,6 +143,21 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
             }
         }
 
+        Method[] allDeclaredMethods = ReflectionUtils.getAllDeclaredMethods(itemClass);
+        for (Method method : allDeclaredMethods){
+            int modifiers = method.getModifiers();
+            if (Modifier.isStatic(modifiers)){
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length == 1 && parameterTypes[0] == entityClass){
+                    return new StaticMethodConverter(itemClass, method);
+                }
+            }
+        }
+
+        Constructor matchingAccessibleConstructor = ConstructorUtils.getMatchingAccessibleConstructor(itemClass, entityClass);
+        if (matchingAccessibleConstructor != null){
+            return new ConstructorBasedConvertor(itemClass);
+        }
         throw new RuntimeException("Result Converter Not Found");
 
     }
@@ -211,54 +186,5 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
         Class<?> repositoryReturnType = repositoryMethod.getReturnType();
         Class<?> callReturnType = method.getReturnType();
         return Objects.equals(repositoryReturnType, callReturnType);
-    }
-
-    private class PageConverter implements Function<Page, Page> {
-        private final Function itemConverter;
-        public PageConverter(Function itemConverter) {
-            this.itemConverter = itemConverter;
-        }
-
-        @Override
-        public Page apply(Page page) {
-            if (page == null){
-                return null;
-            }
-            return page.convert(this.itemConverter);
-        }
-    }
-
-    class ListConverter implements Function<List, List>{
-        private final Function itemConverter;
-
-        ListConverter(Function itemConverter) {
-            this.itemConverter = itemConverter;
-        }
-
-        @Override
-        public List apply(List list) {
-            if (CollectionUtils.isEmpty(list)){
-                return Collections.emptyList();
-            }
-            return (List) list.stream()
-                    .map(itemConverter)
-                    .collect(Collectors.toList());
-        }
-    }
-
-    class MethodBasedQueryExecutor implements Function<Object[], Object>{
-        private final Object repository;
-        private final Method method;
-
-        MethodBasedQueryExecutor(Object repository, Method method) {
-            this.repository = repository;
-            this.method = method;
-        }
-
-        @SneakyThrows
-        @Override
-        public Object apply(Object[] objects) {
-            return method.invoke(this.repository, objects);
-        }
     }
 }
