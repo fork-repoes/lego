@@ -1,9 +1,6 @@
 package com.geekhalo.like.domain.dislike;
 
 import com.geekhalo.like.domain.AbstractAction;
-import com.geekhalo.like.domain.AbstractActionContext;
-import com.geekhalo.like.domain.AbstractCancelledEvent;
-import com.geekhalo.like.domain.AbstractMarkedEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,19 +15,21 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class DislikeAction extends AbstractAction {
 
-    public static DislikeAction create(AbstractActionContext context){
+    public static DislikeAction create(DislikeActionContext context){
         DislikeAction dislikeAction = new DislikeAction();
         dislikeAction.init(context);
         return dislikeAction;
     }
 
-    @Override
-    protected AbstractCancelledEvent<? extends AbstractAction> createCancelledEvent() {
-        return DislikeCancelledEvent.apply(this);
+    public void like(DislikeActionContext context){
+        if (mark()){
+            addEvent(DislikeMarkedEvent.apply(this));
+        }
     }
 
-    @Override
-    protected AbstractMarkedEvent<? extends AbstractAction> createMarkedEvent() {
-        return DislikeMarkedEvent.apply(this);
+    public void unlike(UndislikeActionContext context){
+        if (cancel()){
+            addEvent(DislikeCancelledEvent.apply(this));
+        }
     }
 }

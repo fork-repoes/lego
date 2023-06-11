@@ -1,7 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
-import com.geekhalo.lego.common.validator.Validateable;
+import com.geekhalo.lego.common.validator.Verifiable;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
  * 编程就像玩 Lego
  */
 @Data
-public class UserValidateForm implements Validateable {
+public class UserValidateForm implements Verifiable {
     @NotEmpty
     private String name;
 

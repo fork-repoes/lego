@@ -26,7 +26,7 @@ public class DomainValidateServiceImpl
 
     @Override
     public void createOrder(CreateOrderContext context) {
-        validateService.validate(context);
+        validateService.validateBusiness(context);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class DomainValidateServiceImpl
         CreateOrderContextV2 context = new CreateOrderContextV2();
         context.setCmd(cmd);
         CreateOrderContextV2 contextProxy = this.lazyLoadProxyFactory.createProxyFor(context);
-        this.validateService.validate(contextProxy);
+        this.validateService.validateBusiness(contextProxy);
         log.info("context is {}", contextProxy);
     }
 }

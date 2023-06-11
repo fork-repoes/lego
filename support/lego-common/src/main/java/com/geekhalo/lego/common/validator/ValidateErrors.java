@@ -13,6 +13,7 @@ import java.util.List;
 @Value
 public class ValidateErrors {
     private List<Error> errors = new ArrayList<>();
+
     public void addError(String name, String code, String msg){
         Error error = new Error(name, code, msg);
         this.errors.add(error);

@@ -33,4 +33,18 @@ public final class MethodDispatcherInterceptor implements MethodInterceptor {
     public void register(Method callMethod, ServiceMethodInvoker executorMethod){
         this.methodMap.put(callMethod, executorMethod);
     }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        this.methodMap.forEach((method, serviceMethodInvoker) -> {
+            stringBuilder
+                    .append("\n")
+                    .append(method)
+                    .append("\n")
+                    .append(serviceMethodInvoker);
+        });
+
+        return stringBuilder.toString();
+    }
 }

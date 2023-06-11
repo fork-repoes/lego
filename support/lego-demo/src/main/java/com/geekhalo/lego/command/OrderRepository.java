@@ -1,8 +1,10 @@
 package com.geekhalo.lego.command;
 
-import com.geekhalo.lego.core.command.CommandRepository;
+import com.geekhalo.lego.core.command.CommandWithKeyRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * Created by taoli on 2022/10/2.
@@ -11,5 +13,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("orderRepositoryForCommand")
 public interface OrderRepository extends JpaRepository<Order, Long>,
-        CommandRepository<Order, Long> {
+        CommandWithKeyRepository<Order, Long, Long> {
+
+    @Override
+    default Order sync(Order entity){
+        return save(entity);
+    }
+
+    @Override
+    default Optional<Order> findByKey(Long key){
+        return findById(key);
+    }
 }

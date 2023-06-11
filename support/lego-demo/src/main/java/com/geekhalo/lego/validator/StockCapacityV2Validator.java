@@ -1,7 +1,7 @@
 package com.geekhalo.lego.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorHandler;
-import com.geekhalo.lego.core.validator.FixTypeBeanValidator;
+import com.geekhalo.lego.core.validator.FixTypeBusinessValidator;
 import com.geekhalo.lego.loader.CreateOrderContextV2;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(3)
 public class StockCapacityV2Validator
-        extends FixTypeBeanValidator<CreateOrderContextV2> {
+        extends FixTypeBusinessValidator<CreateOrderContextV2> {
 
     @Override
     public void validate(CreateOrderContextV2 context, ValidateErrorHandler validateErrorHandler) {
