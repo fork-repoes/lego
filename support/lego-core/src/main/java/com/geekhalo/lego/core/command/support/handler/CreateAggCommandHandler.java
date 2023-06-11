@@ -46,7 +46,7 @@ public class CreateAggCommandHandler<
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n\tCreateCommand:\n")
+        stringBuilder.append("\tCreateCommand:\n")
                 .append("\t\t").append("ContextFactory:").append("\t").append(this.getContextFactory()).append("\n")
                 .append("\t\t").append("AggFactory:").append("\t").append(this.aggFactory).append("\n")
                 .append("\t\t").append("BizMethods:").append("\t").append(this.getBizMethods()).append("\n")

@@ -65,7 +65,7 @@ public class UpdateAggCommandHandler<
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n\tUpdateCommand:").append("\n")
+        stringBuilder.append("\tUpdateCommand:").append("\n")
                 .append("\t\t").append("ContextFactory:").append("\t").append(this.getContextFactory()).append("\n")
                 .append("\t\t").append("AggLoader:").append("\t").append(this.aggLoader).append("\n")
                 .append("\t\t").append("BizMethods:").append("\t").append(this.getBizMethods()).append("\n")

@@ -1,5 +1,7 @@
 package com.geekhalo.lego.core.query.support.method;
 
+import com.geekhalo.lego.core.query.support.handler.DefaultQueryHandler;
+import com.geekhalo.lego.core.query.support.handler.QueryHandler;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -17,39 +19,15 @@ import java.util.function.Function;
 @Slf4j
 public class QueryServiceMethodInvoker<Q, R>
         implements com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker {
-    private final Function<Object[], Q> queryExecutor;
-    private final Function<Q, R> converter;
-    private final Function<R, R> filler;
+    private final QueryHandler<R> queryHandler;
+
     @Override
     public final Object invoke(Method method, Object[] arguments) {
-        validate(method, arguments);
-        Q qResult = query(method, arguments);
-        if (qResult == null){
-            log.info("query {} use {} result is null", method, arguments);
-            return null;
-        }
-        R resultResult = convert(qResult);
-        if (resultResult == null){
-            log.warn("convert {} result is null", qResult);
-            return null;
-        }
-        fill(resultResult);
-        return resultResult;
+        return queryHandler.query(arguments);
     }
 
-    private Q query(Method method, Object[] arguments) {
-        return queryExecutor.apply(arguments);
-    }
-
-    private R convert(Q queryResult) {
-        return converter.apply(queryResult);
-    }
-
-    private R fill(R queryResult) {
-        return filler.apply(queryResult);
-    }
-
-    protected void validate(Method method, Object[] arguments){
-        return;
+    @Override
+    public String toString(){
+        return this.queryHandler.toString();
     }
 }

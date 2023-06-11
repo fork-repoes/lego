@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-base-parent</artifactId>
-    <version>0.1.23-SNAPSHOT</version>
+    <version>0.1.23-add_query_service-SNAPSHOT</version>
     <name>lego-base-parent</name>
 
 
@@ -28,7 +28,7 @@
         <project.charset>UTF-8</project.charset>
         <commons-fileupload.version>1.3.1</commons-fileupload.version>
         <commons-upload-version>1.4</commons-upload-version>
-        <commons-lang3.version>3.4</commons-lang3.version>
+        <commons-lang3.version>3.7</commons-lang3.version>
         <commons-vollections4.version>4.4</commons-vollections4.version>
         <jjwt-version>0.9.0</jjwt-version>
         <fastjson-version>1.2.78</fastjson-version>
@@ -46,7 +46,7 @@
         <rocketmq.version>2.2.1</rocketmq.version>
         <shardingSphere.version>4.1.1</shardingSphere.version>
         <springfox.version>3.0.0</springfox.version>
-        <lego.version>0.1.23-SNAPSHOT</lego.version>
+        <lego.version>0.1.23-add_query_service-SNAPSHOT</lego.version>
     </properties>
     <developers>
         <developer>
