@@ -5,7 +5,7 @@
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-services-module</artifactId>
     <name>lego-services-module</name>
-    <version>0.1.22-command_handler-SNAPSHOT</version>
+    <version>0.1.23-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>parent</module>
