@@ -5,20 +5,20 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-infrastructure-parent</artifactId>
-        <version>0.1.21</version>
+        <version>0.1.22</version>
         <relativePath>../../parent/infrastructure-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-infrastructure</artifactId>
     <name>lego-like-infrastructure</name>
-    <version>0.1.21</version>
+    <version>0.1.22</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-domain</artifactId>
-            <version>0.1.21</version>
+            <version>0.1.22</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -10,7 +10,6 @@ import com.geekhalo.lego.core.command.CommandServiceDefinition;
  */
 @CommandServiceDefinition(
         domainClass = Order.class,
-        idClass = Long.class,
         repositoryClass = OrderRepository.class)
 @AutoRegisterWebController(name = "order")
 public interface OrderCommandServiceProxy extends OrderCommandService{

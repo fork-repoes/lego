@@ -8,28 +8,21 @@ import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public abstract class AbstractActionContext {
-    private Long userId;
-    private String targetType;
-    private Long targetId;
+public abstract class AbstractActionContext<CMD extends AbstractActionCommand>{
+    private CMD command;
 
-    @LoadActionUserByUserId(userId = "userId")
+    @LoadActionUserByUserId(userId = "command.userId")
     private ActionUser actionUser;
 
-    @LoadActionTargetByTarget(targetType = "targetType", targetId = "targetId")
+    @LoadActionTargetByTarget(targetType = "command.targetType", targetId = "command.targetId")
     private ActionTarget actionTarget;
 
-    protected void init(Long userId, String targetType, Long targetId) {
-        Preconditions.checkArgument(userId != null);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(targetType));
-        Preconditions.checkArgument(targetType != null);
-        this.userId = userId;
-        this.targetType = targetType;
-        this.targetId = targetId;
+    protected void init(CMD command) {
+        Preconditions.checkArgument(command != null);
+        this.command = command;
     }
 
 }

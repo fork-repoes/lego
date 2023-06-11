@@ -1,21 +1,21 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.*;
-import com.geekhalo.lego.core.loader.LazyLoadProxyFactory;
+import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.CommandForUpdate;
+import com.geekhalo.lego.core.command.support.handler.CommandHandler;
+import com.geekhalo.lego.core.command.support.handler.UpdateAggCommandHandler;
+import com.geekhalo.lego.core.command.support.handler.bizmethod.DefaultBizMethod;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
-import com.geekhalo.lego.core.validator.ValidateService;
-import lombok.Setter;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.util.ReflectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.function.Function;
+import java.util.List;
+
+import static com.geekhalo.lego.core.utils.BeanUtil.isSetter;
 
 /**
  * Created by taoli on 2022/10/3.
@@ -26,18 +26,9 @@ import java.util.function.Function;
 public class UpdateServiceMethodInvokerFactory
         extends BaseCommandServiceMethodInvokerFactory
         implements ServiceMethodInvokerFactory {
-    @Setter
-    private LazyLoadProxyFactory lazyLoadProxyFactory;
-    @Setter
-    private ValidateService validateService;
-    @Setter
-    private CommandRepository commandRepository;
-    @Setter
-    private ApplicationEventPublisher eventPublisher;
 
-    public UpdateServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass,
-                                             Class idClass) {
-        super(aggClass, idClass);
+    public UpdateServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass) {
+        super(aggClass);
     }
 
     @Override
@@ -47,15 +38,13 @@ public class UpdateServiceMethodInvokerFactory
         }
 
         Class commandType = method.getParameterTypes()[0];
+        if (!CommandForUpdate.class.isAssignableFrom(commandType)){
+            return null;
+        }
+
         Class returnType = method.getReturnType();
 
-        UpdateServiceMethodInvoker invoker = new UpdateServiceMethodInvoker<>(this.lazyLoadProxyFactory,
-                this.validateService,
-                this.commandRepository,
-                this.eventPublisher);
-
-        // 在静态方法中查找
-        boolean findMethod = false;
+        List<BizMethodContext> contexts = Lists.newArrayList();
         for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
             int modifiers = aggMethod.getModifiers();
             if (Modifier.isStatic(modifiers)){
@@ -66,79 +55,37 @@ public class UpdateServiceMethodInvokerFactory
             if (parameterCount != 1){
                 continue;
             }
+            if (isSetter(aggMethod)){
+                continue;
+            }
 
             Class aggParamType = aggMethod.getParameterTypes()[0];
-            if (ContextForUpdate.class.isAssignableFrom(aggParamType)){
-                Function contextFactory = findContextFactory(commandType, aggParamType);
-                invoker.setContextFactory(contextFactory);
-                invoker.setBizMethod((agg, context) -> {
-                    try {
-                        MethodUtils.invokeMethod(agg, aggMethod.getName(), context);
-                    } catch (Exception e) {
-                        log.error("failed to call method {} use {}", aggMethod, context, e);
-                        throw new RuntimeException(e);
-                    }
-                });
-                findMethod = true;
-                break;
-            }
-            if (CommandForUpdate.class.isAssignableFrom(aggParamType)){
-                invoker.setContextFactory(command -> NullContextForUpdate.apply((CommandForUpdate) command));
-                invoker.setBizMethod((agg, context) -> {
-                    NullContextForUpdate contextForUpdate = (NullContextForUpdate) context;
-                    CommandForUpdate command = contextForUpdate.getCommand();
-                    try {
-                        MethodUtils.invokeMethod(agg, aggMethod.getName(), command);
-                    } catch (Exception e) {
-                        log.error("failed to call method {} use {}", aggMethod, command, e);
-                        throw new RuntimeException(e);
-                    }
-                });
-                findMethod = true;
-                break;
-            }
+            contexts.add(new BizMethodContext(aggParamType, aggMethod));
         }
 
-        if (!findMethod){
+        if (CollectionUtils.isEmpty(contexts)){
             return null;
         }
 
-        invoker.setResultConverter(createResultConverter(returnType));
+        autoRegisterAggLoaders(commandType);
 
-        return invoker;
-    }
-
-
-    private Function findContextFactory(Class commandType, Class aggParamType) {
-        for (Method method : ReflectionUtils.getAllDeclaredMethods(aggParamType)){
-            int modifiers = method.getModifiers();
-            if (!Modifier.isStatic(modifiers)){
+        List<CommandHandler> result = Lists.newArrayList();
+        for (BizMethodContext context : contexts){
+            UpdateAggCommandHandler updateAggCommandHandler = this.getCommandHandlerFactory()
+                    .createUpdateAggCommandHandler(getAggClass(), commandType, context.getContextClass(), returnType);
+            if (updateAggCommandHandler == null){
                 continue;
             }
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length == 1 && parameterTypes[0] == commandType){
-                return command -> {
-                    try {
-                        return MethodUtils.invokeStaticMethod(aggParamType, method.getName(), command);
-                    } catch (Exception e) {
-                        log.error("failed to invoker static method {} use {}", method, command);
-                        throw new RuntimeException(e);
-                    }
-                };
-            }
-        }
-        Constructor matchingAccessibleConstructor = ConstructorUtils.getMatchingAccessibleConstructor(aggParamType, commandType);
-        if (matchingAccessibleConstructor != null){
-            return command -> {
-                try {
-                    return ConstructorUtils.invokeConstructor(aggParamType, command);
-                } catch (Exception e) {
-                    log.error("failed to invoke Constructor {} use {}", aggParamType, command);
-                    throw new RuntimeException(e);
-                }
-            };
+            result.add(updateAggCommandHandler);
+            updateAggCommandHandler.addBizMethod(DefaultBizMethod.apply(context.getMethod()));
         }
 
-        return null;
+        if (result.size() != 1){
+            log.warn("Failed to find create Method for command {} on class {}, more than one command handler is found {}", commandType, getAggClass(), result);
+            return null;
+        }
+
+        return new CommandHandlerBasedServiceMethodInvoker(result.get(0));
     }
+
 }

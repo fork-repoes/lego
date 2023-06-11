@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.command;
 
+import com.geekhalo.lego.core.command.support.CommandConfiguration;
 import com.geekhalo.lego.core.command.support.CommandServiceBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
@@ -14,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(CommandServiceBeanDefinitionRegistrar.class)
+@Import({CommandServiceBeanDefinitionRegistrar.class, CommandConfiguration.class})
 public @interface EnableCommandService {
     /**
      * 扫描包

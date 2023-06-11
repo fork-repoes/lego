@@ -1,10 +1,10 @@
 package com.geekhalo.lego.starter.validator;
 
 import com.geekhalo.lego.common.validator.ValidateErrorsHandler;
-import com.geekhalo.lego.common.validator.Validateable;
+import com.geekhalo.lego.common.validator.Verifiable;
 import com.geekhalo.lego.core.validator.ValidateService;
-import com.geekhalo.lego.core.validator.ValidateableBasedValidator;
-import com.geekhalo.lego.core.validator.ValidateableMethodValidationInterceptor;
+import com.geekhalo.lego.core.validator.VerifiableBasedValidator;
+import com.geekhalo.lego.core.validator.VerifiableMethodValidationInterceptor;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -33,20 +33,19 @@ import java.util.stream.Collectors;
  * 编程就像玩 Lego
  */
 @Configuration
-@ConditionalOnClass({Validateable.class, ExecutableValidator.class})
+@ConditionalOnClass({Verifiable.class, ExecutableValidator.class})
 @AutoConfigureAfter(ValidationAutoConfiguration.class)
 public class ValidatorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ValidateableBasedValidator validateableBasedValidator(){
-        return new ValidateableBasedValidator();
+    public VerifiableBasedValidator validateableBasedValidator(){
+        return new VerifiableBasedValidator();
     }
 
     @Bean
-    public ValidateableMethodValidationInterceptor validateableMethodValidationInterceptor(){
-        return new ValidateableMethodValidationInterceptor(validateableBasedValidator(),
-                validateErrorReporter());
+    public VerifiableMethodValidationInterceptor verifiableMethodValidationInterceptor(ValidateService validateService){
+        return new VerifiableMethodValidationInterceptor(validateService);
     }
 
     @Bean
@@ -64,7 +63,7 @@ public class ValidatorAutoConfiguration {
     }
 
     @Bean
-    public PointcutAdvisor validateableMethodValidationAdvisor(@Autowired ValidateableMethodValidationInterceptor interceptor){
+    public PointcutAdvisor verifiableMethodValidationAdvisor(@Autowired VerifiableMethodValidationInterceptor interceptor){
         DefaultPointcutAdvisor pointcutAdvisor = new DefaultPointcutAdvisor(
                 new AnnotationMatchingPointcut(Validated.class, null , true),
                 interceptor);

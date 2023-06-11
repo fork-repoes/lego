@@ -6,5 +6,5 @@ package com.geekhalo.lego.query;
  * 编程就像玩 Lego
  */
 public enum OrderStatus {
-    NONE, PAID,CANCELLED
+    NONE, PAID, SYNC, CANCELLED
 }

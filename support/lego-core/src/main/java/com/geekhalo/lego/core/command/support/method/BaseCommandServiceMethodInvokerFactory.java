@@ -1,10 +1,24 @@
 package com.geekhalo.lego.core.command.support.method;
 
-import com.geekhalo.lego.core.command.AggRoot;
+import com.geekhalo.lego.core.command.*;
+import com.geekhalo.lego.core.command.support.handler.AggCommandHandlerFactories;
+import com.geekhalo.lego.core.command.support.handler.CommandParser;
+import com.geekhalo.lego.core.command.support.handler.aggloader.IDBasedAggLoader;
+import com.geekhalo.lego.core.command.support.handler.aggloader.KeyBasedAggLoader;
+import com.geekhalo.lego.core.command.support.handler.aggloader.SmartAggLoaders;
+import com.geekhalo.lego.core.command.support.handler.aggsyncer.SmartAggSyncers;
+import com.geekhalo.lego.core.command.support.handler.aggsyncer.SmartCommandRepositoryBasedAggSyncer;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.function.BiFunction;
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Created by taoli on 2022/10/3.
@@ -12,30 +26,99 @@ import java.util.function.BiFunction;
  * 编程就像玩 Lego
  */
 @Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PUBLIC)
 abstract class BaseCommandServiceMethodInvokerFactory {
+    private static final Set<Class> REGISTERED_COMMAND_TYPE = Sets.newHashSet();
+
     private final Class<? extends AggRoot> aggClass;
-    private final Class idClass;
+    @Autowired
+    private CommandParser commandParser;
+    @Autowired
+    private SmartAggSyncers smartAggSyncers;
+    @Autowired
+    private AggCommandHandlerFactories commandHandlerFactory;
 
-    protected BaseCommandServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass, Class idClass) {
+    @Setter(AccessLevel.PUBLIC)
+    private CommandRepository commandRepository;
+    @Autowired
+    private SmartAggLoaders smartAggLoaders;
+
+    protected BaseCommandServiceMethodInvokerFactory(Class<? extends AggRoot> aggClass) {
+        Preconditions.checkArgument(aggClass != null, "Agg Class Can not be null");
         this.aggClass = aggClass;
-        this.idClass = idClass;
     }
 
-    protected BiFunction createResultConverter(Class returnType){
-        if (Void.class.equals(returnType) || Void.TYPE.equals(returnType)){
-            return (agg, context) -> null;
-        }
-
-        if (this.aggClass.isAssignableFrom(returnType)){
-            return (agg, context) -> agg;
-        }
-        if (this.idClass.equals(returnType)){
-            return (agg, context) -> ((AggRoot)agg).getId();
-        }
-        if (Boolean.class.isAssignableFrom(returnType) || Boolean.TYPE.isAssignableFrom(returnType)){
-            return (agg, context) -> true;
-        }
-        return (agg, context) -> null;
+    public void init(){
+        commandParser.parseAgg(this.aggClass);
+        this.smartAggSyncers.addAggSyncer(new SmartCommandRepositoryBasedAggSyncer(this.commandRepository, this.aggClass));
     }
 
+    protected void autoRegisterAggLoaders(Class commandType) {
+        if (REGISTERED_COMMAND_TYPE.contains(commandType)){
+            return;
+        }
+        REGISTERED_COMMAND_TYPE.add(commandType);
+
+        if (CommandForSync.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
+            this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
+                    (CommandWithKeyRepository) getCommandRepository(), new CommandForSyncFetcher() ));
+        }
+
+        if (CommandForUpdateById.class.isAssignableFrom(commandType)){
+            this.smartAggLoaders.addSmartAggLoader(IDBasedAggLoader.apply(commandType, getAggClass(),
+                    getCommandRepository(), new CommandForUpdateByIdFetcher() ));
+        }
+
+        if (CommandForUpdateByKey.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
+            this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
+                    (CommandWithKeyRepository) getCommandRepository(), new CommandForUpdateByKeyFetcher()));
+        }
+    }
+
+
+    @Value
+    protected class BizMethodContext{
+        private final Class contextClass;
+        private final Method method;
+    }
+
+    private static class CommandForUpdateByIdFetcher implements Function{
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForUpdateById)cmd).getId();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForUpdateById.getId()";
+        }
+    }
+
+    private static class CommandForUpdateByKeyFetcher implements Function{
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForUpdateByKey)cmd).getKey();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForUpdateByKey.getKey()";
+        }
+    }
+
+
+    private static class CommandForSyncFetcher implements Function {
+
+        @Override
+        public Object apply(Object cmd) {
+            return ((CommandForSync) cmd).getKey();
+        }
+
+        @Override
+        public String toString(){
+            return "CommandForSync.getKey()";
+        }
+    }
 }

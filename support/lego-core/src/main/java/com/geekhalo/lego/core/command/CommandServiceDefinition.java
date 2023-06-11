@@ -20,6 +20,4 @@ public @interface CommandServiceDefinition {
     Class<? extends AggRoot> domainClass();
 
     Class<? extends CommandRepository> repositoryClass();
-
-    Class idClass();
 }
