@@ -10,20 +10,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class ActionQueryApplicationService {
+//@Service
+public class ActionQueryApplicationService implements LikeQueryApplicationService, DislikeQueryApplicationService {
     @Autowired
     private LikeActionRepository likeActionRepository;
     @Autowired
     private DislikeActionRepository dislikeActionRepository;
 
-    public List<LikeAction> getLikeByUserAndType(Long userId, String type) {
-        ActionUser user = ActionUser.apply(userId);
+    @Override
+    public List<LikeAction> getLikeByUserAndType(ActionUser user, String type) {
+//         = ActionUser.apply(userId);
         return this.likeActionRepository.getByUserAndTargetType(user, type);
     }
 
-    public List<DislikeAction> getDislikeByUserAndType(Long userId, String type) {
-        ActionUser user = ActionUser.apply(userId);
+    @Override
+    public List<DislikeAction> getDislikeByUserAndType(ActionUser user, String type) {
+//        ActionUser user = ActionUser.apply(userId);
         return this.dislikeActionRepository.getByUserAndTargetType(user, type);
     }
 

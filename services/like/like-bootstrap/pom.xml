@@ -4,19 +4,19 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-bootstrap-parent</artifactId>
-        <version>0.1.22</version>
+        <version>0.1.23</version>
         <relativePath>../../parent/bootstrap-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-bootstrap</artifactId>
     <name>lego-like-bootstrap</name>
-    <version>0.1.22</version>
+    <version>0.1.23</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-feignservice</artifactId>
-            <version>0.1.22</version>
+            <version>0.1.23</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.rocketmq</groupId>-->
@@ -25,6 +25,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.geekhalo.lego</groupId>
+            <artifactId>lego-starter</artifactId>
+            <version>0.1.23</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.shardingsphere</groupId>-->

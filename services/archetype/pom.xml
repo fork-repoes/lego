@@ -4,7 +4,7 @@
 
   <groupId>com.geekhalo.lego</groupId>
   <artifactId>services-archetype</artifactId>
-  <version>0.1.22</version>
+  <version>0.1.23</version>
   <packaging>maven-archetype</packaging>
 
   <name>services-archetype</name>

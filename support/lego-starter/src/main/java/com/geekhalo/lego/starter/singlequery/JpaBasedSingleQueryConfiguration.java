@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,9 +21,11 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@ConditionalOnBean({DataSource.class})
-@ConditionalOnClass({JpaRepository.class})
-@AutoConfiguration(after = JpaRepositoriesAutoConfiguration.class)
+@ConditionalOnClass({JpaRepository.class,DataSource.class})
+@AutoConfiguration(after = {
+        JpaRepositoriesAutoConfiguration.class,
+        DataSourceAutoConfiguration.class
+})
 @Configuration
 public class JpaBasedSingleQueryConfiguration {
 
