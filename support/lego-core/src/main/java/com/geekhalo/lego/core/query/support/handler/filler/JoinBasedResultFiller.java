@@ -21,4 +21,9 @@ public class JoinBasedResultFiller<R> implements SmartResultFiller<R>{
     public boolean apply(Class resultClass) {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "JoinInMemory";
+    }
 }

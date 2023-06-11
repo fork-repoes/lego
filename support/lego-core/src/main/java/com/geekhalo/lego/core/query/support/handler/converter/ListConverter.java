@@ -11,9 +11,14 @@ public class ListConverter implements ResultConverter<List, List>{
     }
 
     @Override
-    public List converter(List param) {
+    public List convert(List param) {
         return (List) param.stream()
-                .map(t -> itemConverter.converter(t))
+                .map(t -> itemConverter.convert(t))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "ListConverter[" + itemConverter +"]";
     }
 }

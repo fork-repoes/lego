@@ -7,11 +7,17 @@ public class EqualConverter<T> implements ResultConverter<T, T>{
     }
 
     @Override
-    public T converter(T param) {
+    public T convert(T param) {
         return param;
+    }
+
+    @Override
+    public String toString(){
+        return "EqualConverter";
     }
 
     public static EqualConverter getInstance(){
         return INSTANCE;
     }
+
 }

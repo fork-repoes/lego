@@ -16,7 +16,12 @@ public class StaticMethodConverter<P, R> implements ResultConverter<P, R>{
 
     @SneakyThrows
     @Override
-    public R converter(P param) {
+    public R convert(P param) {
         return (R) MethodUtils.invokeStaticMethod(staticClass, method.getName(), param);
+    }
+
+    @Override
+    public String toString() {
+        return method.toString();
     }
 }

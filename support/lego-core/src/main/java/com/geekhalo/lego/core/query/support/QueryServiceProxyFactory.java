@@ -15,6 +15,7 @@ import com.geekhalo.lego.core.validator.ValidateService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.aop.framework.ProxyFactory;
@@ -34,6 +35,7 @@ import java.util.Set;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
+@Slf4j
 public class QueryServiceProxyFactory {
     @Setter
     private ClassLoader classLoader;
@@ -88,6 +90,7 @@ public class QueryServiceProxyFactory {
         Class repositoryClass = metadata.getRepositoryClass();
         Object repository = this.applicationContext.getBean(repositoryClass);
         MethodDispatcherInterceptor methodDispatcher = createDispatcherInterceptor(methods, repository, metadata);
+        log.info("Auto Register QueryMethod for {} : {}", queryService, methodDispatcher);
 
         if (CollectionUtils.isNotEmpty(methods)){
             throw new QueryServiceMethodLostException(methods);

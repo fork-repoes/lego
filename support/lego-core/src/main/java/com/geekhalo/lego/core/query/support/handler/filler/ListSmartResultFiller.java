@@ -24,4 +24,9 @@ public class ListSmartResultFiller implements SmartResultFiller<List>{
     public boolean apply(Class resultClass) {
         return List.class.isAssignableFrom(resultClass);
     }
+
+    @Override
+    public String toString() {
+        return "ListSmartResultFiller[JoinInMemory]";
+    }
 }

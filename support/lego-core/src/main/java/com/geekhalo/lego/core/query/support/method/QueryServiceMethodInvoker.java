@@ -1,6 +1,7 @@
 package com.geekhalo.lego.core.query.support.method;
 
 import com.geekhalo.lego.core.query.support.handler.DefaultQueryHandler;
+import com.geekhalo.lego.core.query.support.handler.QueryHandler;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,15 @@ import java.util.function.Function;
 @Slf4j
 public class QueryServiceMethodInvoker<Q, R>
         implements com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker {
-    private final DefaultQueryHandler<Q, R> queryHandler;
+    private final QueryHandler<R> queryHandler;
 
     @Override
     public final Object invoke(Method method, Object[] arguments) {
         return queryHandler.query(arguments);
+    }
+
+    @Override
+    public String toString(){
+        return this.queryHandler.toString();
     }
 }

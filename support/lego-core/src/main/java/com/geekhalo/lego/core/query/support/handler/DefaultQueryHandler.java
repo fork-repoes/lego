@@ -36,7 +36,7 @@ public class DefaultQueryHandler<MAIN, RESULT> extends AbstractQueryHandler<MAIN
 
     @Override
     RESULT convert(MAIN queryResult) {
-        return this.resultConverter.converter(queryResult);
+        return this.resultConverter.convert(queryResult);
     }
 
     @Override
@@ -47,5 +47,15 @@ public class DefaultQueryHandler<MAIN, RESULT> extends AbstractQueryHandler<MAIN
     @Override
     void validate(Object[] arguments) {
         this.validateService.validateParam(Arrays.asList(arguments));
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\tQueryHandler:\n")
+                .append("\t\t").append("QueryMethod:").append("\t").append(this.queryExecutor).append("\n")
+                .append("\t\t").append("ResultConverter:").append("\t").append(this.resultConverter).append("\n")
+                .append("\t\t").append("ResultFiller:").append("\t").append(this.resultResultFiller).append("\n");
+        return stringBuilder.toString();
     }
 }

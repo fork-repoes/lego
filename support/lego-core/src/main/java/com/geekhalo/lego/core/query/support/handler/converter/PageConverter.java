@@ -10,10 +10,15 @@ public class PageConverter implements ResultConverter<Page, Page> {
     }
 
     @Override
-    public Page converter(Page page) {
+    public Page convert(Page page) {
         if (page == null){
             return null;
         }
-        return page.convert(t -> this.itemConverter.converter(t));
+        return page.convert(t -> this.itemConverter.convert(t));
+    }
+
+    @Override
+    public String toString() {
+        return "PageConverter[" + itemConverter + "]";
     }
 }

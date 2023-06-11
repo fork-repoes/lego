@@ -134,12 +134,12 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
 
     private ResultConverter findItemConverter(Class entityClass, Class itemClass) {
         if (entityClass == itemClass){
-            return data -> data;
+            return EqualConverter.getInstance();
         }
 
         for (QueryResultConverter queryResultConverter : this.queryResultConverters){
             if (queryResultConverter.support(entityClass, itemClass)){
-                return data -> queryResultConverter.convert(data);
+                return queryResultConverter;
             }
         }
 
@@ -156,7 +156,7 @@ public class QueryServiceMethodInvokerFactory implements ServiceMethodInvokerFac
 
         Constructor matchingAccessibleConstructor = ConstructorUtils.getMatchingAccessibleConstructor(itemClass, entityClass);
         if (matchingAccessibleConstructor != null){
-            return new ConstructorBasedConvertor(itemClass);
+            return new ConstructorBasedConvertor(itemClass, matchingAccessibleConstructor);
         }
         throw new RuntimeException("Result Converter Not Found");
 

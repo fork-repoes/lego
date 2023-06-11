@@ -18,4 +18,9 @@ public class MethodBasedQueryExecutor implements QueryExecutor<Object>{
     public Object query(Object[] params) {
         return method.invoke(this.repository, params);
     }
+
+    @Override
+    public String toString(){
+        return method.toString();
+    }
 }

@@ -22,4 +22,9 @@ public class PageSmartResultFiller implements SmartResultFiller<Page>{
     public boolean apply(Class resultClass) {
         return Page.class.isAssignableFrom(resultClass);
     }
+
+    @Override
+    public String toString() {
+        return "PageSmartResultFiller[JoinInMemory]";
+    }
 }
