@@ -1,8 +1,10 @@
 package com.geekhalo.tinyurl.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CreateLimitTimeTinyUrlContext
     extends AbstractCreateTinyUrlContext<CreateLimitTimeTinyUrlCommand>{
 

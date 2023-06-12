@@ -15,6 +15,8 @@ public interface TinyUrlCommandApplicationService {
 
     TinyUrl createLimitTimeTinyUrl(CreateLimitTimeTinyUrlCommand command);
 
+    void incrAccessCount(IncrAccessCountCommand command);
+
     void disableTinyUrl(DisableTinyUrlCommand command);
 
 }

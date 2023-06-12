@@ -72,7 +72,7 @@ public class TinyUrl extends AbstractAggRoot {
         TinyUrl tinyUrl = new TinyUrl();
 
         tinyUrl.setId(context.nextId());
-        tinyUrl.setType(TinyUrlType.EXPIRE_TIME);
+        tinyUrl.setType(TinyUrlType.LIMIT_TIME);
         tinyUrl.setStatus(TinyUrlStatus.ENABLE);
 
         tinyUrl.setUrl(context.getCommand().getUrl());
@@ -80,6 +80,14 @@ public class TinyUrl extends AbstractAggRoot {
         tinyUrl.setAccessCount(0);
 
         return tinyUrl;
+    }
+
+    public void incrAccessCount(IncrAccessCountCommand command){
+        if (getType().needUpdateAccessCount()){
+            Integer accessCount = getAccessCount();
+            Integer accessCountNew = accessCount + command.incrCount();
+            setAccessCount(accessCountNew);
+        }
     }
 
     public void disable(DisableTinyUrlCommand command){
@@ -107,7 +115,7 @@ public class TinyUrl extends AbstractAggRoot {
 
 
     boolean checkTime() {
-        return new Date().after(getExpireTime());
+        return new Date().before(getExpireTime());
     }
 
     boolean checkCount() {

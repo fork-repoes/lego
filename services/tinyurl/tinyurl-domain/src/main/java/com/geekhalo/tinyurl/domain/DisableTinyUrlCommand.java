@@ -4,12 +4,6 @@ import com.geekhalo.lego.core.command.CommandForUpdateById;
 
 import javax.validation.constraints.NotNull;
 
-public class DisableTinyUrlCommand implements CommandForUpdateById<Long> {
-    @NotNull
-    private Long id;
+public class DisableTinyUrlCommand extends AbstractUpdateTinyUrlCommand{
 
-    @Override
-    public Long getId() {
-        return id;
-    }
 }

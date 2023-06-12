@@ -1,10 +1,17 @@
 package com.geekhalo.tinyurl.domain;
 
+import com.geekhalo.lego.core.command.CommandForCreate;
+import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Setter(AccessLevel.PROTECTED)
-abstract class AbstractCreateTinyUrlContext<CMD extends AbstractCreateTinyUrlCommand> {
+@Data
+public abstract class AbstractCreateTinyUrlContext<CMD extends AbstractCreateTinyUrlCommand> {
+    @Autowired
+    private NumberGenerator numberGenerator;
+
     private CMD command;
 
     public CMD getCommand(){
@@ -12,6 +19,6 @@ abstract class AbstractCreateTinyUrlContext<CMD extends AbstractCreateTinyUrlCom
     }
 
     public Long nextId() {
-        return null;
+        return this.numberGenerator.nextNumber();
     }
 }
