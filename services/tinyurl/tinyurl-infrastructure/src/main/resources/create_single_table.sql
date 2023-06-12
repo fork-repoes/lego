@@ -6,6 +6,7 @@ create table tiny_url
     update_time  datetime(6)  null,
     vsn          int          null,
     access_count int          null,
+    begin_time  datetime(6)  null,
     expire_time  datetime(6)  null,
     max_count    int          null,
     status       varchar(16) null,

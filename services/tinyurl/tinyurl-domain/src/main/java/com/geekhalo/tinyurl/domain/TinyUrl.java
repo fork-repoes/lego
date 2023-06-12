@@ -35,6 +35,9 @@ public class TinyUrl extends AbstractAggRoot {
     @Column(name = "access_count")
     private Integer accessCount;
 
+    @Column(name = "begin_time", updatable = false)
+    private Date beginTime;
+
     @Column(name = "expire_time", updatable = false)
     private Date expireTime;
 
@@ -64,6 +67,7 @@ public class TinyUrl extends AbstractAggRoot {
 
         tinyUrl.setUrl(context.getCommand().getUrl());
         tinyUrl.setExpireTime(context.getCommand().getExpireTime());
+        tinyUrl.setBeginTime(context.getCommand().parseBeginTime());
 
         return tinyUrl;
     }
@@ -115,7 +119,7 @@ public class TinyUrl extends AbstractAggRoot {
 
 
     boolean checkTime() {
-        return new Date().before(getExpireTime());
+        return new Date().after(getBeginTime()) && new Date().before(getExpireTime());
     }
 
     boolean checkCount() {

@@ -46,9 +46,11 @@ public class ApplicationTest {
     public void createExpireTimeTinyUrl() throws Exception{
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         String url = "http://createExpireTimeTinyUrl";
-        Date expireTime = DateUtils.addSeconds(new Date(), 3);
+        Date beginTime = DateUtils.addSeconds(new Date(), 2);
+        Date expireTime = DateUtils.addSeconds(new Date(), 5);
         CreateExpireTimeTinyUrlCommand command = new CreateExpireTimeTinyUrlCommand();
         command.setUrl(url);
+        command.setBeginTime(beginTime);
         command.setExpireTime(expireTime);
         TinyUrl tinyUrl = this.commandApplicationService.createExpireTimeTinyUrl(command);
         Assert.assertNotNull(tinyUrl);
@@ -62,6 +64,22 @@ public class ApplicationTest {
             Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
             Assert.assertEquals(TinyUrlType.EXPIRE_TIME, tinyUrlToCheck.getType());
             Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(DateFormatUtils.format(beginTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getBeginTime(), dateFormat));
+            Assert.assertEquals(DateFormatUtils.format(expireTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getExpireTime(), dateFormat));
+            Assert.assertFalse(tinyUrlToCheck.canAccess());
+        }
+
+        TimeUnit.SECONDS.sleep(3);
+
+        {
+            Optional<TinyUrl> tinyUrlOptional = this.tinyUrlQueryApplicationService.findById(tinyUrl.getId());
+            TinyUrl tinyUrlToCheck = tinyUrlOptional.orElse(null);
+            Assert.assertNotNull(tinyUrlToCheck);
+            Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
+            Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
+            Assert.assertEquals(TinyUrlType.EXPIRE_TIME, tinyUrlToCheck.getType());
+            Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(DateFormatUtils.format(beginTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getBeginTime(), dateFormat));
             Assert.assertEquals(DateFormatUtils.format(expireTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getExpireTime(), dateFormat));
             Assert.assertTrue(tinyUrlToCheck.canAccess());
         }
@@ -76,6 +94,7 @@ public class ApplicationTest {
             Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
             Assert.assertEquals(TinyUrlType.EXPIRE_TIME, tinyUrlToCheck.getType());
             Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(DateFormatUtils.format(beginTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getBeginTime(), dateFormat));
             Assert.assertEquals(DateFormatUtils.format(expireTime,dateFormat), DateFormatUtils.format(tinyUrlToCheck.getExpireTime(), dateFormat));
             Assert.assertFalse(tinyUrlToCheck.canAccess());
         }
