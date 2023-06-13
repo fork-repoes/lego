@@ -1,10 +1,7 @@
 package com.geekhalo.tinyurl.domain;
 
-import com.geekhalo.lego.core.command.CommandForCreate;
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Data

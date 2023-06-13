@@ -1,8 +1,8 @@
 package com.geekhalo.tinyurl.app;
 
-import com.geekhalo.tinyurl.domain.codec.NumberCodec;
 import com.geekhalo.tinyurl.domain.TinyUrl;
 import com.geekhalo.tinyurl.domain.TinyUrlQueryRepository;
+import com.geekhalo.tinyurl.domain.codec.NumberCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

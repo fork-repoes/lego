@@ -1,6 +1,7 @@
 package com.geekhalo.tinyurl.app;
 
 import com.geekhalo.tinyurl.domain.TinyUrl;
+
 import java.util.Optional;
 
 public interface TinyUrlQueryApplicationService {

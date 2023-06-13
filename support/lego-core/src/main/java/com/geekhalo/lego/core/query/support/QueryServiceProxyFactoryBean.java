@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.query.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.support.handler.filler.SmartResultFillers;
 import com.geekhalo.lego.core.validator.ValidateService;
 import org.springframework.beans.BeansException;

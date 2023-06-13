@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.query.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.NoQueryService;
 import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
