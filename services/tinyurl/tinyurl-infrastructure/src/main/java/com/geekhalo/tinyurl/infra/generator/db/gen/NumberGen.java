@@ -22,6 +22,7 @@ public class NumberGen {
      */
     @Enumerated(EnumType.STRING)
     @Setter(AccessLevel.PRIVATE)
+    @Column(updatable = false)
     private NumberType type;
 
     /**

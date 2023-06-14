@@ -21,6 +21,6 @@ spring:
 tinyurl:
   number:
     generator:
-      type: redis-batch
+      type: db-single
     codec:
       type: custom-base
