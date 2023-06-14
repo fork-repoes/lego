@@ -12,13 +12,15 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
   redis:
     host: 127.0.0.1
     port: 6379
 
-rocketmq:
-  name-server: http://127.0.0.1:9876
-  producer:
-    group: like-service
+tinyurl:
+  number:
+    generator:
+      type: redis-batch
+    codec:
+      type: custom-base
