@@ -11,4 +11,11 @@
     <artifactId>tinyurl-domain</artifactId>
     <name>tinyurl-domain</name>
     <version>0.1.24-tinyurl_service-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
