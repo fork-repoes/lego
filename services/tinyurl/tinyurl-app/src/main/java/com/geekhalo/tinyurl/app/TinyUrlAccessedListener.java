@@ -1,7 +1,6 @@
 package com.geekhalo.tinyurl.app;
 
 import com.geekhalo.tinyurl.domain.IncrAccessCountCommand;
-import com.geekhalo.tinyurl.domain.TinyUrlCommandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
