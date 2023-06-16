@@ -203,4 +203,53 @@ public class ApplicationTest {
             Assert.assertFalse(tinyUrlToCheck.canAccess());
         }
     }
+
+
+    @Test
+    public void accessLimitTimeTinyUrl(){
+        String url = "http://createLimitTimeTinyUrl";
+        Integer maxCount = 3;
+        CreateLimitTimeTinyUrlCommand command = new CreateLimitTimeTinyUrlCommand();
+        command.setUrl(url);
+        command.setMaxCount(maxCount);
+        TinyUrl tinyUrl = this.commandApplicationService.createLimitTimeTinyUrl(command);
+
+        Assert.assertNotNull(tinyUrl);
+        Assert.assertNotNull(tinyUrl.getId());
+
+        {
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            Assert.assertNotNull(tinyUrlToCheck);
+            Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
+            Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
+            Assert.assertEquals(TinyUrlType.LIMIT_TIME, tinyUrlToCheck.getType());
+            Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(maxCount, tinyUrlToCheck.getMaxCount());
+            Assert.assertEquals(1, tinyUrlToCheck.getAccessCount().intValue());
+            Assert.assertTrue(tinyUrlToCheck.canAccess());
+        }
+
+        {
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            Assert.assertNotNull(tinyUrlToCheck);
+            Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
+            Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
+            Assert.assertEquals(TinyUrlType.LIMIT_TIME, tinyUrlToCheck.getType());
+            Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(maxCount, tinyUrlToCheck.getMaxCount());
+            Assert.assertEquals(2, tinyUrlToCheck.getAccessCount().intValue());
+            Assert.assertTrue(tinyUrlToCheck.canAccess());
+        }
+        {
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            Assert.assertNotNull(tinyUrlToCheck);
+            Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
+            Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
+            Assert.assertEquals(TinyUrlType.LIMIT_TIME, tinyUrlToCheck.getType());
+            Assert.assertEquals(TinyUrlStatus.ENABLE, tinyUrlToCheck.getStatus());
+            Assert.assertEquals(maxCount, tinyUrlToCheck.getMaxCount());
+            Assert.assertEquals(3, tinyUrlToCheck.getAccessCount().intValue());
+            Assert.assertFalse(tinyUrlToCheck.canAccess());
+        }
+    }
 }

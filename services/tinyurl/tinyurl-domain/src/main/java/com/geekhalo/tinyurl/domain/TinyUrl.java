@@ -87,9 +87,15 @@ public class TinyUrl extends AbstractAggRoot {
     }
 
     public void incrAccessCount(IncrAccessCountCommand command){
+        int incrCount = command.incrCount();
+
+        incrAccessCount(incrCount);
+    }
+
+    public void incrAccessCount(int incrCount) {
+        Integer accessCount = getAccessCount();
         if (getType().needUpdateAccessCount()){
-            Integer accessCount = getAccessCount();
-            Integer accessCountNew = accessCount + command.incrCount();
+            Integer accessCountNew = accessCount + incrCount;
             setAccessCount(accessCountNew);
         }
     }

@@ -5,6 +5,7 @@ import com.geekhalo.tinyurl.domain.TinyUrlQueryRepository;
 import com.geekhalo.tinyurl.domain.codec.NumberCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +18,9 @@ public class TinyUrlQueryApplicationServiceImpl implements TinyUrlQueryApplicati
 
     @Autowired
     private NumberCodec numberCodec;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public Optional<TinyUrl> findById(Long id) {
@@ -34,5 +38,24 @@ public class TinyUrlQueryApplicationServiceImpl implements TinyUrlQueryApplicati
 
         Long number = this.numberCodec.decode(code);
         return this.findById(number);
+    }
+
+    @Override
+    public TinyUrl accessById(Long id) {
+        Optional<TinyUrl> tinyUrlOptional = findById(id);
+
+        return tinyUrlOptional.map(tinyUrl -> {
+            TinyUrlAccessedEvent event = new TinyUrlAccessedEvent(tinyUrl.getId());
+            this.eventPublisher.publishEvent(event);
+            tinyUrl.incrAccessCount(1);
+            return tinyUrl;
+        }).orElse(null);
+
+    }
+
+    @Override
+    public TinyUrl accessByCode(String code) {
+        Long id = this.numberCodec.decode(code);
+        return accessById(id);
     }
 }
