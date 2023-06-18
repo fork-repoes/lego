@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -40,6 +41,7 @@ abstract class BaseCommandServiceMethodInvokerFactory {
 
     @Setter(AccessLevel.PUBLIC)
     private CommandRepository commandRepository;
+
     @Autowired
     private SmartAggLoaders smartAggLoaders;
 
@@ -51,6 +53,10 @@ abstract class BaseCommandServiceMethodInvokerFactory {
     public void init(){
         commandParser.parseAgg(this.aggClass);
         this.smartAggSyncers.addAggSyncer(new SmartCommandRepositoryBasedAggSyncer(this.commandRepository, this.aggClass));
+    }
+
+    protected void parseContext(Class context){
+        this.commandParser.parseContext(context);
     }
 
     protected void autoRegisterAggLoaders(Class commandType) {
@@ -73,6 +79,14 @@ abstract class BaseCommandServiceMethodInvokerFactory {
             this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
                     (CommandWithKeyRepository) getCommandRepository(), new CommandForUpdateByKeyFetcher()));
         }
+    }
+
+    protected Class getContextClass(Method method){
+        CommandMethodDefinition commandMethodDefinition = AnnotatedElementUtils.findMergedAnnotation(method, CommandMethodDefinition.class);
+        if (commandMethodDefinition != null){
+            return commandMethodDefinition.contextClass();
+        }
+        return null;
     }
 
 

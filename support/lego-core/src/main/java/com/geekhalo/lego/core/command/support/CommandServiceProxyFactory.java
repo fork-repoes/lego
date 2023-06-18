@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/9/25.
@@ -55,14 +57,21 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         // 设置代理类实现的 接口
         result.setInterfaces(metadata.getCommandServiceClass(), ProxyObject.class, TransactionalProxy.class);
 
-        // 对 default 方法进行拦截和转发
-        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(commandService)) {
-            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
-        }
-
         // 收集所有的方法，初始化时进行校验
         Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(commandService));
         methods.addAll(Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(ProxyObject.class)));
+
+
+        // 对 default 方法进行拦截和转发
+        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(commandService)) {
+            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
+            Set<Method> methodsForRemove = methods.stream()
+                    .filter(Method::isDefault)
+                            .collect(Collectors.toSet());
+            // 移除默认方法
+            removeHierarchy(methods, methodsForRemove);
+
+        }
 
         // 对所有的实现进行封装，基于拦截器进行请求转发
         // 1. target 对象封装
@@ -114,6 +123,13 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         return proxy;
     }
 
+    private void removeHierarchy(Set<Method> methods, Set<Method> methodsForRemove) {
+        Set<Method> all = methodsForRemove.stream()
+                .flatMap(method -> MethodUtils.getOverrideHierarchy(method, ClassUtils.Interfaces.INCLUDE).stream())
+                .collect(Collectors.toSet());
+        methods.removeAll(all);
+    }
+
     private MethodDispatcherInterceptor createCreateMethodDispatcherInterceptor(Set<Method> methods, CommandRepository repository, CommandServiceMetadata metadata) {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
 
@@ -121,15 +137,18 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         methodInvokerFactory.setCommandRepository(repository);
         this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
         methodInvokerFactory.init();
+
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
             ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
+        removeHierarchy(methods, methodsForRemove);
         return methodDispatcher;
     }
 
@@ -141,15 +160,17 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
         methodInvokerFactory.init();
 
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
             ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
+        removeHierarchy(methods, methodsForRemove);
         return methodDispatcher;
     }
 
@@ -161,31 +182,35 @@ public class CommandServiceProxyFactory implements BeanClassLoaderAware {
         this.applicationContext.getAutowireCapableBeanFactory().autowireBean(methodInvokerFactory);
         methodInvokerFactory.init();
 
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
             ServiceMethodInvoker exeMethod = methodInvokerFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
+        removeHierarchy(methods, methodsForRemove);
         return methodDispatcher;
     }
 
     private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
         MethodDispatcherInterceptor targetMethodDispatcher = new MethodDispatcherInterceptor();
         TargetBasedServiceMethodInvokerFactory targetBasedQueryServiceMethodFactory = new TargetBasedServiceMethodInvokerFactory(target);
+
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> targetIterator = methods.iterator();
         while (targetIterator.hasNext()){
             Method callMethod = targetIterator.next();
             ServiceMethodInvoker exeMethod = targetBasedQueryServiceMethodFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 targetMethodDispatcher.register(callMethod, exeMethod);
-                targetIterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
-
+        removeHierarchy(methods, methodsForRemove);
         return targetMethodDispatcher;
     }
 

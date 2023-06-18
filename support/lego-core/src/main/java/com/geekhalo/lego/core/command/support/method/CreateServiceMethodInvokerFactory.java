@@ -45,6 +45,36 @@ public class CreateServiceMethodInvokerFactory
 
         Class returnType = method.getReturnType();
         List<Class> context = Lists.newArrayList();
+        Class contextFromConfig = getContextClass(method);
+        if (contextFromConfig != null){
+            context.add(contextFromConfig);
+            this.parseContext(contextFromConfig);
+        }else {
+            context.addAll(getContextClassFromAggClass());
+        }
+
+        if (CollectionUtils.isEmpty(context)){
+            log.info("Failed to find create Method for command {} on class {}", commandType, getAggClass());
+            return null;
+        }
+
+        autoRegisterAggLoaders(commandType);
+
+        List<CommandHandler> result = context.stream()
+                .map(contextType -> this.getCommandHandlerFactory()
+                        .createCreateAggCommandHandler(getAggClass(), commandType, contextType, returnType))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (result.size() != 1){
+            log.warn("Failed to find create Method for command {} on class {}, more than one command handler is found {}", commandType, getAggClass(), result);
+            return null;
+        }
+
+        return new CommandHandlerBasedServiceMethodInvoker(result.get(0));
+    }
+
+    private List<Class> getContextClassFromAggClass() {
+        List<Class> context = Lists.newArrayList();
         for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
             int modifiers = aggMethod.getModifiers();
             if (!Modifier.isStatic(modifiers)){
@@ -67,25 +97,7 @@ public class CreateServiceMethodInvokerFactory
             Class contextClass = constructor.getParameterTypes()[0];
             context.add(contextClass);
         }
-
-        if (CollectionUtils.isEmpty(context)){
-            log.info("Failed to find create Method for command {} on class {}", commandType, getAggClass());
-            return null;
-        }
-
-        autoRegisterAggLoaders(commandType);
-
-        List<CommandHandler> result = context.stream()
-                .map(contextType -> this.getCommandHandlerFactory()
-                        .createCreateAggCommandHandler(getAggClass(), commandType, contextType, returnType))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        if (result.size() != 1){
-            log.warn("Failed to find create Method for command {} on class {}, more than one command handler is found {}", commandType, getAggClass(), result);
-            return null;
-        }
-
-        return new CommandHandlerBasedServiceMethodInvoker(result.get(0));
+        return context;
     }
 
 }

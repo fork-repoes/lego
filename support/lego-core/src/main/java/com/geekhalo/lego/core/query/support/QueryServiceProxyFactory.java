@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor;
@@ -28,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/9/25.
@@ -57,12 +59,20 @@ public class QueryServiceProxyFactory {
         result.setTarget(target);
         result.setInterfaces(metadata.getQueryServiceClass(), ProxyObject.class, TransactionalProxy.class);
 
-        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
-            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
-        }
-
         Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(queryService));
         methods.addAll(Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(ProxyObject.class)));
+
+        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
+            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
+            // 移除默认方法
+            Set<Method> methodsForRemove = methods.stream()
+                    .filter(Method::isDefault)
+                    .collect(Collectors.toSet());
+
+            removeHierarchy(methods, methodsForRemove);
+        }
+
+
 
         // 对所有的实现进行封装，基于拦截器进行请求转发
         // 1. target 对象封装
@@ -100,6 +110,13 @@ public class QueryServiceProxyFactory {
         return proxy;
     }
 
+    private void removeHierarchy(Set<Method> methods, Set<Method> methodsForRemove) {
+        Set<Method> all = methodsForRemove.stream()
+                .flatMap(method -> MethodUtils.getOverrideHierarchy(method, ClassUtils.Interfaces.INCLUDE).stream())
+                .collect(Collectors.toSet());
+        methods.removeAll(all);
+    }
+
     private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
         Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
@@ -107,31 +124,38 @@ public class QueryServiceProxyFactory {
                 validateService, this.smartResultFillers,
                 metadata,
                 Lists.newArrayList(beansOfType.values()));
+
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> iterator = methods.iterator();
         while (iterator.hasNext()){
             Method callMethod = iterator.next();
             ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
+        removeHierarchy(methods, methodsForRemove);
+
         return methodDispatcher;
     }
 
     private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
         MethodDispatcherInterceptor targetMethodDispatcher = new MethodDispatcherInterceptor();
         TargetBasedServiceMethodInvokerFactory targetBasedQueryServiceMethodFactory = new TargetBasedServiceMethodInvokerFactory(target);
+
+        Set<Method> methodsForRemove = Sets.newHashSet();
         Iterator<Method> targetIterator = methods.iterator();
         while (targetIterator.hasNext()){
             Method callMethod = targetIterator.next();
             ServiceMethodInvoker exeMethod = targetBasedQueryServiceMethodFactory.createForMethod(callMethod);
             if (exeMethod != null){
                 targetMethodDispatcher.register(callMethod, exeMethod);
-                targetIterator.remove();
+                methodsForRemove.add(callMethod);
             }
         }
 
+        removeHierarchy(methods, methodsForRemove);
         return targetMethodDispatcher;
     }
 
