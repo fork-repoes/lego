@@ -2,22 +2,23 @@ package com.geekhalo.tinyurl.infra.generator;
 
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import com.geekhalo.tinyurl.TestApplication;
-import com.geekhalo.tinyurl.infra.generator.db.DBBasedSingleNumberGenerator;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("db-single")
+@ActiveProfiles("db-single-async")
 @Getter
-class DBBasedSingleNumberGeneratorTest extends AbstractNumberGeneratorTest{
+class AsyncBatchNumberGeneratorTest extends AbstractNumberGeneratorTest{
 
     @Autowired
-    private DBBasedSingleNumberGenerator dbBasedSingleNumberGenerator;
+    private NumberGenerator numberGenerator;
 
     @Override
     NumberGenerator getNumberGenerator() {
-        return dbBasedSingleNumberGenerator;
+        Preconditions.checkArgument(this.numberGenerator instanceof QueueBasedAsyncNumberGenerator);
+        return numberGenerator;
     }
 }

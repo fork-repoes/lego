@@ -2,38 +2,41 @@ package com.geekhalo.tinyurl.infra.generator.db;
 
 
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
+import com.geekhalo.tinyurl.infra.generator.AbstractBatchNumberGenerator;
 import com.geekhalo.tinyurl.infra.generator.db.gen.NumberGen;
+import com.geekhalo.tinyurl.infra.generator.db.gen.NumberGenRepository;
 import com.geekhalo.tinyurl.infra.generator.db.gen.NumberType;
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.util.List;
 
 public class DBBasedBatchNumberGenerator
-        extends AbstractDBBasedNumberGenerator
+        extends AbstractBatchNumberGenerator
         implements NumberGenerator {
+    @Autowired
+    @Getter(AccessLevel.PRIVATE)
+    private NumberGenRepository numberGenRepository;
+
     @Value("${tinyurl.number.generator.batchSize:500}")
     private int batchSize;
 
-    private List<Long> tmp = Lists.newArrayList();
+
 
     @Override
-    public Long nextNumber() {
-        synchronized (tmp){
-            if (CollectionUtils.isEmpty(tmp)){
-                do {
-                    try {
-                        List<Long> numbers = nextNumber(batchSize);
-                        tmp.addAll(numbers);
-                        break;
-                    }catch (ObjectOptimisticLockingFailureException e){
-                    }
-                }while (true);
+    protected List<Long> batchLoad() {
+        do {
+            try {
+                List<Long> numbers = nextNumber(batchSize);
+                return numbers;
+            }catch (ObjectOptimisticLockingFailureException e){
             }
-            return tmp.remove(0);
-        }
+        }while (true);
     }
 
     private List<Long> nextNumber(int size){

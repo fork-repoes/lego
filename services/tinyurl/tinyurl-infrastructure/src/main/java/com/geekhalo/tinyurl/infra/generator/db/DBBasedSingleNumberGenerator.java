@@ -2,13 +2,19 @@ package com.geekhalo.tinyurl.infra.generator.db;
 
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import com.geekhalo.tinyurl.infra.generator.db.gen.NumberGen;
+import com.geekhalo.tinyurl.infra.generator.db.gen.NumberGenRepository;
 import com.geekhalo.tinyurl.infra.generator.db.gen.NumberType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 public class DBBasedSingleNumberGenerator
-        extends AbstractDBBasedNumberGenerator
         implements NumberGenerator {
 
+    @Autowired
+    @Getter(AccessLevel.PRIVATE)
+    private NumberGenRepository numberGenRepository;
 
     @Override
     public Long nextNumber() {
