@@ -15,8 +15,9 @@ import java.util.Date;
 @Table(name = "tiny_url")
 @Setter(AccessLevel.PRIVATE)
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class TinyUrl extends AbstractAggRoot {
+
     @Id
     private Long id;
 
