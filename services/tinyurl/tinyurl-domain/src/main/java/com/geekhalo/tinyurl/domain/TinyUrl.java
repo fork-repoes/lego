@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tiny_url")
-@Setter(AccessLevel.PRIVATE)
+//@Setter(AccessLevel.PRIVATE)
 @Data
 @NoArgsConstructor
 public class TinyUrl extends AbstractAggRoot {

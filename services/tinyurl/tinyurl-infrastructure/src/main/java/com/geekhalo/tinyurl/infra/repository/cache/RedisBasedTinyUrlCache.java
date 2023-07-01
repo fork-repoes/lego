@@ -2,10 +2,13 @@ package com.geekhalo.tinyurl.infra.repository.cache;
 
 import com.geekhalo.tinyurl.domain.TinyUrl;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -31,8 +34,7 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
     @Value("${tinyurl.cache.key:tinyurl-{id}}")
     private String cacheKey;
 
-    @Autowired
-    private ConversionService conversionService;
+    private ConversionService conversionService = new DefaultConversionService();
 
     @Override
     public Optional<TinyUrl> findById(Long id) {
@@ -44,6 +46,9 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
     }
 
     private TinyUrl buildFromMap(Map<String, Object> entries) {
+        if (MapUtils.isEmpty(entries)){
+            return null;
+        }
         TinyUrl tinyUrl = new TinyUrl();
         BeanWrapperImpl beanWrapper = new BeanWrapperImpl(tinyUrl);
         beanWrapper.setConversionService(this.conversionService);
@@ -60,6 +65,12 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
 
         for (PropertyDescriptor descriptor : propertyDescriptors) {
             String fieldName = descriptor.getName();
+            if ("class".equals(fieldName)){
+                continue;
+            }
+            if ("events".equals(fieldName)){
+                continue;
+            }
             Object fieldValue = beanWrapper.getPropertyValue(fieldName);
             if (fieldValue != null) {
                 String strValue = this.conversionService.convert(fieldValue, String.class);
@@ -77,15 +88,7 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
         RedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR_SCRIPT, Long.class);
 
         List<String> keys = Arrays.asList(key);
-        this.redisTemplate.execute(redisScript, keys, "accessTime", String.valueOf(times));
-
-//        redisTemplate.execute((RedisCallback<Long>) connection -> {
-//            byte[] keysBytes = keySerializer.serialize(key);
-//            byte[] scriptBytes = keySerializer.serialize(LUA_INCR_SCRIPT);
-//            byte[] fieldBytes = keySerializer.serialize("accessTime");
-//            byte[] valueBytes = keySerializer.serialize(String.valueOf(times));
-//            return connection.eval(scriptBytes, ReturnType.INTEGER, 1, keysBytes, fieldBytes, valueBytes);
-//        });
+        this.redisTemplate.execute(redisScript, keys, "accessCount", String.valueOf(times));
     }
 
     private String createKey(Long id){
