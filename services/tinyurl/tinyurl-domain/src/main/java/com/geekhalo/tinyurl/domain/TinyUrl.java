@@ -52,11 +52,15 @@ public class TinyUrl extends AbstractAggRoot {
 
         tinyUrl.setId(context.nextId());
         tinyUrl.setType(TinyUrlType.COMMON);
-        tinyUrl.setStatus(TinyUrlStatus.ENABLE);
-
         tinyUrl.setUrl(context.getCommand().getUrl());
+        tinyUrl.init();
 
         return tinyUrl;
+    }
+
+    private void init() {
+        setStatus(TinyUrlStatus.ENABLE);
+        addEvent(new TinyUrlCreatedEvent(this));
     }
 
     public static TinyUrl createExpireTimeTinyUrl(CreateExpireTimeTinyUrlContext context){
@@ -64,11 +68,12 @@ public class TinyUrl extends AbstractAggRoot {
 
         tinyUrl.setId(context.nextId());
         tinyUrl.setType(TinyUrlType.EXPIRE_TIME);
-        tinyUrl.setStatus(TinyUrlStatus.ENABLE);
 
         tinyUrl.setUrl(context.getCommand().getUrl());
         tinyUrl.setExpireTime(context.getCommand().getExpireTime());
         tinyUrl.setBeginTime(context.getCommand().parseBeginTime());
+
+        tinyUrl.init();
 
         return tinyUrl;
     }
@@ -78,11 +83,12 @@ public class TinyUrl extends AbstractAggRoot {
 
         tinyUrl.setId(context.nextId());
         tinyUrl.setType(TinyUrlType.LIMIT_TIME);
-        tinyUrl.setStatus(TinyUrlStatus.ENABLE);
 
         tinyUrl.setUrl(context.getCommand().getUrl());
         tinyUrl.setMaxCount(context.getCommand().getMaxCount());
         tinyUrl.setAccessCount(0);
+
+        tinyUrl.init();
 
         return tinyUrl;
     }
@@ -104,6 +110,7 @@ public class TinyUrl extends AbstractAggRoot {
     public void disable(DisableTinyUrlCommand command){
         if (getStatus() == TinyUrlStatus.ENABLE){
             setStatus(TinyUrlStatus.DISABLE);
+            addEvent(new TinyurlDisableEvent(this));
         }
     }
 

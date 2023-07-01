@@ -24,3 +24,5 @@ tinyurl:
       type: db-single
     codec:
       type: custom-base
+  cache:
+    enable: true

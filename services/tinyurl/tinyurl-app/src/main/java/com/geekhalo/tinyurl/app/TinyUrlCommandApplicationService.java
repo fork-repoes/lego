@@ -7,15 +7,13 @@ import com.geekhalo.tinyurl.domain.*;
         repositoryClass = TinyUrlCommandRepository.class,
         domainClass = TinyUrl.class
 )
-public interface TinyUrlCommandApplicationService {
+public interface TinyUrlCommandApplicationService extends CustomTinyUrlCommandApplicationService {
 
     TinyUrl createTinyUrl(CreateTinyUrlCommand command);
 
     TinyUrl createExpireTimeTinyUrl(CreateExpireTimeTinyUrlCommand command);
 
     TinyUrl createLimitTimeTinyUrl(CreateLimitTimeTinyUrlCommand command);
-
-    void incrAccessCount(IncrAccessCountCommand command);
 
     void disableTinyUrl(DisableTinyUrlCommand command);
 

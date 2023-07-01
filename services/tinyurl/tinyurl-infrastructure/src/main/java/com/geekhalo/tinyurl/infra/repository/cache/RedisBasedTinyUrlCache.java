@@ -2,22 +2,23 @@ package com.geekhalo.tinyurl.infra.repository.cache;
 
 import com.geekhalo.tinyurl.domain.TinyUrl;
 import com.google.common.collect.Maps;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
 import java.beans.PropertyDescriptor;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class RedisBasedTinyUrlCache implements TinyUrlCache{
     private static final String LUA_INCR_SCRIPT =
@@ -34,7 +35,12 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
     @Value("${tinyurl.cache.key:tinyurl-{id}}")
     private String cacheKey;
 
-    private ConversionService conversionService = new DefaultConversionService();
+    private DefaultConversionService conversionService = new DefaultConversionService();
+
+    public RedisBasedTinyUrlCache(){
+        conversionService.addConverter(new DateToStringConverter());
+        conversionService.addConverter(new StringToDateConverter());
+    }
 
     @Override
     public Optional<TinyUrl> findById(Long id) {
@@ -45,14 +51,23 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
 
     }
 
+    @SneakyThrows
     private TinyUrl buildFromMap(Map<String, Object> entries) {
         if (MapUtils.isEmpty(entries)){
             return null;
         }
         TinyUrl tinyUrl = new TinyUrl();
         BeanWrapperImpl beanWrapper = new BeanWrapperImpl(tinyUrl);
-        beanWrapper.setConversionService(this.conversionService);
-        beanWrapper.setPropertyValues(entries);
+        for (PropertyDescriptor descriptor : beanWrapper.getPropertyDescriptors()){
+            String fieldName = descriptor.getName();
+            Class type = descriptor.getPropertyType();
+            Object value = entries.get(fieldName);
+            if (value != null){
+                Object value2Use = this.conversionService.convert(value, type);
+                FieldUtils.writeField(tinyUrl, fieldName, value2Use, true);
+            }
+
+        }
         return tinyUrl;
     }
 
@@ -91,7 +106,38 @@ public class RedisBasedTinyUrlCache implements TinyUrlCache{
         this.redisTemplate.execute(redisScript, keys, "accessCount", String.valueOf(times));
     }
 
+    @Override
+    public void remove(Long id) {
+        String key = createKey(id);
+        this.redisTemplate.delete(key);
+    }
+
     private String createKey(Long id){
         return cacheKey.replace("{id}", String.valueOf(id));
+    }
+
+    public class DateToStringConverter implements Converter<Date, String> {
+
+        public DateToStringConverter() {
+
+        }
+
+        @Override
+        public String convert(Date source) {
+            long time = source.getTime();
+            return String.valueOf(time);
+        }
+    }
+
+    class StringToDateConverter implements Converter<String, Date>{
+
+        @Override
+        public Date convert(String s) {
+            if (NumberUtils.isDigits(s)){
+                long time = Long.parseLong(s);
+                return new Date(time);
+            }
+            return null;
+        }
     }
 }

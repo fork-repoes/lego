@@ -10,4 +10,6 @@ public interface TinyUrlCache {
     void put(TinyUrl tinyUrl);
 
     void incrAccessCount(Long id, int times);
+
+    void remove(Long id);
 }

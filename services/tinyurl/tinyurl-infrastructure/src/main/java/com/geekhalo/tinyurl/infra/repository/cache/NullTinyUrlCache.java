@@ -20,4 +20,9 @@ public class NullTinyUrlCache implements TinyUrlCache{
     public void incrAccessCount(Long id, int times) {
 
     }
+
+    @Override
+    public void remove(Long id) {
+
+    }
 }
