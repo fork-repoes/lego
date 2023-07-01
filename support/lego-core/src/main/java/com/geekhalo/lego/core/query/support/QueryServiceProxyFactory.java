@@ -126,7 +126,7 @@ public class QueryServiceProxyFactory {
                 Set<Method> overrideHierarchy = MethodUtils.getOverrideHierarchy(callMethod, ClassUtils.Interfaces.INCLUDE);
                 for (Method hMethod : overrideHierarchy) {
                     targetMethodDispatcher.register(hMethod, exeMethod);
-                    methodsForRemove.add(callMethod);
+                    methodsForRemove.add(hMethod);
                 }
             }
         }
