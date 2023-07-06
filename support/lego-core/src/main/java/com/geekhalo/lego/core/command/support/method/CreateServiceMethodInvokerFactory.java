@@ -75,9 +75,12 @@ public class CreateServiceMethodInvokerFactory
 
     private List<Class> getContextClassFromAggClass() {
         List<Class> context = Lists.newArrayList();
-        for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
+        for (Method aggMethod : this.getAggClass().getMethods()){
             int modifiers = aggMethod.getModifiers();
             if (!Modifier.isStatic(modifiers)){
+                continue;
+            }
+            if (!Modifier.isPublic(modifiers)){
                 continue;
             }
             int parameterCount = aggMethod.getParameterCount();

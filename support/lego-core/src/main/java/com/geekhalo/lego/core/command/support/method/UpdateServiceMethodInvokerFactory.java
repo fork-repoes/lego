@@ -45,9 +45,12 @@ public class UpdateServiceMethodInvokerFactory
         Class returnType = method.getReturnType();
 
         List<BizMethodContext> contexts = Lists.newArrayList();
-        for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
+        for (Method aggMethod : this.getAggClass().getMethods()){
             int modifiers = aggMethod.getModifiers();
             if (Modifier.isStatic(modifiers)){
+                continue;
+            }
+            if (!Modifier.isPublic(modifiers)){
                 continue;
             }
 
