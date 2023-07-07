@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,18 +24,16 @@ public abstract class AbstractAggRoot extends AbstractEntity
 
     @Override
     public void consumeAndClearEvent(Consumer<DomainEvent> eventConsumer) {
-        this.consumeEvent(eventConsumer);
+        List<DomainEvent> tmpEvents = new ArrayList<>(this.events);
+        // 先清理，避免出现事件消费嵌套导致事件无法被清理的问题
         this.clearEvent();
-
+        tmpEvents.forEach(event -> eventConsumer.accept(event));
     }
 
     private void clearEvent() {
         this.events.clear();;
     }
 
-    private void consumeEvent(Consumer<DomainEvent> eventConsumer){
-        this.events.forEach(eventConsumer);
-    }
 
     protected void addEvent(DomainEvent domainEvent){
         this.events.add(domainEvent);
