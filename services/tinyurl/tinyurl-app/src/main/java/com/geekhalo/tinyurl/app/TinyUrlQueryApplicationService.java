@@ -10,7 +10,7 @@ public interface TinyUrlQueryApplicationService {
 
     Optional<TinyUrl> findByCode(String code);
 
-    TinyUrl accessById(Long id);
+    Optional<TinyUrl> accessById(Long id);
 
-    TinyUrl accessByCode(String code);
+    Optional<TinyUrl> accessByCode(String code);
 }

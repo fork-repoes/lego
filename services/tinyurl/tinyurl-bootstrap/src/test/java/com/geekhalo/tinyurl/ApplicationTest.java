@@ -218,7 +218,7 @@ public class ApplicationTest {
         Assert.assertNotNull(tinyUrl.getId());
 
         {
-            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId()).get();
             Assert.assertNotNull(tinyUrlToCheck);
             Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
             Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
@@ -230,7 +230,7 @@ public class ApplicationTest {
         }
 
         {
-            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId()).get();
             Assert.assertNotNull(tinyUrlToCheck);
             Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
             Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());
@@ -241,7 +241,7 @@ public class ApplicationTest {
             Assert.assertTrue(tinyUrlToCheck.canAccess());
         }
         {
-            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId());
+            TinyUrl tinyUrlToCheck = this.tinyUrlQueryApplicationService.accessById(tinyUrl.getId()).get();
             Assert.assertNotNull(tinyUrlToCheck);
             Assert.assertEquals(tinyUrl.getId(), tinyUrlToCheck.getId());
             Assert.assertEquals(tinyUrl.getUrl(), tinyUrlToCheck.getUrl());

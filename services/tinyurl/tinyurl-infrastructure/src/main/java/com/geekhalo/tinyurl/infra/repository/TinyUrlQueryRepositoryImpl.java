@@ -42,4 +42,8 @@ public class TinyUrlQueryRepositoryImpl implements TinyUrlQueryRepository {
     public void clean(Long id) {
         this.queryCache.remove(id);
     }
+
+    public void saveToCache(TinyUrl source) {
+        this.queryCache.put(source);
+    }
 }

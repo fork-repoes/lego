@@ -1,16 +1,19 @@
-package com.geekhalo.tinyurl.domain;
+package com.geekhalo.tinyurl.api;
 
-import com.geekhalo.lego.core.command.CommandForCreate;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
-abstract class AbstractCreateTinyUrlCommand implements CommandForCreate {
+public class CreateLimitAccessCountRequest {
     @NotEmpty
     private String url;
 
     private Boolean enableCache;
 
     private Boolean enableCacheSync;
+
+    @NotNull
+    private Integer maxCount;
 }

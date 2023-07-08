@@ -1,12 +1,11 @@
-package com.geekhalo.tinyurl.domain;
+package com.geekhalo.tinyurl.api;
 
-import com.geekhalo.lego.core.command.CommandForCreate;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
-abstract class AbstractCreateTinyUrlCommand implements CommandForCreate {
+public class CreateCommonRequest {
     @NotEmpty
     private String url;
 

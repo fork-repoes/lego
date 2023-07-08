@@ -4,13 +4,14 @@ create table tiny_url
     create_time  datetime(6)  null,
     delete_time  datetime(6)  null,
     update_time  datetime(6)  null,
-    vsn          int          null,
+    vsn          int          not null,
     access_count int          null,
     begin_time  datetime(6)  null,
     expire_time  datetime(6)  null,
     max_count    int          null,
-    status       varchar(16) null,
-    type         varchar(16) null,
-    url          varchar(2048) null
+    status       varchar(16) not null,
+    type         varchar(16) not null,
+    url          varchar(2048) not null,
+    switch_code int not null
 );
 

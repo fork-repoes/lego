@@ -1,11 +1,10 @@
 package com.geekhalo.tinyurl.domain;
 
+import com.geekhalo.lego.core.bitop.intop.IntMaskOp;
 import com.geekhalo.lego.core.command.support.AbstractAggRoot;
 import com.google.common.base.Preconditions;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -13,10 +12,18 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tiny_url")
-//@Setter(AccessLevel.PRIVATE)
 @Data
 @NoArgsConstructor
 public class TinyUrl extends AbstractAggRoot {
+    /**
+     * 是否启动缓存，在第一次访问时，将数据同步到 redis 中
+     */
+    private static final IntMaskOp CACHE_ENABLE = IntMaskOp.MASK_1;
+
+    /**
+     * 是否启动缓存同步，在保存只好，将数据同步的 redis
+     */
+    private static final IntMaskOp CACHE_SYNC_ENABLE = IntMaskOp.MASK_2;
 
     @Id
     private Long id;
@@ -42,6 +49,9 @@ public class TinyUrl extends AbstractAggRoot {
     @Column(name = "expire_time", updatable = false)
     private Date expireTime;
 
+    @Column(name = "switch_code", updatable = false, nullable = false)
+    private Integer switches = 0;
+
     @Override
     public Long getId() {
         return this.id;
@@ -53,15 +63,11 @@ public class TinyUrl extends AbstractAggRoot {
         tinyUrl.setId(context.nextId());
         tinyUrl.setType(TinyUrlType.COMMON);
         tinyUrl.setUrl(context.getCommand().getUrl());
-        tinyUrl.init();
+        tinyUrl.init(context.getCommand());
 
         return tinyUrl;
     }
 
-    private void init() {
-        setStatus(TinyUrlStatus.ENABLE);
-        addEvent(new TinyUrlCreatedEvent(this));
-    }
 
     public static TinyUrl createExpireTimeTinyUrl(CreateExpireTimeTinyUrlContext context){
         TinyUrl tinyUrl = new TinyUrl();
@@ -73,7 +79,7 @@ public class TinyUrl extends AbstractAggRoot {
         tinyUrl.setExpireTime(context.getCommand().getExpireTime());
         tinyUrl.setBeginTime(context.getCommand().parseBeginTime());
 
-        tinyUrl.init();
+        tinyUrl.init(context.getCommand());
 
         return tinyUrl;
     }
@@ -88,9 +94,21 @@ public class TinyUrl extends AbstractAggRoot {
         tinyUrl.setMaxCount(context.getCommand().getMaxCount());
         tinyUrl.setAccessCount(0);
 
-        tinyUrl.init();
+        tinyUrl.init(context.getCommand());
 
         return tinyUrl;
+    }
+
+    private void init(AbstractCreateTinyUrlCommand command) {
+        setStatus(TinyUrlStatus.ENABLE);
+        if (command.getEnableCache() != null && command.getEnableCache()){
+            setEnableCache();
+        }
+        if (command.getEnableCacheSync() != null && command.getEnableCacheSync()){
+            setEnableCacheSync();
+            setEnableCache();
+        }
+        addEvent(new TinyUrlCreatedEvent(this));
     }
 
     public void incrAccessCount(IncrAccessCountCommand command){
@@ -142,5 +160,21 @@ public class TinyUrl extends AbstractAggRoot {
 
     boolean checkStatus() {
         return TinyUrlStatus.ENABLE == getStatus();
+    }
+
+    private void setEnableCache(){
+        setSwitches(CACHE_ENABLE.set(this.getSwitches(), true));
+    }
+
+    private void setEnableCacheSync(){
+        setSwitches(CACHE_SYNC_ENABLE.set(this.getSwitches(), true));
+    }
+
+    public boolean isEnableCache(){
+        return CACHE_ENABLE.isSet(this.switches);
+    }
+
+    public boolean isEnableCacheSync(){
+        return CACHE_SYNC_ENABLE.isSet(this.switches);
     }
 }

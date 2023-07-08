@@ -1,5 +1,7 @@
-package com.geekhalo.tinyurl.app;
+package com.geekhalo.tinyurl.app.impl;
 
+import com.geekhalo.tinyurl.app.TinyUrlAccessedEvent;
+import com.geekhalo.tinyurl.app.TinyUrlQueryApplicationService;
 import com.geekhalo.tinyurl.domain.TinyUrl;
 import com.geekhalo.tinyurl.domain.TinyUrlQueryRepository;
 import com.geekhalo.tinyurl.domain.codec.NumberCodec;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class TinyUrlQueryApplicationServiceImpl implements TinyUrlQueryApplicationService{
+public class TinyUrlQueryApplicationServiceImpl implements TinyUrlQueryApplicationService {
 
     @Autowired
     private TinyUrlQueryRepository tinyUrlQueryRepository;
@@ -41,20 +43,20 @@ public class TinyUrlQueryApplicationServiceImpl implements TinyUrlQueryApplicati
     }
 
     @Override
-    public TinyUrl accessById(Long id) {
+    public Optional<TinyUrl> accessById(Long id) {
         Optional<TinyUrl> tinyUrlOptional = findById(id);
 
         return tinyUrlOptional.map(tinyUrl -> {
-            TinyUrlAccessedEvent event = new TinyUrlAccessedEvent(tinyUrl.getId());
+            TinyUrlAccessedEvent event = new TinyUrlAccessedEvent(tinyUrl);
             this.eventPublisher.publishEvent(event);
             tinyUrl.incrAccessCount(1);
             return tinyUrl;
-        }).orElse(null);
+        });
 
     }
 
     @Override
-    public TinyUrl accessByCode(String code) {
+    public Optional<TinyUrl> accessByCode(String code) {
         Long id = this.numberCodec.decode(code);
         return accessById(id);
     }
