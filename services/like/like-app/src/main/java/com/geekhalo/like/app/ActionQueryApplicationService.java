@@ -6,7 +6,6 @@ import com.geekhalo.like.domain.like.LikeAction;
 import com.geekhalo.like.domain.like.LikeActionRepository;
 import com.geekhalo.like.domain.user.ActionUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -5,12 +5,12 @@
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-services-module</artifactId>
     <name>lego-services-module</name>
-    <version>0.1.23</version>
+    <version>0.1.24</version>
     <packaging>pom</packaging>
     <modules>
         <module>parent</module>
         <module>archetype</module>
         <module>like</module>
-
+    <module>tinyurl</module>
   </modules>
 </project>

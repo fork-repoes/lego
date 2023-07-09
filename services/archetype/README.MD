@@ -1,0 +1,1 @@
+mvn archetype:generate  -DarchetypeGroupId=com.geekhalo.lego -DarchetypeArtifactId=services-archetype -DarchetypeVersion=0.1.24-tinyurl_service-SNAPSHOT  -DgroupId=com.geekhalo -DartifactId=tinyurl -Dversion=0.1.24-tinyurl_service-SNAPSHOT

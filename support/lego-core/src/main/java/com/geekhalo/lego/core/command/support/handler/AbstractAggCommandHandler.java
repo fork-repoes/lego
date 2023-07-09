@@ -122,20 +122,22 @@ public abstract class AbstractAggCommandHandler<
             // 如有必要，开启事务保护
             if (this.transactionTemplate != null) {
                 this.transactionTemplate.execute(status -> {
-                    // 9. 发布领域事件
-                    publishEvent(agg, contextProxy);
 
-                    // 10. 保存至数据库
+                    // 9. 保存至数据库
                     syncToRepository(agg, contextProxy);
+
+                    // 10. 发布领域事件
+                    publishEvent(agg, contextProxy);
                     return null;
 
                 });
             }else {
-                // 9. 发布领域事件
-                publishEvent(agg, contextProxy);
 
-                // 10. 保存至数据库
+                // 9. 保存至数据库
                 syncToRepository(agg, contextProxy);
+
+                // 10. 发布领域事件
+                publishEvent(agg, contextProxy);
             }
 
             RESULT result = convertToResult(agg, contextProxy);

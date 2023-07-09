@@ -1,6 +1,5 @@
 package com.geekhalo.lego.core.query.support;
 
-import com.geekhalo.lego.core.joininmemory.JoinService;
 import com.geekhalo.lego.core.query.NoQueryService;
 import com.geekhalo.lego.core.query.QueryResultConverter;
 import com.geekhalo.lego.core.query.QueryServiceMethodLostException;
@@ -8,6 +7,7 @@ import com.geekhalo.lego.core.query.support.handler.filler.SmartResultFillers;
 import com.geekhalo.lego.core.query.support.method.QueryServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.intercepter.MethodDispatcherInterceptor;
 import com.geekhalo.lego.core.support.invoker.ServiceMethodInvoker;
+import com.geekhalo.lego.core.support.invoker.ServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.invoker.TargetBasedServiceMethodInvokerFactory;
 import com.geekhalo.lego.core.support.proxy.DefaultProxyObject;
 import com.geekhalo.lego.core.support.proxy.ProxyObject;
@@ -18,6 +18,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor;
@@ -25,10 +26,10 @@ import org.springframework.transaction.interceptor.TransactionalProxy;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by taoli on 2022/9/25.
@@ -58,12 +59,23 @@ public class QueryServiceProxyFactory {
         result.setTarget(target);
         result.setInterfaces(metadata.getQueryServiceClass(), ProxyObject.class, TransactionalProxy.class);
 
-        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
-            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
-        }
-
         Set<Method> methods = Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(queryService));
         methods.addAll(Sets.newHashSet(ReflectionUtils.getAllDeclaredMethods(ProxyObject.class)));
+
+        if (DefaultMethodInvokingMethodInterceptor.hasDefaultMethods(queryService)) {
+            result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
+            // 移除默认方法
+            Set<Method> methodsForRemove = methods.stream()
+                    .filter(Method::isDefault)
+                    .collect(Collectors.toSet());
+
+            Set<Method> all = methodsForRemove.stream()
+                    .flatMap(method -> MethodUtils.getOverrideHierarchy(method, ClassUtils.Interfaces.INCLUDE).stream())
+                    .collect(Collectors.toSet());
+            methods.removeAll(all);
+        }
+
+
 
         // 对所有的实现进行封装，基于拦截器进行请求转发
         // 1. target 对象封装
@@ -101,6 +113,26 @@ public class QueryServiceProxyFactory {
         return proxy;
     }
 
+    private void registerMethodInvokers(Set<Method> methods,
+                                        MethodDispatcherInterceptor targetMethodDispatcher,
+                                        ServiceMethodInvokerFactory serviceMethodInvokerFactory) {
+        Set<Method> methodsForRemove = Sets.newHashSet();
+        for (Method callMethod : methods){
+            if (methodsForRemove.contains(callMethod)){
+                continue;
+            }
+            ServiceMethodInvoker exeMethod = serviceMethodInvokerFactory.createForMethod(callMethod);
+            if (exeMethod != null){
+                Set<Method> overrideHierarchy = MethodUtils.getOverrideHierarchy(callMethod, ClassUtils.Interfaces.INCLUDE);
+                for (Method hMethod : overrideHierarchy) {
+                    targetMethodDispatcher.register(hMethod, exeMethod);
+                    methodsForRemove.add(hMethod);
+                }
+            }
+        }
+        methods.removeAll(methodsForRemove);
+    }
+
     private MethodDispatcherInterceptor createDispatcherInterceptor(Set<Method> methods, Object repository, QueryServiceMetadata metadata) {
         MethodDispatcherInterceptor methodDispatcher = new MethodDispatcherInterceptor();
         Map<String, QueryResultConverter> beansOfType = this.applicationContext.getBeansOfType(QueryResultConverter.class);
@@ -108,30 +140,17 @@ public class QueryServiceProxyFactory {
                 validateService, this.smartResultFillers,
                 metadata,
                 Lists.newArrayList(beansOfType.values()));
-        Iterator<Method> iterator = methods.iterator();
-        while (iterator.hasNext()){
-            Method callMethod = iterator.next();
-            ServiceMethodInvoker exeMethod = queryServiceMethodAdapterFactory.createForMethod(callMethod);
-            if (exeMethod != null){
-                methodDispatcher.register(callMethod, exeMethod);
-                iterator.remove();
-            }
-        }
+
+        registerMethodInvokers(methods, methodDispatcher, queryServiceMethodAdapterFactory);
+
         return methodDispatcher;
     }
 
     private MethodDispatcherInterceptor createTargetDispatcherInterceptor(Object target, Set<Method> methods){
         MethodDispatcherInterceptor targetMethodDispatcher = new MethodDispatcherInterceptor();
         TargetBasedServiceMethodInvokerFactory targetBasedQueryServiceMethodFactory = new TargetBasedServiceMethodInvokerFactory(target);
-        Iterator<Method> targetIterator = methods.iterator();
-        while (targetIterator.hasNext()){
-            Method callMethod = targetIterator.next();
-            ServiceMethodInvoker exeMethod = targetBasedQueryServiceMethodFactory.createForMethod(callMethod);
-            if (exeMethod != null){
-                targetMethodDispatcher.register(callMethod, exeMethod);
-                targetIterator.remove();
-            }
-        }
+
+        registerMethodInvokers(methods, targetMethodDispatcher, targetBasedQueryServiceMethodFactory);
 
         return targetMethodDispatcher;
     }

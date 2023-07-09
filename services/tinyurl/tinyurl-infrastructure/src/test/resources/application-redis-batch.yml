@@ -1,0 +1,4 @@
+tinyurl:
+  number:
+    generator:
+      type: redis-batch

@@ -1,7 +1,7 @@
 package com.geekhalo.lego.core.query;
 
-import com.geekhalo.lego.core.query.support.QueryServiceBeanDefinitionRegistrar;
 import com.geekhalo.lego.core.query.support.QueryConfiguration;
+import com.geekhalo.lego.core.query.support.QueryServiceBeanDefinitionRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

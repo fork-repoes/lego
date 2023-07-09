@@ -45,27 +45,12 @@ public class CreateServiceMethodInvokerFactory
 
         Class returnType = method.getReturnType();
         List<Class> context = Lists.newArrayList();
-        for (Method aggMethod : this.getAggClass().getDeclaredMethods()){
-            int modifiers = aggMethod.getModifiers();
-            if (!Modifier.isStatic(modifiers)){
-                continue;
-            }
-            int parameterCount = aggMethod.getParameterCount();
-            if (parameterCount != 1){
-                continue;
-            }
-            Class contextClass = aggMethod.getParameterTypes()[0];
-            context.add(contextClass);
-        }
-
-        for (Constructor constructor : this.getAggClass().getConstructors()){
-            int parameterCount = constructor.getParameterCount();
-            if (parameterCount != 1){
-                continue;
-            }
-
-            Class contextClass = constructor.getParameterTypes()[0];
-            context.add(contextClass);
+        Class contextFromConfig = getContextClass(method);
+        if (contextFromConfig != null){
+            context.add(contextFromConfig);
+            this.parseContext(contextFromConfig);
+        }else {
+            context.addAll(getContextClassFromAggClass());
         }
 
         if (CollectionUtils.isEmpty(context)){
@@ -86,6 +71,36 @@ public class CreateServiceMethodInvokerFactory
         }
 
         return new CommandHandlerBasedServiceMethodInvoker(result.get(0));
+    }
+
+    private List<Class> getContextClassFromAggClass() {
+        List<Class> context = Lists.newArrayList();
+        for (Method aggMethod : this.getAggClass().getMethods()){
+            int modifiers = aggMethod.getModifiers();
+            if (!Modifier.isStatic(modifiers)){
+                continue;
+            }
+            if (!Modifier.isPublic(modifiers)){
+                continue;
+            }
+            int parameterCount = aggMethod.getParameterCount();
+            if (parameterCount != 1){
+                continue;
+            }
+            Class contextClass = aggMethod.getParameterTypes()[0];
+            context.add(contextClass);
+        }
+
+        for (Constructor constructor : this.getAggClass().getConstructors()){
+            int parameterCount = constructor.getParameterCount();
+            if (parameterCount != 1){
+                continue;
+            }
+
+            Class contextClass = constructor.getParameterTypes()[0];
+            context.add(contextClass);
+        }
+        return context;
     }
 
 }
