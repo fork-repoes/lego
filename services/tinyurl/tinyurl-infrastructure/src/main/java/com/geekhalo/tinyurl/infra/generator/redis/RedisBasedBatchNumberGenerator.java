@@ -1,6 +1,7 @@
 package com.geekhalo.tinyurl.infra.generator.redis;
 
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
+import com.geekhalo.tinyurl.infra.generator.AbstractBatchNumberGenerator;
 import com.geekhalo.tinyurl.infra.generator.db.DBBasedBatchNumberGenerator;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
@@ -12,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 public class RedisBasedBatchNumberGenerator
-        extends DBBasedBatchNumberGenerator
+        extends AbstractBatchNumberGenerator
         implements NumberGenerator {
 
     @Autowired
