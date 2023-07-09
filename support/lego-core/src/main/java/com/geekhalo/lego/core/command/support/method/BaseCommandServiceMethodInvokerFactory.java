@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -28,9 +29,10 @@ import java.util.function.Function;
 @Getter(AccessLevel.PROTECTED)
 @Setter(AccessLevel.PUBLIC)
 abstract class BaseCommandServiceMethodInvokerFactory {
-    private static final Set<Class> REGISTERED_COMMAND_TYPE = Sets.newHashSet();
+    private final Set<Class> registeredCommandTypes = Sets.newHashSet();
 
     private final Class<? extends AggRoot> aggClass;
+
     @Autowired
     private CommandParser commandParser;
     @Autowired
@@ -40,6 +42,7 @@ abstract class BaseCommandServiceMethodInvokerFactory {
 
     @Setter(AccessLevel.PUBLIC)
     private CommandRepository commandRepository;
+
     @Autowired
     private SmartAggLoaders smartAggLoaders;
 
@@ -53,11 +56,15 @@ abstract class BaseCommandServiceMethodInvokerFactory {
         this.smartAggSyncers.addAggSyncer(new SmartCommandRepositoryBasedAggSyncer(this.commandRepository, this.aggClass));
     }
 
+    protected void parseContext(Class context){
+        this.commandParser.parseContext(context);
+    }
+
     protected void autoRegisterAggLoaders(Class commandType) {
-        if (REGISTERED_COMMAND_TYPE.contains(commandType)){
+        if (registeredCommandTypes.contains(commandType)){
             return;
         }
-        REGISTERED_COMMAND_TYPE.add(commandType);
+        registeredCommandTypes.add(commandType);
 
         if (CommandForSync.class.isAssignableFrom(commandType) && getCommandRepository() instanceof CommandWithKeyRepository){
             this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
@@ -73,6 +80,14 @@ abstract class BaseCommandServiceMethodInvokerFactory {
             this.smartAggLoaders.addSmartAggLoader(KeyBasedAggLoader.apply(commandType, getAggClass(),
                     (CommandWithKeyRepository) getCommandRepository(), new CommandForUpdateByKeyFetcher()));
         }
+    }
+
+    protected Class getContextClass(Method method){
+        CommandMethodDefinition commandMethodDefinition = AnnotatedElementUtils.findMergedAnnotation(method, CommandMethodDefinition.class);
+        if (commandMethodDefinition != null){
+            return commandMethodDefinition.contextClass();
+        }
+        return null;
     }
 
 

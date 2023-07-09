@@ -4,7 +4,6 @@ import com.geekhalo.lego.core.singlequery.jpa.SpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.jpa.support.DefaultSpecificationConverterFactory;
 import com.geekhalo.lego.core.singlequery.jpa.support.handler.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;

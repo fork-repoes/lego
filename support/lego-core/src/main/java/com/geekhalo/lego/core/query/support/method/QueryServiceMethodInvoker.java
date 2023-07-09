@@ -1,13 +1,11 @@
 package com.geekhalo.lego.core.query.support.method;
 
-import com.geekhalo.lego.core.query.support.handler.DefaultQueryHandler;
 import com.geekhalo.lego.core.query.support.handler.QueryHandler;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
-import java.util.function.Function;
 
 /**
  * Created by taoli on 2022/9/29.

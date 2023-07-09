@@ -7,9 +7,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @Slf4j
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
-public class LikeApplication {
+public class Application {
     public static void main(String[] args) {
-        ConfigurableApplicationContext application = SpringApplication.run(LikeApplication.class, args);
+        ConfigurableApplicationContext application = SpringApplication.run(Application.class, args);
 
         log.info("Spring Boot Started : {}", application);
     }

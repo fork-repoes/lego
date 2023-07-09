@@ -1,0 +1,4 @@
+tinyurl:
+  number:
+    generator:
+      type: db-single

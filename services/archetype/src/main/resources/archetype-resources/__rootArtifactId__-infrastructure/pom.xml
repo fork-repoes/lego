@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>${groupId}</groupId>
+        <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-infrastructure-parent</artifactId>
         <version>${version}</version>
         <relativePath>../../parent/infrastructure-parent.xml</relativePath>
