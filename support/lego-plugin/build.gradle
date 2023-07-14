@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.10.0'
+}
+
+group 'com.geekhalo.lego'
+version '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    maven {
+        url "https://www.jetbrains.com/intellij-repository/releases/"
+    }
+    mavenCentral()
+}
+
+dependencies{
+
+}
+
+java{
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2021.3'
+}
+
+patchPluginXml {
+    changeNotes = """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
