@@ -1,32 +1,31 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.geekhalo.lego.plugin</id>
-    <name>Lego DDD 插件</name>
-    <vendor email="litao851025@163.com" url="http://www.geekhalo.com">geekhalo</vendor>
+    <id>com.github.smartgim.codegen1v5</id>
+    <name>codegen1v5 Template</name>
+    <vendor>smartgim</vendor>
 
-    <description><![CDATA[
-    快速生成 DDD 相关结构，包括：<br>
-    1. 创建聚合根时，同时创建：<br/>
-        a. 仓库，包括 CommandRepository、QueryRepository <br />
-        b. 应用服务，包括 CommandApplicationService、QueryApplicationService <br/>
-        c. 事件基类，AbstractXXXEvent <br />
-    2. 创业业务方法，同时创建<br />
-        a. 命令类，XXXAggCommand <br />
-        b. 上下文类，XXXAggContext <br />
-        c. 事件类， AggXXXedEvent <br />
-    ]]></description>
-
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.database</depends>
+    <!-- 国际化-->
+    <resource-bundle>messages.CodeGenBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow factoryClass="com.github.smartgim.codegen1v5.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <applicationService id="codeGenSettings" serviceImplementation="com.only4play.codegen.settings.CodeGenSettings"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij.database">
+        <dataImporter/>
+    </extensions>
+
+
     <actions>
-        <!-- Add your actions here -->
-        <action class="com.geekhalo.lego.TestAction" text="测试" description="简单测试">
-            <add-to-group group-id="FileMenu" anchor="first" />
+        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">
+            <add-to-group group-id="DatabaseViewPopupMenu"/>
         </action>
     </actions>
+
+    <applicationListeners>
+        <listener class="com.github.smartgim.codegen1v5.listeners.MyFrameStateListener" topic="com.intellij.ide.FrameStateListener"/>
+    </applicationListeners>
 </idea-plugin>
