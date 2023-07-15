@@ -25,5 +25,8 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action class="com.geekhalo.lego.TestAction" text="测试" description="简单测试">
+            <add-to-group group-id="FileMenu" anchor="first" />
+        </action>
     </actions>
 </idea-plugin>
