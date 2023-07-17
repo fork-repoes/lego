@@ -1,1 +1,1 @@
-rootProject.name = "codegen1v5"
+rootProject.name = "lego-plugin"
