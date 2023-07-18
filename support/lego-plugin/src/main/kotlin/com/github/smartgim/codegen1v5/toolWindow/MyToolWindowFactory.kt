@@ -1,16 +1,10 @@
 package com.github.smartgim.codegen1v5.toolWindow
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.smartgim.codegen1v5.MyBundle
-import com.github.smartgim.codegen1v5.services.MyProjectService
-import javax.swing.JButton
 
 
 class MyToolWindowFactory : ToolWindowFactory {

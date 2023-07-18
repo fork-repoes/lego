@@ -10,7 +10,7 @@ plugins {
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
     // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.13.2"
+    id("org.jetbrains.intellij") version "1.13.0"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "2.0.0"
     // Gradle Qodana Plugin
@@ -21,7 +21,11 @@ plugins {
 }
 
 dependencies {
-
+//    implementation("com.intellij.platform:platform-api:2021.3.1")
+//    implementation("com.intellij.openapi.ui", "com.intellij.openapi.ui", "2021.3")
+//    implementation("com.intellij.platform.openapi","intellij-idea-platform","2021.3")
+//    intellij("com.intellij","idea", "2021.3")
+//    implementation(project(":shared", "instrumentedJar"))
 }
 
 group = properties("pluginGroup").get()
@@ -30,6 +34,8 @@ version = properties("pluginVersion").get()
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    maven ("https://plugins.jetbrains.com/maven")
+    maven ("https://www.jetbrains.com/intellij-repository/releases")
 }
 
 java {

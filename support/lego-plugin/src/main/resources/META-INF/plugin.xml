@@ -5,6 +5,7 @@
     <vendor>lego</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 <!--    <depends>com.intellij.database</depends>-->
     <!-- 国际化-->
 <!--    <resource-bundle>messages.CodeGenBundle</resource-bundle>-->
@@ -20,11 +21,12 @@
 
 
     <actions>
-<!--        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">-->
-<!--            <add-to-group group-id="DatabaseViewPopupMenu"/>-->
-<!--        </action>-->
-        <action class="com.geekhalo.lego.plugin.action.CreateAggAction" id="createAggAction" text="CreateAggAction">
-            <add-to-group group-id="FileMenu" anchor="first" />
+        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">
+            <add-to-group group-id="DatabaseViewPopupMenu"/>
+        </action>
+        <action class="com.geekhalo.lego.plugin.action.CreateAggAction"
+                id="createAggregation" text="Create Aggregation">
+            <add-to-group group-id="NewGroup" anchor="first" />
         </action>
     </actions>
 

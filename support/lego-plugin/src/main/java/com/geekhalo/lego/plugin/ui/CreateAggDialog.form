@@ -58,15 +58,17 @@
                       <text value="包名："/>
                     </properties>
                   </component>
-                  <component id="59fba" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                  <component id="59fba" class="javax.swing.JTextField" binding="aggPackage">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
-                  <component id="28662" class="javax.swing.JButton" binding="请选择Button" default-binding="true">
+                  <component id="28662" class="javax.swing.JButton" binding="selectPkgForAgg">
                     <constraints>
                       <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -92,7 +94,7 @@
                       <text value="类名："/>
                     </properties>
                   </component>
-                  <component id="c728" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                  <component id="c728" class="javax.swing.JTextField" binding="aggClassName">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -108,15 +110,17 @@
                       <text value="父类："/>
                     </properties>
                   </component>
-                  <component id="d73fe" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+                  <component id="d73fe" class="javax.swing.JTextField" binding="aggParentClass">
                     <constraints>
                       <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
-                  <component id="69ce7" class="javax.swing.JButton" binding="请选择Button1" default-binding="true">
+                  <component id="69ce7" class="javax.swing.JButton" binding="aggParentSelectButton">
                     <constraints>
                       <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -152,13 +156,15 @@
                       <text value="包名："/>
                     </properties>
                   </component>
-                  <component id="b4fa3" class="javax.swing.JTextField" binding="textField4" default-binding="true">
+                  <component id="b4fa3" class="javax.swing.JTextField" binding="repositoryPkg">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
                   <component id="44e24" class="javax.swing.JButton" binding="请选择Button2" default-binding="true">
                     <constraints>
@@ -186,7 +192,7 @@
                       <text value="CommandRepository："/>
                     </properties>
                   </component>
-                  <component id="6ffd1" class="javax.swing.JTextField" binding="textField5" default-binding="true">
+                  <component id="6ffd1" class="javax.swing.JTextField" binding="commandRepository">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -212,7 +218,7 @@
                       <text value="QueryRepository"/>
                     </properties>
                   </component>
-                  <component id="4786f" class="javax.swing.JTextField" binding="textField6" default-binding="true">
+                  <component id="4786f" class="javax.swing.JTextField" binding="queryRepository">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -248,13 +254,15 @@
                       <text value="包名："/>
                     </properties>
                   </component>
-                  <component id="f241e" class="javax.swing.JTextField" binding="textField7" default-binding="true">
+                  <component id="f241e" class="javax.swing.JTextField" binding="applicationPkg">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
                   <component id="34264" class="javax.swing.JButton" binding="请选择Button3" default-binding="true">
                     <constraints>
@@ -282,7 +290,7 @@
                       <text value="CommandApplication:"/>
                     </properties>
                   </component>
-                  <component id="81b74" class="javax.swing.JTextField" binding="textField8" default-binding="true">
+                  <component id="81b74" class="javax.swing.JTextField" binding="commandApplication">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -308,7 +316,7 @@
                       <text value="QueryApplication:"/>
                     </properties>
                   </component>
-                  <component id="c9977" class="javax.swing.JTextField" binding="textField9" default-binding="true">
+                  <component id="c9977" class="javax.swing.JTextField" binding="queryApplication">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -344,13 +352,15 @@
                       <text value="包名："/>
                     </properties>
                   </component>
-                  <component id="d3baa" class="javax.swing.JTextField" binding="textField10" default-binding="true">
+                  <component id="d3baa" class="javax.swing.JTextField" binding="domainEventPkg">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
                   <component id="cd591" class="javax.swing.JButton" binding="请选择Button4" default-binding="true">
                     <constraints>
@@ -378,7 +388,7 @@
                       <text value="类名："/>
                     </properties>
                   </component>
-                  <component id="80dac" class="javax.swing.JTextField" binding="textField11" default-binding="true">
+                  <component id="80dac" class="javax.swing.JTextField" binding="domainEventClass">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
