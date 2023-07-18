@@ -21,11 +21,15 @@
 
 
     <actions>
-        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">
-            <add-to-group group-id="DatabaseViewPopupMenu"/>
-        </action>
-        <action class="com.geekhalo.lego.plugin.action.CreateAggAction"
+<!--        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">-->
+<!--            <add-to-group group-id="DatabaseViewPopupMenu"/>-->
+<!--        </action>-->
+        <action class="com.geekhalo.lego.plugin.action.CreateAggregationAction"
                 id="createAggregation" text="Create Aggregation">
+            <add-to-group group-id="NewGroup" anchor="first" />
+        </action>
+        <action class="com.geekhalo.lego.plugin.action.CreateAggregationMethodAction"
+                id="createAggregationMethod" text="Create Aggregation Method">
             <add-to-group group-id="NewGroup" anchor="first" />
         </action>
     </actions>

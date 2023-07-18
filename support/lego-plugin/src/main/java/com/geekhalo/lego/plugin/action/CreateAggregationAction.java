@@ -1,16 +1,14 @@
 package com.geekhalo.lego.plugin.action;
 
-import com.geekhalo.lego.plugin.ui.CreateAggDialog;
-import com.intellij.ide.util.PackageChooserDialog;
+import com.geekhalo.lego.plugin.ui.CreateAggregationDialog;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 //import com.intellij.openapi.ui.PackageChooserDialog;
 
-public class CreateAggAction extends AnAction {
+public class CreateAggregationAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         String pkg = getPackage(e);
@@ -18,9 +16,9 @@ public class CreateAggAction extends AnAction {
         PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
 
 //        PackageChooserDialog packageChooserDialog = new PackageChooserDialog();
-        CreateAggDialog createAggDialog = new CreateAggDialog(project, pkg, psiFile);
-        createAggDialog.pack();
-        createAggDialog.setVisible(true);
+        CreateAggregationDialog createAggregationDialog = new CreateAggregationDialog(project, pkg, psiFile);
+        createAggregationDialog.pack();
+        createAggregationDialog.setVisible(true);
 //        PackageSetChooserCombo chooserCombo = new PackageSetChooserCombo(project, null);
 //        chooserCombo.addActionListener(new ActionListener() {
 //            @Override

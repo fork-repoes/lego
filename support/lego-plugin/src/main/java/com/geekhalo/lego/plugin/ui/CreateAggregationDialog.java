@@ -18,7 +18,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.event.*;
 
-public class CreateAggDialog extends JDialog {
+public class CreateAggregationDialog extends JDialog {
     private Project project;
     private PsiFile psiFile;
     private JPanel contentPane;
@@ -50,6 +50,8 @@ public class CreateAggDialog extends JDialog {
     private JTextField domainEventClass;
 
     private void init(Project project, String pkg, PsiFile psiFile){
+//        project.getRoot
+//        ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project, project.)
         updateByPackage(pkg);
         this.aggPackage.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -141,7 +143,7 @@ public class CreateAggDialog extends JDialog {
         this.domainEventClass.setText(domainEvent);
     }
 
-    public CreateAggDialog(Project project, String pkg, PsiFile psiFile) {
+    public CreateAggregationDialog(Project project, String pkg, PsiFile psiFile) {
 
         setContentPane(contentPane);
         setModal(true);
@@ -190,7 +192,7 @@ public class CreateAggDialog extends JDialog {
     }
 
     public static void main(String[] args) {
-        CreateAggDialog dialog = new CreateAggDialog(null, "", null);
+        CreateAggregationDialog dialog = new CreateAggregationDialog(null, "", null);
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
