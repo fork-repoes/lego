@@ -1,6 +1,11 @@
 package com.geekhalo.lego.plugin.ui;
 
 
+import com.geekhalo.lego.plugin.creator.JavaFileCreator;
+import com.geekhalo.lego.plugin.template.AggregationTemplate;
+import com.geekhalo.lego.plugin.template.CreateClassContext;
+import com.geekhalo.lego.plugin.template.DomainEventTemplate;
+import com.geekhalo.lego.plugin.template.RepositoryTemplate;
 import com.intellij.ide.util.ClassFilter;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.TreeClassChooser;
@@ -36,20 +41,23 @@ public class CreateAggregationDialog extends JDialog {
     private JTextField aggParentClass;
     private JButton aggParentSelectButton;
     private JTextField repositoryPkg;
-    private JButton 请选择Button2;
+    private JButton repositoryPackageSelectButton;
     private JTextField commandRepository;
     private JTextField queryRepository;
     private JPanel applicationService;
     private JTextField applicationPkg;
-    private JButton 请选择Button3;
+    private JButton applicationPackageSelectButton;
     private JTextField commandApplication;
     private JTextField queryApplication;
     private JPanel domainEvent;
     private JTextField domainEventPkg;
-    private JButton 请选择Button4;
+    private JButton domainEventPackageSelectButton;
     private JTextField domainEventClass;
+    private JTextField aggIdTextField;
+    private JButton aggIdTypeSelectButton;
 
     private void init(Project project, String pkg, PsiFile psiFile){
+        this.project = project;
 //        project.getRoot
 //        ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project, project.)
         updateByPackage(pkg);
@@ -183,6 +191,7 @@ public class CreateAggregationDialog extends JDialog {
 
     private void onOK() {
         // add your code here
+        createFile();
         dispose();
     }
 
@@ -191,10 +200,45 @@ public class CreateAggregationDialog extends JDialog {
         dispose();
     }
 
-    public static void main(String[] args) {
-        CreateAggregationDialog dialog = new CreateAggregationDialog(null, "", null);
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    private void createFile(){
+        {
+            AggregationTemplate.CreateAggregationContext context = new AggregationTemplate.CreateAggregationContext(this.aggPackage.getText(), this.aggClassName.getText());
+            bindCommon(context);
+            context.setParentClassFull(aggParentClass.getText());
+            String content = AggregationTemplate.create(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.aggPackage.getText(), this.aggClassName.getText(), content);
+        }
+
+        {
+            RepositoryTemplate.CreateCommandRepositoryContext context = new RepositoryTemplate.CreateCommandRepositoryContext(this.repositoryPkg.getText(), this.commandRepository.getText());
+            bindCommon(context);
+            String commandContent = RepositoryTemplate.createCommand(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.repositoryPkg.getText(), this.commandRepository.getText(), commandContent);
+        }
+        {
+            RepositoryTemplate.CreateQueryRepositoryContext context = new RepositoryTemplate.CreateQueryRepositoryContext(this.repositoryPkg.getText(), this.queryRepository.getText());
+            bindCommon(context);
+            String queryContent = RepositoryTemplate.createQuery(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.repositoryPkg.getText(), this.queryRepository.getText(), queryContent);
+        }
+        {
+            DomainEventTemplate.CreateAbstractDomainEventContext context = new DomainEventTemplate.CreateAbstractDomainEventContext(this.domainEventPkg.getText(), this.domainEventClass.getText());
+            bindCommon(context);
+            String domainContent = DomainEventTemplate.createAbstractEvent(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainEventPkg.getText(), this.domainEventClass.getText(), domainContent);
+        }
+
     }
+
+    private void bindCommon(CreateClassContext context){
+        context.setIdTypeFull(this.aggIdTextField.getText());
+        context.setAggTypeFull(this.aggPackage.getText() + "." + this.aggClassName.getText());
+    }
+
+//    public static void main(String[] args) {
+//        CreateAggregationDialog dialog = new CreateAggregationDialog(null, "", null);
+//        dialog.pack();
+//        dialog.setVisible(true);
+//        System.exit(0);
+//    }
 }

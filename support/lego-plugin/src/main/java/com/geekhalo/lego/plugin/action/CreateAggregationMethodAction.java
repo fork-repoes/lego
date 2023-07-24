@@ -12,8 +12,8 @@ public class CreateAggregationMethodAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         PsiClass psiClass = getJavaClass(e);
 
-        String aggClass = psiClass.getName();
-        CreateAggregationMethodDialog dialog = new CreateAggregationMethodDialog(e.getProject(), aggClass);
+//        String aggClass = psiClass.getQualifiedName();
+        CreateAggregationMethodDialog dialog = new CreateAggregationMethodDialog(e.getProject(), psiClass);
         dialog.pack();
         dialog.setVisible(true);
     }

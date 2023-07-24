@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-//import com.intellij.openapi.ui.PackageChooserDialog;
 
 public class CreateAggregationAction extends AnAction {
     @Override
@@ -15,22 +14,11 @@ public class CreateAggregationAction extends AnAction {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
 
-//        PackageChooserDialog packageChooserDialog = new PackageChooserDialog();
         CreateAggregationDialog createAggregationDialog = new CreateAggregationDialog(project, pkg, psiFile);
         createAggregationDialog.pack();
         createAggregationDialog.setVisible(true);
-//        PackageSetChooserCombo chooserCombo = new PackageSetChooserCombo(project, null);
-//        chooserCombo.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println(e);
-//            }
-//        });
-//
-//        chooserCombo.setVisible(true);
-//        chooserCombo.show();
-
     }
+
 
     private String getPackage(AnActionEvent event){
         // 获取当前选中的文件或目录
