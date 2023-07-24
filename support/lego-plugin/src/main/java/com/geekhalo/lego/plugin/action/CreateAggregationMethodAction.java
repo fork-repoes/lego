@@ -1,14 +1,16 @@
 package com.geekhalo.lego.plugin.action;
 
 import com.geekhalo.lego.plugin.ui.CreateAggregationMethodDialog;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-public class CreateAggregationMethodAction extends AnAction {
+public class CreateAggregationMethodAction extends BaseAnAction {
+
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         PsiClass psiClass = getJavaClass(e);
@@ -17,18 +19,18 @@ public class CreateAggregationMethodAction extends AnAction {
             return;
         }
 
-        CreateAggregationMethodDialog dialog = new CreateAggregationMethodDialog(e.getProject(), psiClass);
+        Module currentModule = findCurrentModule(e);
+        Module[] modules = ModuleManager.getInstance(e.getProject()).getModules();
+        Module appModule = findModule(modules, currentModule, APP_MODULE);
+        Module domainModule = findModule(modules, currentModule, DOMAIN_MODULE);
+        Module infraModule = findModule(modules, currentModule, INFRA_MODULE);
+
+
+        CreateAggregationMethodDialog dialog = new CreateAggregationMethodDialog(e.getProject(),
+                appModule, domainModule, infraModule,
+                psiClass);
         dialog.pack();
         dialog.setVisible(true);
     }
 
-    private PsiClass getJavaClass(AnActionEvent e){
-        PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-        if (psiFile instanceof PsiJavaFile) {
-            PsiJavaFile javaFile = (PsiJavaFile)psiFile;
-            PsiClass[] classes = javaFile.getClasses();
-            return classes[0];
-        }
-        return null;
-    }
 }

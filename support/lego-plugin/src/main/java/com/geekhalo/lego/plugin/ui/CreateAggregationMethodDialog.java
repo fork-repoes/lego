@@ -9,6 +9,7 @@ import com.intellij.ide.util.ClassFilter;
 import com.intellij.ide.util.TreeClassChooser;
 import com.intellij.ide.util.TreeClassChooserFactory;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -23,6 +24,9 @@ import java.awt.event.*;
 public class CreateAggregationMethodDialog extends JDialog {
     private final Project project;
     private final PsiClass aggClass;
+    private Module appModule;
+    private Module domainModule;
+    private Module infraModule;
     private String aggPackage;
     private String aggClassName;
     private String aggFullClassName;
@@ -189,9 +193,15 @@ public class CreateAggregationMethodDialog extends JDialog {
         }
     }
 
-    public CreateAggregationMethodDialog(Project project, PsiClass aggClass) {
+    public CreateAggregationMethodDialog(Project project,
+                                         Module appModule, Module domainModule, Module infraModule,
+                                         PsiClass aggClass) {
         this.project = project;
         this.aggClass = aggClass;
+        this.appModule = appModule;
+        this.domainModule = domainModule;
+        this.infraModule = infraModule;
+
         updateByAggClassName(aggClass.getQualifiedName());
         setContentPane(contentPane);
         setModal(true);
@@ -239,10 +249,16 @@ public class CreateAggregationMethodDialog extends JDialog {
 
     private void addMethod(String basePkg){
         String methodName = this.aggMethodName.getText();
+        createAggMethod(basePkg, methodName);
+        createAppMethod(basePkg, methodName);
+    }
+
+    private void createAppMethod(String basePkg, String methodName) {
+//        String commandApplicationName = basePkg +
+    }
+
+    private void createAggMethod(String basePkg, String methodName) {
         PsiElementFactory elementFactory = JavaPsiFacade.getInstance(project).getElementFactory();
-
-
-
         PsiMethod newMethod = null;
         String contextType = basePkg + "." + this.contextClass.getText();
         String commandType = String.valueOf(this.commandType.getSelectedItem());
@@ -310,9 +326,7 @@ public class CreateAggregationMethodDialog extends JDialog {
                     importList.add(elementFactory.createImportStatement(psiClass));
                 }
             }
-
         });
-
     }
 
     private void addFiles(String basePkg){
@@ -320,7 +334,7 @@ public class CreateAggregationMethodDialog extends JDialog {
         // Command
         {
             String content = getCreateCommandContent(basePkg);
-            JavaFileCreator.createJavaFileInPackage(this.project, basePkg, this.commandCLass.getText(), content);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, basePkg, this.commandCLass.getText(), content);
         }
 
         // Context
@@ -329,7 +343,7 @@ public class CreateAggregationMethodDialog extends JDialog {
             String commandTypeFull = createBasePackage() + "." + this.commandCLass.getText();
             context.setCommandTypeFull(commandTypeFull);
             String content = ContextTemplate.create(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, basePkg, this.contextClass.getText(), content);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, basePkg, this.contextClass.getText(), content);
         }
 
         // Event
@@ -339,7 +353,7 @@ public class CreateAggregationMethodDialog extends JDialog {
             String absEvent = aggPackage + "." + "Abstract" + this.aggClassName + "Event";
             context.setParentTypeFull(absEvent);
             String content = DomainEventTemplate.createEvent(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, basePkg, this.eventClass.getText(), content);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, basePkg, this.eventClass.getText(), content);
         }
 
     }

@@ -2,17 +2,14 @@ package com.geekhalo.lego.plugin.ui;
 
 
 import com.geekhalo.lego.plugin.creator.JavaFileCreator;
-import com.geekhalo.lego.plugin.template.AggregationTemplate;
-import com.geekhalo.lego.plugin.template.CreateClassContext;
-import com.geekhalo.lego.plugin.template.DomainEventTemplate;
-import com.geekhalo.lego.plugin.template.RepositoryTemplate;
+import com.geekhalo.lego.plugin.template.*;
 import com.intellij.ide.util.ClassFilter;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.TreeClassChooser;
 import com.intellij.ide.util.TreeClassChooserFactory;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -25,7 +22,10 @@ import java.awt.event.*;
 
 public class CreateAggregationDialog extends JDialog {
     private Project project;
-    private PsiFile psiFile;
+    private Module appModule;
+    private Module domainModule;
+    private Module infraModule;
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -55,9 +55,19 @@ public class CreateAggregationDialog extends JDialog {
     private JTextField domainEventClass;
     private JTextField aggIdTextField;
     private JButton aggIdTypeSelectButton;
+    private JTextField aggModuleName;
+    private JTextField repositoryModule;
+    private JCheckBox createQueryRepository;
+    private JCheckBox createCommandRepository;
+    private JTextField applicationModule;
+    private JCheckBox createCommandApplication;
+    private JCheckBox createQueryApplication;
+    private JTextField abstractDomainEventModule;
+    private JCheckBox createAbstractDomainEvent;
 
-    private void init(Project project, String pkg, PsiFile psiFile){
+    private void init(Project project, String pkg){
         this.project = project;
+        bindModules();
 //        project.getRoot
 //        ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project, project.)
         updateByPackage(pkg);
@@ -122,6 +132,13 @@ public class CreateAggregationDialog extends JDialog {
         });
     }
 
+    private void bindModules() {
+        this.aggModuleName.setText(this.domainModule.getName());
+        this.repositoryModule.setText(this.domainModule.getName());
+        this.applicationModule.setText(this.appModule.getName());
+        this.abstractDomainEventModule.setText(this.domainModule.getName());
+    }
+
     private void updateByPackage(String pkg) {
         if (StringUtils.isNotEmpty(pkg)) {
             aggPackage.setText(pkg);
@@ -151,7 +168,10 @@ public class CreateAggregationDialog extends JDialog {
         this.domainEventClass.setText(domainEvent);
     }
 
-    public CreateAggregationDialog(Project project, String pkg, PsiFile psiFile) {
+    public CreateAggregationDialog(Project project, String pkg, Module appModule, Module domainModule, Module infraModule) {
+        this.appModule = appModule;
+        this.domainModule = domainModule;
+        this.infraModule = infraModule;
 
         setContentPane(contentPane);
         setModal(true);
@@ -186,7 +206,8 @@ public class CreateAggregationDialog extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        init(project, pkg, psiFile);
+        init(project, pkg);
+
     }
 
     private void onOK() {
@@ -206,26 +227,43 @@ public class CreateAggregationDialog extends JDialog {
             bindCommon(context);
             context.setParentClassFull(aggParentClass.getText());
             String content = AggregationTemplate.create(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, this.aggPackage.getText(), this.aggClassName.getText(), content);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, this.aggPackage.getText(), this.aggClassName.getText(), content);
         }
 
-        {
+        if (createCommandRepository.isSelected()){
             RepositoryTemplate.CreateCommandRepositoryContext context = new RepositoryTemplate.CreateCommandRepositoryContext(this.repositoryPkg.getText(), this.commandRepository.getText());
             bindCommon(context);
             String commandContent = RepositoryTemplate.createCommand(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, this.repositoryPkg.getText(), this.commandRepository.getText(), commandContent);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule,  this.repositoryPkg.getText(), this.commandRepository.getText(), commandContent);
         }
-        {
+
+        if (createQueryRepository.isSelected()){
             RepositoryTemplate.CreateQueryRepositoryContext context = new RepositoryTemplate.CreateQueryRepositoryContext(this.repositoryPkg.getText(), this.queryRepository.getText());
             bindCommon(context);
             String queryContent = RepositoryTemplate.createQuery(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, this.repositoryPkg.getText(), this.queryRepository.getText(), queryContent);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, this.repositoryPkg.getText(), this.queryRepository.getText(), queryContent);
         }
-        {
+
+        if (createAbstractDomainEvent.isSelected()){
             DomainEventTemplate.CreateAbstractDomainEventContext context = new DomainEventTemplate.CreateAbstractDomainEventContext(this.domainEventPkg.getText(), this.domainEventClass.getText());
             bindCommon(context);
             String domainContent = DomainEventTemplate.createAbstractEvent(context);
-            JavaFileCreator.createJavaFileInPackage(this.project, this.domainEventPkg.getText(), this.domainEventClass.getText(), domainContent);
+            JavaFileCreator.createJavaFileInPackage(this.project,  this.domainModule, this.domainEventPkg.getText(), this.domainEventClass.getText(), domainContent);
+        }
+
+        if (createCommandApplication.isSelected()){
+            ApplicationTemplate.CreateCommandApplicationContext context = new ApplicationTemplate.CreateCommandApplicationContext(this.applicationPkg.getText(), this.commandApplication.getText());
+            bindCommon(context);
+            context.setCommandRepositoryTypeFull(this.repositoryPkg.getText() + "." + this.commandRepository.getText());
+            String content = ApplicationTemplate.createCommandApplication(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.appModule, this.applicationPkg.getText(), this.commandApplication.getText(), content);
+        }
+        if (createQueryApplication.isSelected()){
+            ApplicationTemplate.CreateQueryApplicationContext context = new ApplicationTemplate.CreateQueryApplicationContext(this.applicationPkg.getText(), this.queryApplication.getText());
+            bindCommon(context);
+            context.setQueryRepositoryTypeFull(this.repositoryPkg.getText() + "." + this.queryRepository.getText());
+            String content = ApplicationTemplate.createQueryApplication(context);
+            JavaFileCreator.createJavaFileInPackage(this.project, this.appModule, this.applicationPkg.getText(), this.queryApplication.getText(), content);
         }
 
     }

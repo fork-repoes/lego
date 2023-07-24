@@ -39,7 +39,7 @@ public class RepositoryTemplate {
         content = content.replace("{aggType}", context.getAggType());
         content = content.replace("{aggTypeFull}", context.getAggTypeFull());
         content = content.replace("{idType}", context.getIdType());
-        content = content.replace("{idTypeFull}", context.getAggTypeFull());
+        content = content.replace("{idTypeFull}", context.getIdTypeFull());
         return content;
     }
 
@@ -50,7 +50,7 @@ public class RepositoryTemplate {
         content = content.replace("{aggType}", context.getAggType());
         content = content.replace("{aggTypeFull}", context.getAggTypeFull());
         content = content.replace("{idType}", context.getIdType());
-        content = content.replace("{idTypeFull}", context.getAggTypeFull());
+        content = content.replace("{idTypeFull}", context.getIdTypeFull());
         return content;
     }
 
