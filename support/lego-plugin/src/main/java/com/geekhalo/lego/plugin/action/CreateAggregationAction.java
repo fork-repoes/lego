@@ -3,6 +3,7 @@ package com.geekhalo.lego.plugin.action;
 import com.geekhalo.lego.plugin.ui.CreateAggregationDialog;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,10 @@ public class CreateAggregationAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         String pkg = getPackage(e);
+        if (pkg == null){
+            Messages.showMessageDialog("请选择包", "Warn", null);
+            return;
+        }
         Project project = e.getData(PlatformDataKeys.PROJECT);
         PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
 

@@ -34,7 +34,11 @@ public class CommandTemplate {
             "@NoArgsConstructor\n" +
             "public class {className} implements CommandForUpdateById<{id}> {\n" +
             "    @NotNull\n" +
-            "    private {id} id;\n" +
+            "    private final {id} id;\n" +
+            "\n" +
+            "    public {className}({id} id){\n" +
+            "        this.id = id;\n" +
+            "    }\n" +
             "\n" +
             "    @Override\n" +
             "    public {id} getId() {\n" +
@@ -64,6 +68,10 @@ public class CommandTemplate {
             "\n" +
             "    private final {keyType} key;\n" +
             "\n" +
+            "    public {className}({keyType} key) {\n" +
+            "        this.key = key;\n "+
+            "    }\n" +
+            "\n" +
             "    @Override\n" +
             "    public  {keyType} getKey(){\n" +
             "        return this.key;\n" +
@@ -89,7 +97,7 @@ public class CommandTemplate {
             "@AllArgsConstructor\n" +
             "@NoArgsConstructor\n" +
             "public class {className} implements CommandForSync<{keyType}> {\n" +
-            "    private {keyType} key;\n" +
+            "    private final {keyType} key;\n" +
             "\n "+
             "    public {className}({keyType} key) {\n" +
             "        this.key = key;\n" +

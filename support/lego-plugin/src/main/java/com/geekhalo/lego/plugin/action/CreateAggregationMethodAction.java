@@ -4,6 +4,7 @@ import com.geekhalo.lego.plugin.ui.CreateAggregationMethodDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,8 +12,11 @@ public class CreateAggregationMethodAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         PsiClass psiClass = getJavaClass(e);
+        if (psiClass == null){
+            Messages.showMessageDialog("请选择类", "Warn", null);
+            return;
+        }
 
-//        String aggClass = psiClass.getQualifiedName();
         CreateAggregationMethodDialog dialog = new CreateAggregationMethodDialog(e.getProject(), psiClass);
         dialog.pack();
         dialog.setVisible(true);

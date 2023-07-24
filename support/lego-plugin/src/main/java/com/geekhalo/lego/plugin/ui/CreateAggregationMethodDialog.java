@@ -242,18 +242,28 @@ public class CreateAggregationMethodDialog extends JDialog {
         PsiElementFactory elementFactory = JavaPsiFacade.getInstance(project).getElementFactory();
 
 
-        PsiMethod newMethod = elementFactory.createMethod(methodName, PsiType.VOID);
+
+        PsiMethod newMethod = null;
         String contextType = basePkg + "." + this.contextClass.getText();
         String commandType = String.valueOf(this.commandType.getSelectedItem());
+        String aggType = this.aggPackage + "." + this.aggClassName;
         if ("create".equalsIgnoreCase(commandType)){
             // 创建新方法
-//            newMethod = elementFactory.createMethod(methodName, PsiType.VOID);
-//            newMethod.getModifierList().setModifierProperty(PsiModifier.PUBLIC, true);
-//
-//            // 设置方法体
-//            PsiCodeBlock codeBlock = elementFactory.createCodeBlockFromText(methodBody, null);
-//            newMethod.getBody().replace(codeBlock);
-//            targetMethod.getReturnTypeElement().replace(elementFactory.createTypeElement(PsiType.getTypeByName(returnType, project, null)));
+            PsiType returnType =  PsiType.getTypeByName(aggType, project, GlobalSearchScope.allScope(project));
+            newMethod = elementFactory.createMethod(methodName, returnType);
+            newMethod.getModifierList().setModifierProperty(PsiModifier.PUBLIC, true);
+            newMethod.getModifierList().setModifierProperty(PsiModifier.STATIC, true);
+
+            PsiParameter newParam = elementFactory.createParameter("context", PsiType.getTypeByName(contextType, project, GlobalSearchScope.allScope(project)));
+            newMethod.getParameterList().add(newParam);
+
+            String methodBody = "{\n" +
+                    "       // 添加代码 \n" +
+                    "       return new " + this.aggClassName +"();" +
+                    "}";
+            // 设置方法体
+            PsiCodeBlock codeBlock = elementFactory.createCodeBlockFromText(methodBody, null);
+            newMethod.getBody().replace(codeBlock);
 
         }else {
             // 创建新方法

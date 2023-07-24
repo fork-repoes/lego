@@ -152,7 +152,10 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                      <text value="java.lang.Long"/>
+                    </properties>
                   </component>
                   <component id="f8d89" class="javax.swing.JButton" binding="selectKeyTypeButton">
                     <constraints>
