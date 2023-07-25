@@ -33,16 +33,15 @@
                     anchor="first" />
             <action class="com.geekhalo.lego.plugin.action.CreateAggregationAction"
                     id="createAggregation" text="Create Aggregation">
-<!--                <add-to-group group-id="legoDDD" anchor="first" />-->
             </action>
             <action class="com.geekhalo.lego.plugin.action.CreateAggregationMethodAction"
                     id="createAggregationMethod" text="Create Aggregation Method">
-<!--                <add-to-group group-id="legoDDD" anchor="first" />-->
             </action>
 
+            <action class="com.geekhalo.lego.plugin.action.CreateEnumAction"
+                    id="createEnum" text="Create Enum">
+            </action>
         </group>
-
-
     </actions>
 
 <!--    <applicationListeners>-->

@@ -11,6 +11,9 @@ import com.intellij.ide.util.TreeClassChooserFactory;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.lang.WordUtils;
@@ -20,6 +23,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.event.*;
+import java.util.Arrays;
+
+import static com.geekhalo.lego.plugin.util.Utils.findSourceFile;
 
 public class CreateAggregationMethodDialog extends JDialog {
     private final Project project;
@@ -254,7 +260,88 @@ public class CreateAggregationMethodDialog extends JDialog {
     }
 
     private void createAppMethod(String basePkg, String methodName) {
-//        String commandApplicationName = basePkg +
+        PsiElementFactory elementFactory = JavaPsiFacade.getInstance(project).getElementFactory();
+        String commandType = String.valueOf(this.commandType.getSelectedItem());
+        String aggType = this.aggPackage + "." + this.aggClassName;
+        String commandClass = basePkg + "." + this.commandCLass.getText();
+
+        PsiClass commandApplication = findCommandApplication(this.aggPackage.replace("domain", "app"), this.aggClassName + "CommandApplication");
+        PsiMethod newMethod = null;
+        if ("create".equalsIgnoreCase(commandType)){
+              String methodSignatureString =  aggType + " " + methodName + "(" + this.commandCLass.getText() + " command);";
+              newMethod = elementFactory.createMethodFromText(methodSignatureString, commandApplication);
+        }else {
+            String methodSignatureString =  "void " + methodName + "(" + this.commandCLass.getText() + " command);";
+            newMethod = elementFactory.createMethodFromText(methodSignatureString, commandApplication);
+        }
+
+        JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
+        PsiMethod methodToAdd = newMethod;
+        WriteCommandAction.runWriteCommandAction(project, ()->{
+            // 将新方法添加到目标类
+            commandApplication.add(methodToAdd);
+
+            // 将 import 语句添加到 PsiJavaFile 的 import 列表中
+            PsiJavaFile javaFile = (PsiJavaFile) commandApplication.getContainingFile();
+            PsiImportList importList = javaFile.getImportList();
+
+            {
+                PsiClass psiClass = javaPsiFacade.findClass(commandClass, GlobalSearchScope.allScope(this.project));
+                if (psiClass!=null && !hasImports(importList, psiClass)) {
+                    importList.add(elementFactory.createImportStatement(psiClass));
+
+                }
+            }
+            {
+                PsiClass psiClass = javaPsiFacade.findClass(aggType, GlobalSearchScope.allScope(this.project));
+                if (psiClass != null && !hasImports(importList, psiClass)) {
+                    importList.add(elementFactory.createImportStatement(psiClass));
+                }
+            }
+        });
+    }
+
+    private boolean hasImports(PsiImportList importList, PsiClass psiClass) {
+        return Arrays.asList(importList.getImportStatements())
+                .stream()
+                .map(PsiImportStatement::getQualifiedName)
+                .anyMatch(qualifiedName ->
+                        psiClass.getQualifiedName().equals(qualifiedName)
+                );
+    }
+
+    private PsiClass findCommandApplication(String commandApplicationPkg, String commandApplicationType) {
+        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(this.appModule);
+        VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
+
+        VirtualFile sourceFile = findSourceFile(sourceRoots);
+        if (sourceFile == null){
+            Messages.showMessageDialog("请先为 " + this.appModule.getName() + " 模块创建 Java 源码目录", "Warn", null);
+            return null;
+        }
+
+        PsiDirectory sourceDirectory = PsiManager.getInstance(project)
+                .findDirectory(sourceFile);
+
+        // 根据包路径获取指定的 PsiDirectory
+        PsiDirectory tmp = sourceDirectory;
+        for (String dir : commandApplicationPkg.split("\\.")){
+            PsiDirectory cDirectory = tmp.findSubdirectory(dir);
+            if (cDirectory != null){
+                tmp = cDirectory;
+            }else {
+                break;
+            }
+        }
+        if (tmp != null){
+            PsiFile file = tmp.findFile(commandApplicationType + ".java");
+            if (file != null && file instanceof PsiJavaFile){
+                PsiJavaFile javaFile = (PsiJavaFile)file;
+                PsiClass[] classes = javaFile.getClasses();
+                return classes[0];
+            }
+        }
+        return null;
     }
 
     private void createAggMethod(String basePkg, String methodName) {

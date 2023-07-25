@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.geekhalo.lego.plugin.util.Utils.findSourceFile;
+
 public final class JavaFileCreator {
 
     public static void createJavaFileInPackage(Project project, Module module, String packageName, String className, String content) {
@@ -51,15 +53,6 @@ public final class JavaFileCreator {
             }
         }
         return tmp;
-    }
-
-    private static VirtualFile findSourceFile(VirtualFile[] sourceRoots) {
-        for (VirtualFile file : sourceRoots){
-            if (file.getPath().contains("src/main/java")){
-                return file;
-            }
-        }
-        return null;
     }
 
     private static void createJavaFile(Project project, PsiDirectory targetDirectory, String className, String content) {
