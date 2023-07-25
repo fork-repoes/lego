@@ -18,6 +18,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -25,7 +26,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.*;
 import java.util.Arrays;
 
-import static com.geekhalo.lego.plugin.util.Utils.findSourceFile;
+import static com.geekhalo.lego.plugin.ui.MethodNamePair.parseMethod;
+import static com.geekhalo.lego.plugin.util.Utils.*;
 
 public class CreateAggregationMethodDialog extends JDialog {
     private final Project project;
@@ -52,23 +54,11 @@ public class CreateAggregationMethodDialog extends JDialog {
     private JButton selectKeyTypeButton;
 
     private void init(){
-        aggMethodName.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateByAggMethodName(aggMethodName.getText());
-            }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateByAggMethodName(aggMethodName.getText());
-            }
+        aggMethodName.getDocument()
+                .addDocumentListener(new DocumentUpdateListener(this::updateByAggMethodName));
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateByAggMethodName(aggMethodName.getText());
-            }
-        });
-
+        // 选择聚合根
         this.selectAggButton.addActionListener(e -> {
             TreeClassChooserFactory factory = TreeClassChooserFactory.getInstance(project);
             // 设置过滤条件，只选择 public 类型的类
@@ -86,6 +76,7 @@ public class CreateAggregationMethodDialog extends JDialog {
             }
         });
 
+        // 选择 ID 或 Key 类型
         this.selectKeyTypeButton.addActionListener(e->{
             TreeClassChooserFactory factory = TreeClassChooserFactory.getInstance(project);
             // 设置过滤条件，只选择 public 类型的类
@@ -103,36 +94,21 @@ public class CreateAggregationMethodDialog extends JDialog {
 
         this.aggClassText.setText(aggFullClassName);
 
-        this.commandType.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = String.valueOf(commandType.getSelectedItem());
-                if ("updateById".equalsIgnoreCase(command)
-                        || "updateByKey".equalsIgnoreCase(command)
-                        || "sync".equalsIgnoreCase(command)){
-                    keyTypeSelectPanel.show(true);
-                }else {
-                    keyTypeSelectPanel.show(false);
-                }
-
-            }
-        });
     }
 
+    /**
+     * 根据方法名，更新 Command、Context、Event 类名
+     * @param methodName
+     */
     private void updateByAggMethodName(String methodName){
-
         if (StringUtils.isNotEmpty(methodName)){
             MethodNamePair methodNamePair = parseMethod(methodName, this.aggClassName);
 
-            String commandName = methodNamePair.getAction() + methodNamePair.getTarget() + "Command";
-            this.commandCLass.setText(commandName);
+            this.commandCLass.setText(createCommandTypeName(methodNamePair));
 
-            String contextName = methodNamePair.getAction() + methodNamePair.getTarget() +"Context";
-            this.contextClass.setText(contextName);
+            this.contextClass.setText(createContextTypeName(methodNamePair));
 
-
-            String eventName = methodNamePair.getTarget() + methodNamePair.getPastAction() +"Event";
-            this.eventClass.setText(eventName);
+            this.eventClass.setText(createDomainEventTypeName(methodNamePair));
         }else {
             this.commandCLass.setText("");
             this.contextClass.setText("");
@@ -140,6 +116,11 @@ public class CreateAggregationMethodDialog extends JDialog {
         }
     }
 
+
+    /**
+     * 聚合变化后，更新 package 和 class
+     * @param aggFullClassName
+     */
     private void updateByAggClassName(String aggFullClassName){
         if (StringUtils.isEmpty(aggFullClassName)){
             return;
@@ -154,50 +135,8 @@ public class CreateAggregationMethodDialog extends JDialog {
         }
     }
 
-    private MethodNamePair parseMethod(String methodName, String aggClassName) {
-        Integer firstUp = -1;
-        for (int i = 0; i< methodName.length(); i++){
-            char c = methodName.charAt(i);
-            if (Character.isUpperCase(c) && i != 0){
-                firstUp = i;
-            }
-        }
-        if (firstUp == -1){
-            String action = WordUtils.capitalize(methodName);
-            String target = aggClassName;
-            return new MethodNamePair(action, target);
-        }else {
-            String action = WordUtils.capitalize(methodName.substring(0, firstUp));
-            String target = WordUtils.capitalize(methodName.substring(firstUp));
-            return new MethodNamePair(action, target);
-        }
-    }
 
 
-    private final class MethodNamePair{
-        private String action;
-        private String target;
-
-        MethodNamePair(String action, String target){
-            this.action = action;
-            this.target = target;
-        }
-        public String getPastAction(){
-            if (action.endsWith("e")){
-                return WordUtils.capitalize(action + "d");
-            }else {
-                return WordUtils.capitalize(action + "ed");
-            }
-        }
-
-        public String getAction() {
-            return action;
-        }
-
-        public String getTarget() {
-            return target;
-        }
-    }
 
     public CreateAggregationMethodDialog(Project project,
                                          Module appModule, Module domainModule, Module infraModule,
@@ -265,7 +204,8 @@ public class CreateAggregationMethodDialog extends JDialog {
         String aggType = this.aggPackage + "." + this.aggClassName;
         String commandClass = basePkg + "." + this.commandCLass.getText();
 
-        PsiClass commandApplication = findCommandApplication(this.aggPackage.replace("domain", "app"), this.aggClassName + "CommandApplication");
+        PsiClass commandApplication = findCommandApplication(domainPkgToApp(this.aggPackage), createCommandApplicationByAgg(this.aggClassName));
+
         PsiMethod newMethod = null;
         if ("create".equalsIgnoreCase(commandType)){
               String methodSignatureString =  aggType + " " + methodName + "(" + this.commandCLass.getText() + " command);";
@@ -289,7 +229,6 @@ public class CreateAggregationMethodDialog extends JDialog {
                 PsiClass psiClass = javaPsiFacade.findClass(commandClass, GlobalSearchScope.allScope(this.project));
                 if (psiClass!=null && !hasImports(importList, psiClass)) {
                     importList.add(elementFactory.createImportStatement(psiClass));
-
                 }
             }
             {
@@ -437,7 +376,7 @@ public class CreateAggregationMethodDialog extends JDialog {
         {
             DomainEventTemplate.CreateDomainEventContext context = new DomainEventTemplate.CreateDomainEventContext(basePkg, this.eventClass.getText());
             context.setAggTypeFull(this.aggFullClassName);
-            String absEvent = aggPackage + "." + "Abstract" + this.aggClassName + "Event";
+            String absEvent = aggPackage + "." + createAbstractDomainEventByAgg(this.aggClassName);
             context.setParentTypeFull(absEvent);
             String content = DomainEventTemplate.createEvent(context);
             JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, basePkg, this.eventClass.getText(), content);

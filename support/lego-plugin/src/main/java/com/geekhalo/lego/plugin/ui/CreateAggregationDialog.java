@@ -3,6 +3,7 @@ package com.geekhalo.lego.plugin.ui;
 
 import com.geekhalo.lego.plugin.creator.JavaFileCreator;
 import com.geekhalo.lego.plugin.template.*;
+import com.geekhalo.lego.plugin.util.Utils;
 import com.intellij.ide.util.ClassFilter;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.TreeClassChooser;
@@ -14,11 +15,14 @@ import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.event.*;
+
+import static com.geekhalo.lego.plugin.util.Utils.*;
 
 public class CreateAggregationDialog extends JDialog {
     private Project project;
@@ -67,26 +71,15 @@ public class CreateAggregationDialog extends JDialog {
 
     private void init(Project project, String pkg){
         this.project = project;
+        // 绑定模块信息
         bindModules();
-//        project.getRoot
-//        ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project, project.)
+        // 更新 包信息
         updateByPackage(pkg);
-        this.aggPackage.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateByPackage(aggPackage.getText());
-            }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateByPackage(aggPackage.getText());
-            }
+        // 聚合根包改变，更新其他包
+        this.aggPackage.getDocument()
+                .addDocumentListener(new DocumentUpdateListener(this::updateByPackage));
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateByPackage(aggPackage.getText());
-            }
-        });
         // 选择 Agg 所在包
         selectPkgForAgg.addActionListener(e -> {
             PackageChooserDialog chooserDialog = new PackageChooserDialog("请选择包", project);
@@ -98,10 +91,10 @@ public class CreateAggregationDialog extends JDialog {
             }
         });
 
+        // 选择 Agg 父类
         this.aggParentSelectButton.addActionListener(e -> {
             TreeClassChooserFactory factory = TreeClassChooserFactory.getInstance(project);
             // 设置过滤条件，只选择 public 类型的类
-//                Condition<PsiClass> condition = psiClass -> PsiModifier.PUBLIC == psiClass.getModifierList()();
             ClassFilter classFilter = psiClass -> psiClass.getModifierList().hasExplicitModifier(PsiModifier.PUBLIC);
             // 弹出选择类的窗口
             TreeClassChooser chooser = factory.createWithInnerClassesScopeChooser("选择聚合根父类", GlobalSearchScope.allScope(project), classFilter, null);
@@ -114,24 +107,63 @@ public class CreateAggregationDialog extends JDialog {
             }
         });
 
-        this.aggClassName.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                refreshByAggNameChanged(aggClassName.getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                refreshByAggNameChanged(aggClassName.getText());
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                refreshByAggNameChanged(aggClassName.getText());
+        // 选择 Agg Id 类型
+        this.aggIdTypeSelectButton.addActionListener(e->{
+            TreeClassChooserFactory factory = TreeClassChooserFactory.getInstance(project);
+            // 设置过滤条件，只选择 public 类型的类
+            ClassFilter classFilter = psiClass -> psiClass.getModifierList().hasExplicitModifier(PsiModifier.PUBLIC);
+            // 弹出选择类的窗口
+            TreeClassChooser chooser = factory.createWithInnerClassesScopeChooser("选择聚合根主键", GlobalSearchScope.allScope(project), classFilter, null);
+            chooser.showDialog();
+            // 获取用户选择的类
+            PsiClass selectedClass = chooser.getSelected();
+            // 如果用户选择了类，则在控制台输出类名
+            if (selectedClass != null) {
+                aggIdTextField.setText(selectedClass.getQualifiedName());
             }
         });
+
+        // 选择 repository 所在的包
+        this.repositoryPackageSelectButton.addActionListener(e->{
+            PackageChooserDialog chooserDialog = new PackageChooserDialog("请选择包", project);
+            if(chooserDialog.showAndGet()) {
+                PsiPackage selectedPackage = chooserDialog.getSelectedPackage();
+                if (selectedPackage != null) {
+                    repositoryPkg.setText(selectedPackage.getQualifiedName());
+                }
+            }
+        });
+
+        // 选择 application 所在包
+        this.applicationPackageSelectButton.addActionListener(e->{
+            PackageChooserDialog chooserDialog = new PackageChooserDialog("请选择包", project);
+            if(chooserDialog.showAndGet()) {
+                PsiPackage selectedPackage = chooserDialog.getSelectedPackage();
+                if (selectedPackage != null) {
+                    applicationPkg.setText(selectedPackage.getQualifiedName());
+                }
+            }
+        });
+
+        // 选择 领域事件所在包
+        this.domainEventPackageSelectButton.addActionListener(e->{
+            PackageChooserDialog chooserDialog = new PackageChooserDialog("请选择包", project);
+            if(chooserDialog.showAndGet()) {
+                PsiPackage selectedPackage = chooserDialog.getSelectedPackage();
+                if (selectedPackage != null) {
+                    domainEventPkg.setText(selectedPackage.getQualifiedName());
+                }
+            }
+        });
+
+        ;
+        this.aggClassName.getDocument()
+                .addDocumentListener(new DocumentUpdateListener(this::refreshByAggNameChanged));
     }
 
+    /**
+     * 绑定 Module <br />
+     */
     private void bindModules() {
         this.aggModuleName.setText(this.domainModule.getName());
         this.repositoryModule.setText(this.domainModule.getName());
@@ -139,34 +171,34 @@ public class CreateAggregationDialog extends JDialog {
         this.abstractDomainEventModule.setText(this.domainModule.getName());
     }
 
+    /**
+     * 更新 pkg
+     * @param pkg
+     */
     private void updateByPackage(String pkg) {
         if (StringUtils.isNotEmpty(pkg)) {
             aggPackage.setText(pkg);
             repositoryPkg.setText(pkg);
             domainEventPkg.setText(pkg);
 
-            String appPkg = pkg.replace("domain", "app");
+            String appPkg = Utils.domainPkgToApp(pkg);
             applicationPkg.setText(appPkg);
         }
 
     }
 
     private void refreshByAggNameChanged(String aggClass){
-        String commandRepository = aggClass + "CommandRepository";
-        this.commandRepository.setText(commandRepository);
+        this.commandRepository.setText(createCommandRepositoryByAgg(aggClass));
 
-        String queryRepository = aggClass + "QueryRepository";
-        this.queryRepository.setText(queryRepository);
+        this.queryRepository.setText(createQueryRepositoryByAgg(aggClass));
 
-        String commandApplication = aggClass + "CommandApplication";
-        this.commandApplication.setText(commandApplication);
+        this.commandApplication.setText(createCommandApplicationByAgg(aggClass));
 
-        String queryApplication = aggClass + "QueryApplication";
-        this.queryApplication.setText(queryApplication);
+        this.queryApplication.setText(createQueryApplicationByAgg(aggClass));
 
-        String domainEvent = "Abstract" + aggClass + "Event";
-        this.domainEventClass.setText(domainEvent);
+        this.domainEventClass.setText(createAbstractDomainEventByAgg(aggClass));
     }
+
 
     public CreateAggregationDialog(Project project, String pkg, Module appModule, Module domainModule, Module infraModule) {
         this.appModule = appModule;
@@ -189,8 +221,6 @@ public class CreateAggregationDialog extends JDialog {
             }
         });
 
-
-
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -207,7 +237,6 @@ public class CreateAggregationDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         init(project, pkg);
-
     }
 
     private void onOK() {
@@ -222,6 +251,7 @@ public class CreateAggregationDialog extends JDialog {
     }
 
     private void createFile(){
+        // 创建 聚合根
         {
             AggregationTemplate.CreateAggregationContext context = new AggregationTemplate.CreateAggregationContext(this.aggPackage.getText(), this.aggClassName.getText());
             bindCommon(context);
@@ -230,6 +260,7 @@ public class CreateAggregationDialog extends JDialog {
             JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, this.aggPackage.getText(), this.aggClassName.getText(), content);
         }
 
+        // 创建 CommandRepository
         if (createCommandRepository.isSelected()){
             RepositoryTemplate.CreateCommandRepositoryContext context = new RepositoryTemplate.CreateCommandRepositoryContext(this.repositoryPkg.getText(), this.commandRepository.getText());
             bindCommon(context);
@@ -237,6 +268,7 @@ public class CreateAggregationDialog extends JDialog {
             JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule,  this.repositoryPkg.getText(), this.commandRepository.getText(), commandContent);
         }
 
+        // 创建 QueryRepository
         if (createQueryRepository.isSelected()){
             RepositoryTemplate.CreateQueryRepositoryContext context = new RepositoryTemplate.CreateQueryRepositoryContext(this.repositoryPkg.getText(), this.queryRepository.getText());
             bindCommon(context);
@@ -244,6 +276,7 @@ public class CreateAggregationDialog extends JDialog {
             JavaFileCreator.createJavaFileInPackage(this.project, this.domainModule, this.repositoryPkg.getText(), this.queryRepository.getText(), queryContent);
         }
 
+        // 创建 AbstractDomainEvent
         if (createAbstractDomainEvent.isSelected()){
             DomainEventTemplate.CreateAbstractDomainEventContext context = new DomainEventTemplate.CreateAbstractDomainEventContext(this.domainEventPkg.getText(), this.domainEventClass.getText());
             bindCommon(context);
@@ -251,6 +284,7 @@ public class CreateAggregationDialog extends JDialog {
             JavaFileCreator.createJavaFileInPackage(this.project,  this.domainModule, this.domainEventPkg.getText(), this.domainEventClass.getText(), domainContent);
         }
 
+        // 创建 CommandApplication
         if (createCommandApplication.isSelected()){
             ApplicationTemplate.CreateCommandApplicationContext context = new ApplicationTemplate.CreateCommandApplicationContext(this.applicationPkg.getText(), this.commandApplication.getText());
             bindCommon(context);
@@ -258,6 +292,8 @@ public class CreateAggregationDialog extends JDialog {
             String content = ApplicationTemplate.createCommandApplication(context);
             JavaFileCreator.createJavaFileInPackage(this.project, this.appModule, this.applicationPkg.getText(), this.commandApplication.getText(), content);
         }
+
+        // 创建 QueryApplication
         if (createQueryApplication.isSelected()){
             ApplicationTemplate.CreateQueryApplicationContext context = new ApplicationTemplate.CreateQueryApplicationContext(this.applicationPkg.getText(), this.queryApplication.getText());
             bindCommon(context);
@@ -272,11 +308,4 @@ public class CreateAggregationDialog extends JDialog {
         context.setIdTypeFull(this.aggIdTextField.getText());
         context.setAggTypeFull(this.aggPackage.getText() + "." + this.aggClassName.getText());
     }
-
-//    public static void main(String[] args) {
-//        CreateAggregationDialog dialog = new CreateAggregationDialog(null, "", null);
-//        dialog.pack();
-//        dialog.setVisible(true);
-//        System.exit(0);
-//    }
 }
