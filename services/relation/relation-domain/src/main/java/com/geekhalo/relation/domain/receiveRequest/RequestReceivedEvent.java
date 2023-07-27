@@ -1,13 +1,13 @@
-package com.geekhalo.relation.domain.applyFriend;
+package com.geekhalo.relation.domain.receiveRequest;
 
-import lombok.Value;
 import com.geekhalo.relation.domain.AbstractRelationEvent;
 import com.geekhalo.relation.domain.Relation;
+import lombok.Value;
 
 @Value
-public class FriendAppliedEvent
+public class RequestReceivedEvent
         extends AbstractRelationEvent{
-    public FriendAppliedEvent(Relation agg){
+    public RequestReceivedEvent(Relation agg){
         super(agg);
     }
 }

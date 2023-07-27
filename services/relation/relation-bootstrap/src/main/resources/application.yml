@@ -7,18 +7,10 @@ logging:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/like
+    url: jdbc:mysql://127.0.0.1:3306/relation
     username: root
     password: root
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
-  redis:
-    host: 127.0.0.1
-    port: 6379
-
-rocketmq:
-  name-server: http://127.0.0.1:9876
-  producer:
-    group: like-service

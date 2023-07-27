@@ -2,12 +2,10 @@ package com.geekhalo.relation.domain;
 
 
 import com.geekhalo.lego.core.command.CommandRepository;
-import com.geekhalo.relation.domain.Relation;
-import java.lang.Long;
+import com.geekhalo.lego.core.command.CommandWithKeyRepository;
 
-import java.util.Optional;
-
-public interface RelationCommandRepository extends CommandRepository<Relation, Long> {
+public interface RelationCommandRepository
+        extends CommandRepository<Relation, Long>, CommandWithKeyRepository<Relation, Long, RelationKey> {
 
 
 
