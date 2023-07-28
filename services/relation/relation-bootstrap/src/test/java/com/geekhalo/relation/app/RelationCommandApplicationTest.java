@@ -1,41 +1,272 @@
 package com.geekhalo.relation.app;
 
 
+import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.relation.Application;
+import com.geekhalo.relation.domain.Relation;
+import com.geekhalo.relation.domain.RelationCommandRepository;
+import com.geekhalo.relation.domain.RelationKey;
+import com.geekhalo.relation.domain.RelationStatus;
+import com.geekhalo.relation.domain.acceptRequest.AcceptRequestCommand;
+import com.geekhalo.relation.domain.cancelRequest.CancelRequestCommand;
+import com.geekhalo.relation.domain.sendRequest.SendRequestCommand;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = Application.class)
 public class RelationCommandApplicationTest {
     @Autowired
     private RelationCommandApplication commandApplication;
 
+    @Autowired
+    private RelationCommandRepository commandRepository;
+
+    @Autowired
+    private RelationQueryApplication queryApplication;
+
+    private RelationKey ownerKey;
+
+    private RelationKey recipientKey;
+
     @BeforeEach
     public void setUp() throws Exception {
         Assertions.assertNotNull(this.commandApplication);
+        Long owner = RandomUtils.nextLong(0, Long.MAX_VALUE);
+        Long recipient = RandomUtils.nextLong(0, Long.MAX_VALUE);
+        this.ownerKey = new RelationKey();
+        this.ownerKey.setOwner(owner);
+        this.ownerKey.setRecipient(recipient);
+
+        this.recipientKey = this.ownerKey.reversed();
     }
 
     @AfterEach
     public void tearDown() throws Exception {
     }
 
+    /**
+     * A 发送请求 <br />
+     * 1. owner 存在一条 "请求已发送"(REQUEST_SENT)
+     * 2. recipient 存在一条 "请求已接收"(REQUEST_RECEIVED)
+     */
     @Test
-    public void sendRequest() {
+    public void sendRequest() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+
+
+            {
+                Page<Relation> relations = this.queryApplication.getByKeyOwner(this.ownerKey.getOwner(), PageRequest.of(0, 10));
+                Assertions.assertTrue(relations.hasContent());
+            }
+            {
+                QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+                queryRelationByOwner.setOwner(this.ownerKey.getOwner());
+                queryRelationByOwner.setStatuses(Arrays.asList(RelationStatus.REQUEST_SENT, RelationStatus.REQUEST_RECEIVED));
+                queryRelationByOwner.setPageable(new Pageable(0, 10));
+                com.geekhalo.lego.core.singlequery.Page<Relation> page = this.queryApplication.pageOf(queryRelationByOwner);
+                Assertions.assertTrue(page.hasContent());
+            }
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_RECEIVED, relation.getStatus());
+
+            Page<Relation> relations = this.queryApplication.getByKeyOwner(this.ownerKey.getOwner(), PageRequest.of(0, 10));
+            Assertions.assertTrue(relations.hasContent());
+
+        }
     }
 
+    /**
+     * A 发送请求，B 也发送请求 <br />
+     * 1. owner 存在一条 "请求已接受"（REQUEST_ACCEPTED）
+     * 2. recipient 存在一条 "请求已接受"（REQUEST_ACCEPTED）
+     */
     @Test
-    public void receiveRequest() {
+    public void sendRequest2() throws InterruptedException {
+        SendRequestCommand ownerSendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(ownerSendRequestCommand);
+
+        SendRequestCommand recipientSendRequestCommand = new SendRequestCommand(this.recipientKey);
+        this.commandApplication.sendRequest(recipientSendRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+        }
     }
 
+    /**
+     * A 发送请求，B 接受请求 <br />
+     * 1. owner 存在一条 "请求已接受"（REQUEST_ACCEPTED）
+     * 2. recipient 存在一条 "请求已接受"（REQUEST_ACCEPTED）
+     */
     @Test
-    public void acceptRequest() {
+    public void acceptRequest() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        AcceptRequestCommand acceptRequestCommand = new AcceptRequestCommand(this.recipientKey);
+        this.commandApplication.acceptRequest(acceptRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+        }
     }
 
+    /**
+     * A发送请求，然后取消 <br />
+     * 1. owner 存在一条 "请求已取消"
+     * 2. recipient 存在一条 "请求已取消"
+     */
     @Test
-    public void cancelRequest() {
+    public void cancelRequest() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
+        this.commandApplication.cancelRequest(cancelRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_CANCELLED, relation.getStatus());
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_CANCELLED, relation.getStatus());
+        }
     }
+
+    /**
+     * A发送请求，然后取消，A 再次发送请求 <br />
+     * 1. owner 存在一条 "请求已发送"(REQUEST_SENT)
+     * 2. recipient 存在一条 "请求已接收"(REQUEST_RECEIVED)
+     */
+    @Test
+    public void cancelAndSendRequest() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
+        this.commandApplication.cancelRequest(cancelRequestCommand);
+
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_RECEIVED, relation.getStatus());
+        }
+    }
+
+
+    /**
+     * A发送请求，然后取消，B 发送请求 <br />
+     * 1. owner 存在一条 "请求已接收"(REQUEST_RECEIVED)
+     * 2. recipient 存在一条 "请求已发送"(REQUEST_SENT)
+     */
+    @Test
+    public void cancelAndBSendRequest() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
+        this.commandApplication.cancelRequest(cancelRequestCommand);
+
+        SendRequestCommand sendRequestCommandB = new SendRequestCommand(this.recipientKey);
+        this.commandApplication.sendRequest(sendRequestCommandB);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_RECEIVED, relation.getStatus());
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+        }
+    }
+
 }

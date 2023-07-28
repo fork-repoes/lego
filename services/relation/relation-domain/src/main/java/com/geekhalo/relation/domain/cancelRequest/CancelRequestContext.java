@@ -1,10 +1,12 @@
 package com.geekhalo.relation.domain.cancelRequest;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class CancelRequestContext{
-    private final CancelRequestCommand command;
+    private CancelRequestCommand command;
 
     private CancelRequestContext(CancelRequestCommand command){
          this.command = command;

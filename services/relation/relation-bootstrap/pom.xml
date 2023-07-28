@@ -18,5 +18,10 @@
             <artifactId>relation-feign-service</artifactId>
             <version>0.1.25-relation-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.geekhalo.lego</groupId>
+            <artifactId>lego-core</artifactId>
+            <version>0.1.25-ddd_idea_plugin-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

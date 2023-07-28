@@ -22,6 +22,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Relation extends AbstractAggRoot { 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Embedded
@@ -33,30 +34,107 @@ public class Relation extends AbstractAggRoot {
     private RelationStatus status;
 
     public static Relation applySendRequest(SendRequestContext context){
-        return new Relation();
+        RelationKey relationKey = context.getCommand().getKey();
+        return createRelation(relationKey);
+    }
+
+    private static Relation createRelation(RelationKey relationKey) {
+        Relation relation = new Relation();
+        relation.setKey(relationKey);
+        relation.init();
+        return relation;
+    }
+
+    private void init() {
+        setStatus(RelationStatus.NONE);
     }
 
     public static Relation applyReceiveRequest(ReceiveRequestContext context){
-        return new Relation();
+        return createRelation(context.getCommand().getKey());
     }
 
+
     public void sendRequest(SendRequestContext context) {
-        //添加代码
-        addEvent(new RequestSentEvent(this));
+        // 第一次申请，变成 REQUEST_SENT
+        if (getStatus() == RelationStatus.NONE) {
+            //添加代码
+            setStatus(RelationStatus.REQUEST_SENT);
+            addEvent(new RequestSentEvent(this));
+            return;
+        }
+        // 取消后再申请，变成 REQUEST_SENT
+        if (getStatus() == RelationStatus.REQUEST_CANCELLED){
+            //添加代码
+            setStatus(RelationStatus.REQUEST_SENT);
+            addEvent(new RequestSentEvent(this));
+            return;
+        }
+        // 别人已经申请，变成 REQUEST_ACCEPTED
+        if (getStatus() == RelationStatus.REQUEST_RECEIVED){
+            setStatus(RelationStatus.REQUEST_ACCEPTED);
+            addEvent(new RequestAcceptedEvent(this));
+            return;
+        }
+        throw new RuntimeException("Status is Error");
     }
 
     public void receiveRequest(ReceiveRequestContext context) {
-        //添加代码
-        addEvent(new RequestReceivedEvent(this));
+        // 第一次接到申请
+        if (getStatus() == RelationStatus.NONE){
+            //添加代码
+            setStatus(RelationStatus.REQUEST_RECEIVED);
+            addEvent(new RequestReceivedEvent(this));
+            return;
+        }
+
+        // 取消后再申请
+        if (getStatus() == RelationStatus.REQUEST_CANCELLED){
+            //添加代码
+            setStatus(RelationStatus.REQUEST_RECEIVED);
+            addEvent(new RequestReceivedEvent(this));
+            return;
+        }
+
+        throw new RuntimeException("Status is Error");
+
     }
 
     public void acceptRequest(AcceptRequestContext context) {
-        //添加代码
-        addEvent(new RequestAcceptedEvent(this));
+        // 接受别人的请求
+        if (getStatus() == RelationStatus.REQUEST_RECEIVED) {
+            //添加代码
+            setStatus(RelationStatus.REQUEST_ACCEPTED);
+            addEvent(new RequestAcceptedEvent(this));
+            return;
+        }
+        // 别人接受自己的请求
+        if (getStatus() == RelationStatus.REQUEST_SENT) {
+            //添加代码
+            setStatus(RelationStatus.REQUEST_ACCEPTED);
+            addEvent(new RequestAcceptedEvent(this));
+            return;
+        }
+
+        throw new RuntimeException("Status is Error");
     }
 
     public void cancelRequest(CancelRequestContext context) {
-        //添加代码
-        addEvent(new RequestCancelledEvent(this));
+        // 取消
+        if (getStatus() == RelationStatus.REQUEST_RECEIVED) {
+            //添加代码
+            setStatus(RelationStatus.REQUEST_CANCELLED);
+            addEvent(new RequestCancelledEvent(this));
+            return;
+        }
+        // 取消
+        if (getStatus() == RelationStatus.REQUEST_SENT) {
+            //添加代码
+            setStatus(RelationStatus.REQUEST_CANCELLED);
+            addEvent(new RequestCancelledEvent(this));
+            return;
+        }
+
+        throw new RuntimeException("Status is Error");
+
     }
 }

@@ -1,10 +1,12 @@
 package com.geekhalo.relation.domain.acceptRequest;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class AcceptRequestContext{
-    private final AcceptRequestCommand command;
+    private AcceptRequestCommand command;
 
     private AcceptRequestContext(AcceptRequestCommand command){
          this.command = command;

@@ -1,10 +1,12 @@
 package com.geekhalo.relation.domain.sendRequest;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class SendRequestContext{
-    private final SendRequestCommand command;
+    private SendRequestCommand command;
 
     private SendRequestContext(SendRequestCommand command){
          this.command = command;

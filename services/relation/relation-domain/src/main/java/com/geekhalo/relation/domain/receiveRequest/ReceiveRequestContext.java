@@ -1,10 +1,12 @@
 package com.geekhalo.relation.domain.receiveRequest;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class ReceiveRequestContext{
-    private final ReceiveRequestCommand command;
+    private ReceiveRequestCommand command;
 
     private ReceiveRequestContext(ReceiveRequestCommand command){
          this.command = command;
