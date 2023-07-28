@@ -11,7 +11,7 @@ public class EnumTemplate {
             "    private final int code;\n" +
             "    private final String descr;\n" +
             "\n" +
-            "    private {className}(int code, String descr){\n" +
+            "    {className}(int code, String descr){\n" +
             "        this.code = code;\n" +
             "        this.descr = descr;\n" +
             "    }\n" +

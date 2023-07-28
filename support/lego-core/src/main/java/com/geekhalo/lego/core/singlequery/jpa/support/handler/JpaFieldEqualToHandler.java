@@ -23,7 +23,7 @@ public class JpaFieldEqualToHandler
 
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldEqualTo fieldEqualTo, Object value) {
-        return criteriaBuilder.equal(root.get(fieldNameOf(fieldEqualTo)), value);
+        return criteriaBuilder.equal(createExpression(root, fieldNameOf(fieldEqualTo)), value);
     }
 
     @Override

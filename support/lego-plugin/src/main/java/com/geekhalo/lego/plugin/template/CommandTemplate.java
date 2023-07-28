@@ -30,11 +30,10 @@ public class CommandTemplate {
             "import javax.validation.constraints.NotNull;\n" +
             "\n" +
             "@Data\n" +
-            "@AllArgsConstructor\n" +
             "@NoArgsConstructor\n" +
             "public class {className} implements CommandForUpdateById<{id}> {\n" +
             "    @NotNull\n" +
-            "    private final {id} id;\n" +
+            "    private {id} id;\n" +
             "\n" +
             "    public {className}({id} id){\n" +
             "        this.id = id;\n" +
@@ -62,11 +61,10 @@ public class CommandTemplate {
             "import lombok.NoArgsConstructor;\n" +
             "\n" +
             "@Data\n" +
-            "@AllArgsConstructor\n" +
             "@NoArgsConstructor\n" +
             "public class {className} implements CommandForUpdateByKey<{keyType}> {\n" +
             "\n" +
-            "    private final {keyType} key;\n" +
+            "    private {keyType} key;\n" +
             "\n" +
             "    public {className}({keyType} key) {\n" +
             "        this.key = key;\n "+
@@ -94,7 +92,6 @@ public class CommandTemplate {
             "\n" +
             "\n" +
             "@Data\n" +
-            "@AllArgsConstructor\n" +
             "@NoArgsConstructor\n" +
             "public class {className} implements CommandForSync<{keyType}> {\n" +
             "    private final {keyType} key;\n" +

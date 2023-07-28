@@ -23,7 +23,7 @@ public class JpaFieldInHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldIn fieldIn, Object value) {
         if (value instanceof Collection) {
-            return criteriaBuilder.in(root.get(fieldNameOf(fieldIn)))
+            return criteriaBuilder.in(createExpression(root, fieldNameOf(fieldIn)))
                     .value((Collection<?>) value);
         }
         return null;

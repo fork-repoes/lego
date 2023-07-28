@@ -9,16 +9,16 @@ public class ContextTemplate {
             "import lombok.AllArgsConstructor;\n" +
             "import lombok.NoArgsConstructor;\n" +
             "\n" +
-
+            "@NoArgsConstructor\n" +
             "@Data\n" +
             "public class {className}{\n" +
-            "    private final {commandType} command;\n" +
+            "    private {commandType} command;\n" +
             "\n" +
             "    private {className}({commandType} command){\n " +
             "        this.command = command;\n" +
             "    }\n" +
             "\n" +
-            "    public static {className} apply ({commandType} command) {\n" +
+            "    public static {className} apply({commandType} command) {\n" +
             "        {className} context = new {className}(command);\n" +
             "        return context;\n" +
             "    }\n" +

@@ -22,7 +22,7 @@ public class JpaFieldLessThanHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldLessThan fieldLessThan, Object value) {
         if (value instanceof Comparable){
-            return criteriaBuilder.lessThan(root.get(fieldNameOf(fieldLessThan)), (Comparable) value);
+            return criteriaBuilder.lessThan(createExpression(root, fieldNameOf(fieldLessThan)), (Comparable) value);
         }
         return null;
     }

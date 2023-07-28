@@ -22,7 +22,7 @@ public class JpaFieldGreaterThanOrEqualToHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldGreaterThanOrEqualTo fieldGreaterThanOrEqualTo, Object value) {
         if (value instanceof Comparable){
-            return criteriaBuilder.greaterThanOrEqualTo(root.get(fieldNameOf(fieldGreaterThanOrEqualTo)),
+            return criteriaBuilder.greaterThanOrEqualTo(createExpression(root, fieldNameOf(fieldGreaterThanOrEqualTo)),
                     (Comparable) value);
         }
         return null;
