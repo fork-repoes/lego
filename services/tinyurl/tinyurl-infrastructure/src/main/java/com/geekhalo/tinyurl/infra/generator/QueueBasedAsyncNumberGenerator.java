@@ -26,6 +26,7 @@ public class QueueBasedAsyncNumberGenerator
         BasicThreadFactory threadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("Queue-Async-Number-Generator-Thread-%d")
                 .daemon(true)
+                .uncaughtExceptionHandler()
                 .build();
         ExecutorService executorService = new ThreadPoolExecutor(1, 1,
                 0L, TimeUnit.MILLISECONDS,

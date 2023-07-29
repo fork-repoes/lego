@@ -41,6 +41,14 @@
             <action class="com.geekhalo.lego.plugin.action.CreateEnumAction"
                     id="createEnum" text="Create Enum">
             </action>
+
+            <action class="com.geekhalo.lego.plugin.action.CreateLazyLoaderAction"
+                    id="createLazyLoader" text="Create LazyLoader">
+            </action>
+
+            <action class="com.geekhalo.lego.plugin.action.CreateJoinInMemoryAction"
+                    id="createJoinInMemory" text="Create JoinInMemory">
+            </action>
         </group>
     </actions>
 

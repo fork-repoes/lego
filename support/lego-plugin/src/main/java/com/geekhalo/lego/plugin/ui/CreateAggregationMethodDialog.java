@@ -289,8 +289,9 @@ public class CreateAggregationMethodDialog extends JDialog {
         String contextType = basePkg + "." + this.contextClass.getText();
         String commandType = String.valueOf(this.commandType.getSelectedItem());
         String aggType = this.aggPackage + "." + this.aggClassName;
-        if ("create".equalsIgnoreCase(commandType)){
-            // 创建新方法
+
+        if ("create".equalsIgnoreCase(commandType) || "sync".equalsIgnoreCase(commandType)){
+            // 创建静态创建方法
             PsiType returnType =  PsiType.getTypeByName(aggType, project, GlobalSearchScope.allScope(project));
             newMethod = elementFactory.createMethod(methodName, returnType);
             newMethod.getModifierList().setModifierProperty(PsiModifier.PUBLIC, true);
@@ -307,7 +308,9 @@ public class CreateAggregationMethodDialog extends JDialog {
             PsiCodeBlock codeBlock = elementFactory.createCodeBlockFromText(methodBody, null);
             newMethod.getBody().replace(codeBlock);
 
-        }else {
+        }else if ("updateByKey".equalsIgnoreCase(commandType)
+                || "updateById".equalsIgnoreCase(commandType)
+                || "sync".equalsIgnoreCase(commandType)){
             // 创建新方法
             newMethod = elementFactory.createMethod(methodName, PsiType.VOID);
             newMethod.getModifierList().setModifierProperty(PsiModifier.PUBLIC, true);
