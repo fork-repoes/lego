@@ -1,0 +1,50 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.geekhalo.lego.plugin</id>
+    <name>Lego DDD Template</name>
+    <vendor>lego</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+<!--    <depends>com.intellij.database</depends>-->
+    <!-- 国际化-->
+<!--    <resource-bundle>messages.CodeGenBundle</resource-bundle>-->
+
+<!--    <extensions defaultExtensionNs="com.intellij">-->
+<!--        <toolWindow factoryClass="com.github.smartgim.codegen1v5.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
+<!--        <applicationService id="codeGenSettings" serviceImplementation="com.only4play.codegen.settings.CodeGenSettings"/>-->
+<!--    </extensions>-->
+
+<!--    <extensions defaultExtensionNs="com.intellij.database">-->
+<!--        <dataImporter/>-->
+<!--    </extensions>-->
+
+
+
+    <actions>
+<!--        <action text="CodeGen" class="com.only4play.codegen.actions.MainMenuAction" id="codgen.new">-->
+<!--            <add-to-group group-id="DatabaseViewPopupMenu"/>-->
+<!--        </action>-->
+        <group id="legoDDD"
+               text="Lego DDD"
+               popup="true">
+            <add-to-group
+                    group-id="NewGroup"
+                    anchor="first" />
+            <action class="com.geekhalo.lego.plugin.action.CreateAggregationAction"
+                    id="createAggregation" text="Create Aggregation">
+            </action>
+            <action class="com.geekhalo.lego.plugin.action.CreateAggregationMethodAction"
+                    id="createAggregationMethod" text="Create Aggregation Method">
+            </action>
+
+            <action class="com.geekhalo.lego.plugin.action.CreateEnumAction"
+                    id="createEnum" text="Create Enum">
+            </action>
+        </group>
+    </actions>
+
+<!--    <applicationListeners>-->
+<!--        <listener class="com.github.smartgim.codegen1v5.listeners.MyFrameStateListener" topic="com.intellij.ide.FrameStateListener"/>-->
+<!--    </applicationListeners>-->
+</idea-plugin>

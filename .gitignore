@@ -26,11 +26,16 @@ hs_err_pid*
 */logs/*
 logs/*
 .idea/*
+*/.idea/*
+*/*/.idea/*
 */target/*
 /services/*/*/target/*
 /support/lego-starter/*/target/*
 */*/target/*
 */build/*
+*/*/build/*
+*/.gradle/*
+*/*/.gradle/*
 target/*
 .DS_Store/*
 .gradle/*

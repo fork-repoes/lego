@@ -23,7 +23,7 @@ public class JpaFieldNotInHandler
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldNotIn fieldNotIn, Object value) {
         if (value instanceof Collection){
-            return criteriaBuilder.in(root.get(fieldNameOf(fieldNotIn)))
+            return criteriaBuilder.in(createExpression(root, fieldNameOf(fieldNotIn)))
                     .value((Collection<?>) value).not();
         }
         return null;
