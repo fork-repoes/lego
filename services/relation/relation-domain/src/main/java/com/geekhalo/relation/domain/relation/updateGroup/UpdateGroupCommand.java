@@ -1,19 +1,23 @@
-package com.geekhalo.relation.domain.relation.acceptRequest;
+package com.geekhalo.relation.domain.relation.updateGroup;
 
 
 import com.geekhalo.lego.core.command.CommandForUpdateByKey;
+import java.lang.Long;
+
 import com.geekhalo.relation.domain.relation.RelationKey;
 import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AcceptRequestCommand implements CommandForUpdateByKey<RelationKey> {
+public class UpdateGroupCommand implements CommandForUpdateByKey<RelationKey> {
 
     private RelationKey key;
+
     private Long groupId;
 
-    public AcceptRequestCommand(RelationKey key) {
+    public UpdateGroupCommand(RelationKey key) {
         this.key = key;
      }
 
@@ -22,8 +26,8 @@ public class AcceptRequestCommand implements CommandForUpdateByKey<RelationKey> 
         return this.key;
     }
 
-    public static AcceptRequestCommand apply(RelationKey key){
-        AcceptRequestCommand command = new AcceptRequestCommand(key); 
+    public static UpdateGroupCommand apply(RelationKey key){
+        UpdateGroupCommand command = new UpdateGroupCommand(key); 
         return command;
     }
 }

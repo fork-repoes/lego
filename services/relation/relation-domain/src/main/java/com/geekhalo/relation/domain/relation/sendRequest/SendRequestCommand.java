@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendRequestCommand implements CommandForSync<RelationKey> {
     private RelationKey key;
+    private Long groupId;
 
      public SendRequestCommand(RelationKey key) {
         this.key = key;

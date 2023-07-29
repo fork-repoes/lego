@@ -7,6 +7,7 @@ import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestCommand;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestCommand;
 import com.geekhalo.relation.domain.relation.receiveRequest.ReceiveRequestCommand;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestCommand;
+import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 
 @CommandServiceDefinition(
         domainClass = Relation.class,
@@ -22,4 +23,6 @@ public interface RelationCommandApplication {
     void acceptRequest(AcceptRequestCommand command);
 
     void cancelRequest(CancelRequestCommand command);
+
+    void updateGroup(UpdateGroupCommand command);
 }

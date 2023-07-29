@@ -69,4 +69,13 @@ public class RelationGroup extends AbstractAggRoot {
             addEvent(new RelationGroupDisabledEvent(this));
         }
     }
+
+    public static RelationGroup createDefault(){
+        RelationGroup group = new RelationGroup();
+        group.setId(0L);
+        group.setName("默认分组");
+        group.setDescr("系统分组");
+        group.setStatus(RelationGroupStatus.ENABLE);
+        return group;
+    }
 }

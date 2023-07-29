@@ -1,6 +1,7 @@
 package com.geekhalo.relation.domain.relation;
 
 import com.geekhalo.lego.core.command.support.AbstractAggRoot;
+import com.geekhalo.relation.domain.group.RelationGroup;
 import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestContext;
 import com.geekhalo.relation.domain.relation.acceptRequest.RequestAcceptedEvent;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestContext;
@@ -9,6 +10,10 @@ import com.geekhalo.relation.domain.relation.receiveRequest.ReceiveRequestContex
 import com.geekhalo.relation.domain.relation.receiveRequest.RequestReceivedEvent;
 import com.geekhalo.relation.domain.relation.sendRequest.RequestSentEvent;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestContext;
+import com.geekhalo.relation.domain.relation.updateGroup.GroupUpdatedEvent;
+import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
+import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupContext;
+import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupContext;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,14 +38,18 @@ public class Relation extends AbstractAggRoot {
     @Setter(AccessLevel.PRIVATE)
     private RelationStatus status;
 
+    @Setter(AccessLevel.PRIVATE)
+    private Long groupId;
+
     public static Relation applySendRequest(SendRequestContext context){
         RelationKey relationKey = context.getCommand().getKey();
-        return createRelation(relationKey);
+        return createRelation(relationKey, context.getRelationGroup());
     }
 
-    private static Relation createRelation(RelationKey relationKey) {
+    private static Relation createRelation(RelationKey relationKey, RelationGroup relationGroup) {
         Relation relation = new Relation();
         relation.setKey(relationKey);
+        relation.setGroupId(relationGroup.getId());
         relation.init();
         return relation;
     }
@@ -50,7 +59,7 @@ public class Relation extends AbstractAggRoot {
     }
 
     public static Relation applyReceiveRequest(ReceiveRequestContext context){
-        return createRelation(context.getCommand().getKey());
+        return createRelation(context.getCommand().getKey(), RelationGroup.createDefault());
     }
 
 
@@ -100,6 +109,7 @@ public class Relation extends AbstractAggRoot {
     }
 
     public void acceptRequest(AcceptRequestContext context) {
+        setGroupId(context.getRelationGroup().getId());
         // 接受别人的请求
         if (getStatus() == RelationStatus.REQUEST_RECEIVED) {
             //添加代码
@@ -136,5 +146,13 @@ public class Relation extends AbstractAggRoot {
 
         throw new RuntimeException("Status is Error");
 
+    }
+
+    public void updateGroup(UpdateGroupContext context) {
+        Long nGroupId = context.getGroup().getId();
+        if (nGroupId != getGroupId()) {
+            setGroupId(nGroupId);
+            addEvent(new GroupUpdatedEvent(this));
+        }
     }
 }

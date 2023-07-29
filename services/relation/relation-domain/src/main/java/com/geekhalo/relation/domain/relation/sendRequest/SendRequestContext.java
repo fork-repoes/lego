@@ -1,5 +1,7 @@
 package com.geekhalo.relation.domain.relation.sendRequest;
 
+import com.geekhalo.relation.domain.group.RelationGroup;
+import com.geekhalo.relation.domain.group.loader.LazyLoadGroupById;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendRequestContext{
     private SendRequestCommand command;
+
+    @LazyLoadGroupById(id = "command.groupId")
+    private RelationGroup relationGroup;
 
     private SendRequestContext(SendRequestCommand command){
          this.command = command;

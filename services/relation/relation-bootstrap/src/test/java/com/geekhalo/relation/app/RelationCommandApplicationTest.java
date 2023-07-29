@@ -3,6 +3,9 @@ package com.geekhalo.relation.app;
 
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.relation.Application;
+import com.geekhalo.relation.app.group.RelationGroupCommandApplication;
+import com.geekhalo.relation.domain.group.RelationGroup;
+import com.geekhalo.relation.domain.group.create.CreateRelationGroupCommand;
 import com.geekhalo.relation.domain.relation.Relation;
 import com.geekhalo.relation.domain.relation.RelationCommandRepository;
 import com.geekhalo.relation.domain.relation.RelationKey;
@@ -10,6 +13,7 @@ import com.geekhalo.relation.domain.relation.RelationStatus;
 import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestCommand;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestCommand;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestCommand;
+import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -35,6 +39,13 @@ public class RelationCommandApplicationTest {
     @Autowired
     private RelationQueryApplication queryApplication;
 
+    @Autowired
+    private RelationGroupCommandApplication groupCommandApplication;
+
+    private RelationGroup ownerGroup;
+
+    private RelationGroup recipientGroup;
+
     private RelationKey ownerKey;
 
     private RelationKey recipientKey;
@@ -49,6 +60,22 @@ public class RelationCommandApplicationTest {
         this.ownerKey.setRecipient(recipient);
 
         this.recipientKey = this.ownerKey.reversed();
+
+        {
+            CreateRelationGroupCommand command = new CreateRelationGroupCommand();
+            command.setUser(this.ownerKey.getOwner());
+            command.setName("发送分组");
+            command.setDescr("发送分组");
+            this.ownerGroup = this.groupCommandApplication.create(command);
+        }
+
+        {
+            CreateRelationGroupCommand command = new CreateRelationGroupCommand();
+            command.setUser(this.recipientKey.getOwner());
+            command.setName("接收分组");
+            command.setDescr("接收分组");
+            this.recipientGroup = this.groupCommandApplication.create(command);
+        }
     }
 
     @AfterEach
@@ -63,6 +90,7 @@ public class RelationCommandApplicationTest {
     @Test
     public void sendRequest() throws InterruptedException {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        sendRequestCommand.setGroupId(this.ownerGroup.getId());
         this.commandApplication.sendRequest(sendRequestCommand);
 
         TimeUnit.SECONDS.sleep(2);
@@ -73,6 +101,7 @@ public class RelationCommandApplicationTest {
             Relation relation = ownerRelation.get();
             Assertions.assertEquals(this.ownerKey, relation.getKey());
             Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+            Assertions.assertEquals(this.ownerGroup.getId(), relation.getGroupId());
 
 
             {
@@ -145,6 +174,7 @@ public class RelationCommandApplicationTest {
         this.commandApplication.sendRequest(sendRequestCommand);
 
         AcceptRequestCommand acceptRequestCommand = new AcceptRequestCommand(this.recipientKey);
+        acceptRequestCommand.setGroupId(this.recipientGroup.getId());
         this.commandApplication.acceptRequest(acceptRequestCommand);
 
         TimeUnit.SECONDS.sleep(2);
@@ -155,6 +185,7 @@ public class RelationCommandApplicationTest {
             Relation relation = ownerRelation.get();
             Assertions.assertEquals(this.ownerKey, relation.getKey());
             Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+
         }
 
         {
@@ -163,6 +194,7 @@ public class RelationCommandApplicationTest {
             Relation relation = recipientRelation.get();
             Assertions.assertEquals(this.recipientKey, relation.getKey());
             Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertEquals(this.recipientGroup.getId(), relation.getGroupId());
         }
     }
 
@@ -265,6 +297,45 @@ public class RelationCommandApplicationTest {
             Relation relation = recipientRelation.get();
             Assertions.assertEquals(this.recipientKey, relation.getKey());
             Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+        }
+    }
+
+    @Test
+    public void updateGroupId() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        sendRequestCommand.setGroupId(this.ownerGroup.getId());
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+            Assertions.assertEquals(this.ownerGroup.getId(), relation.getGroupId());
+        }
+
+        CreateRelationGroupCommand command = new CreateRelationGroupCommand();
+        command.setUser(this.ownerKey.getOwner());
+        command.setName("新分组");
+        command.setDescr("新分组描述");
+        RelationGroup group = this.groupCommandApplication.create(command);
+
+        UpdateGroupCommand updateGroupCommand = new UpdateGroupCommand();
+        updateGroupCommand.setKey(this.ownerKey);
+        updateGroupCommand.setGroupId(group.getId());
+        this.commandApplication.updateGroup(updateGroupCommand);
+
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
+            Assertions.assertEquals(group.getId(), relation.getGroupId());
         }
     }
 
