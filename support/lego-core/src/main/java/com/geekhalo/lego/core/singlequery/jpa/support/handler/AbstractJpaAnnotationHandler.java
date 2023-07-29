@@ -2,6 +2,9 @@ package com.geekhalo.lego.core.singlequery.jpa.support.handler;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -38,4 +41,16 @@ abstract class AbstractJpaAnnotationHandler<A extends Annotation> implements Jpa
     protected abstract boolean matchField(Field field, Class queryType);
 
     protected abstract String fieldNameOf(A a);
+
+    protected <E> Expression createExpression(Root<E> root, String path){
+        Path<E> result = null;
+        for (String fieldName : path.split("\\.")){
+            if (result == null) {
+                result = root.get(fieldName);
+            }else {
+                result = result.get(fieldName);
+            }
+        }
+        return result;
+    }
 }

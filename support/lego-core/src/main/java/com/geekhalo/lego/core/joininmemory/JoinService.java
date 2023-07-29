@@ -28,8 +28,9 @@ public interface JoinService {
         }
         if (t.size() == 1){
             joinInMemory(t.get(0));
+        }else {
+            joinInMemory((Class<T>) t.get(0).getClass(), t);
         }
-        joinInMemory((Class<T>) t.get(0).getClass(), t);
     }
 
     /**

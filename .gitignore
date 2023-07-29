@@ -33,6 +33,9 @@ logs/*
 /support/lego-starter/*/target/*
 */*/target/*
 */build/*
+*/*/build/*
+*/.gradle/*
+*/*/.gradle/*
 target/*
 .DS_Store/*
 .gradle/*
