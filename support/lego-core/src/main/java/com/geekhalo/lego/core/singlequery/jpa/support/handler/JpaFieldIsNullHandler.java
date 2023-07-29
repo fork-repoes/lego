@@ -23,9 +23,9 @@ public class JpaFieldIsNullHandler
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldIsNull fieldIsNull, Object value) {
         if (value instanceof Boolean){
             if ((Boolean) value){
-                return criteriaBuilder.isNull(root.get(fieldNameOf(fieldIsNull)));
+                return criteriaBuilder.isNull(createExpression(root, fieldNameOf(fieldIsNull)));
             }else {
-                return criteriaBuilder.isNotNull(root.get(fieldNameOf(fieldIsNull)));
+                return criteriaBuilder.isNotNull(createExpression(root, fieldNameOf(fieldIsNull)));
             }
         }
         return null;

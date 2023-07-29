@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
 public class SerializeUtil {
     public final static ObjectMapper MAPPER;
     static {
-        MAPPER = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        MAPPER = new ObjectMapper();
+        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        MAPPER.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public static String serialize(Object obj) {

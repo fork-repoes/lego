@@ -21,7 +21,7 @@ public class JpaFieldNotEqualToHandler
 
     @Override
     public <E> Predicate create(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, FieldNotEqualTo fieldNotEqualTo, Object value) {
-        return criteriaBuilder.notEqual(root.get(fieldNameOf(fieldNotEqualTo)), value);
+        return criteriaBuilder.notEqual(createExpression(root, fieldNameOf(fieldNotEqualTo)), value);
     }
 
     @Override
