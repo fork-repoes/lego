@@ -17,7 +17,6 @@ import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 )
 public interface RelationCommandApplication {
 
-
     void sendRequest(SendRequestCommand command);
 
     void receiveRequest(ReceiveRequestCommand command);

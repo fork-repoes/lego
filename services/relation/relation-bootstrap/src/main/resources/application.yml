@@ -1,7 +1,7 @@
 logging:
   level:
     root: info
-    com.geekhale: debug
+    com.geekhalo: debug
     org.springframework.web: trace
     org.springframework.data.rest: trace
 spring:
@@ -12,5 +12,18 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
+
+rocketmq:
+  name-server: http://127.0.0.1:9876
+  producer:
+    group: relation-service
+relation:
+  async:
+    enable: true
+    topic: relation-async-action-topic
+    consumerGroup:
+      receive: GID-relation-async-receive-group
+      accept: GID-relation-async-accept-group
+      cancel: GID-relation-async-cancel-group

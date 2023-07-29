@@ -1,8 +1,6 @@
 package com.geekhalo.relation.domain.group.create;
 
-import com.geekhalo.relation.domain.group.create.CreateRelationGroupCommand; 
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

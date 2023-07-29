@@ -1,8 +1,6 @@
 package com.geekhalo.relation.domain.relation.removeFromBlackList;
 
-import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListCommand; 
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

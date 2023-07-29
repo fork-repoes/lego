@@ -95,7 +95,7 @@ public class RelationCommandApplicationTest {
         sendRequestCommand.setGroupId(this.ownerGroup.getId());
         this.commandApplication.sendRequest(sendRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -143,10 +143,12 @@ public class RelationCommandApplicationTest {
         SendRequestCommand ownerSendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(ownerSendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         SendRequestCommand recipientSendRequestCommand = new SendRequestCommand(this.recipientKey);
         this.commandApplication.sendRequest(recipientSendRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -175,11 +177,13 @@ public class RelationCommandApplicationTest {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(sendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         AcceptRequestCommand acceptRequestCommand = new AcceptRequestCommand(this.recipientKey);
         acceptRequestCommand.setGroupId(this.recipientGroup.getId());
         this.commandApplication.acceptRequest(acceptRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -210,10 +214,12 @@ public class RelationCommandApplicationTest {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(sendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
         this.commandApplication.cancelRequest(cancelRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -242,12 +248,16 @@ public class RelationCommandApplicationTest {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(sendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
         this.commandApplication.cancelRequest(cancelRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         this.commandApplication.sendRequest(sendRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -277,13 +287,17 @@ public class RelationCommandApplicationTest {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(sendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         CancelRequestCommand cancelRequestCommand = new CancelRequestCommand(this.ownerKey);
         this.commandApplication.cancelRequest(cancelRequestCommand);
+
+        TimeUnit.SECONDS.sleep(1);
 
         SendRequestCommand sendRequestCommandB = new SendRequestCommand(this.recipientKey);
         this.commandApplication.sendRequest(sendRequestCommandB);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -308,7 +322,7 @@ public class RelationCommandApplicationTest {
         sendRequestCommand.setGroupId(this.ownerGroup.getId());
         this.commandApplication.sendRequest(sendRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
@@ -347,11 +361,13 @@ public class RelationCommandApplicationTest {
         SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
         this.commandApplication.sendRequest(sendRequestCommand);
 
+        TimeUnit.SECONDS.sleep(1);
+
         AcceptRequestCommand acceptRequestCommand = new AcceptRequestCommand(this.recipientKey);
         acceptRequestCommand.setGroupId(this.recipientGroup.getId());
         this.commandApplication.acceptRequest(acceptRequestCommand);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         {
             Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);

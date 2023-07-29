@@ -2,9 +2,7 @@ package com.geekhalo.relation.domain.relation.updateGroup;
 
 import com.geekhalo.relation.domain.group.RelationGroup;
 import com.geekhalo.relation.domain.group.loader.LazyLoadGroupById;
-import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

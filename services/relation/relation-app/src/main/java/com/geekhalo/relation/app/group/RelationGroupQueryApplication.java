@@ -1,9 +1,8 @@
 package com.geekhalo.relation.app.group;
 
 import com.geekhalo.lego.core.query.QueryServiceDefinition;
-import com.geekhalo.lego.core.singlequery.Page;
-import com.geekhalo.relation.domain.group.RelationGroupQueryRepository;
 import com.geekhalo.relation.domain.group.RelationGroup;
+import com.geekhalo.relation.domain.group.RelationGroupQueryRepository;
 
 import java.util.List;
 

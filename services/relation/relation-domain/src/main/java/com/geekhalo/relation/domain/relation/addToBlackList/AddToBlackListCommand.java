@@ -4,7 +4,6 @@ package com.geekhalo.relation.domain.relation.addToBlackList;
 import com.geekhalo.lego.core.command.CommandForUpdateByKey;
 import com.geekhalo.relation.domain.relation.RelationKey;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Data

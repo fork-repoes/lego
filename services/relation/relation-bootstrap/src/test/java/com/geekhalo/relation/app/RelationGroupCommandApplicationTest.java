@@ -10,7 +10,6 @@ import com.geekhalo.relation.domain.group.create.CreateRelationGroupCommand;
 import com.geekhalo.relation.domain.group.disable.DisableRelationGroupCommand;
 import com.geekhalo.relation.domain.group.enable.EnableRelationGroupCommand;
 import org.apache.commons.lang3.RandomUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,7 @@
 package com.geekhalo.relation.domain.group.enable;
 
 import com.geekhalo.lego.core.command.CommandForUpdateById;
-import java.lang.Long;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;

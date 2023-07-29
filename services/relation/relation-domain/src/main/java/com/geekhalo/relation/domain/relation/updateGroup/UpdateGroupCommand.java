@@ -2,11 +2,8 @@ package com.geekhalo.relation.domain.relation.updateGroup;
 
 
 import com.geekhalo.lego.core.command.CommandForUpdateByKey;
-import java.lang.Long;
-
 import com.geekhalo.relation.domain.relation.RelationKey;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Data

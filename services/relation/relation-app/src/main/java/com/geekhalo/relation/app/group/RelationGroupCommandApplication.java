@@ -1,8 +1,8 @@
 package com.geekhalo.relation.app.group;
 
 import com.geekhalo.lego.core.command.CommandServiceDefinition;
-import com.geekhalo.relation.domain.group.RelationGroupCommandRepository;
 import com.geekhalo.relation.domain.group.RelationGroup;
+import com.geekhalo.relation.domain.group.RelationGroupCommandRepository;
 import com.geekhalo.relation.domain.group.create.CreateRelationGroupCommand;
 import com.geekhalo.relation.domain.group.disable.DisableRelationGroupCommand;
 import com.geekhalo.relation.domain.group.enable.EnableRelationGroupCommand;
