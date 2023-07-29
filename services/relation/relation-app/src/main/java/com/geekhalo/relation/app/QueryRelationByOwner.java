@@ -2,9 +2,8 @@ package com.geekhalo.relation.app;
 
 import com.geekhalo.lego.annotation.singlequery.FieldEqualTo;
 import com.geekhalo.lego.annotation.singlequery.FieldIn;
-import com.geekhalo.lego.core.singlequery.Page;
 import com.geekhalo.lego.core.singlequery.Pageable;
-import com.geekhalo.relation.domain.RelationStatus;
+import com.geekhalo.relation.domain.relation.RelationStatus;
 import com.sun.istack.NotNull;
 import lombok.Data;
 

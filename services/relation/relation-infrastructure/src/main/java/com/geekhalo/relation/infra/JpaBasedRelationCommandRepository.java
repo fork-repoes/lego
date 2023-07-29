@@ -1,8 +1,8 @@
 package com.geekhalo.relation.infra;
 
-import com.geekhalo.relation.domain.Relation;
-import com.geekhalo.relation.domain.RelationCommandRepository;
-import com.geekhalo.relation.domain.RelationKey;
+import com.geekhalo.relation.domain.relation.Relation;
+import com.geekhalo.relation.domain.relation.RelationCommandRepository;
+import com.geekhalo.relation.domain.relation.RelationKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

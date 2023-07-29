@@ -3,13 +3,13 @@ package com.geekhalo.relation.app;
 
 import com.geekhalo.lego.core.singlequery.Pageable;
 import com.geekhalo.relation.Application;
-import com.geekhalo.relation.domain.Relation;
-import com.geekhalo.relation.domain.RelationCommandRepository;
-import com.geekhalo.relation.domain.RelationKey;
-import com.geekhalo.relation.domain.RelationStatus;
-import com.geekhalo.relation.domain.acceptRequest.AcceptRequestCommand;
-import com.geekhalo.relation.domain.cancelRequest.CancelRequestCommand;
-import com.geekhalo.relation.domain.sendRequest.SendRequestCommand;
+import com.geekhalo.relation.domain.relation.Relation;
+import com.geekhalo.relation.domain.relation.RelationCommandRepository;
+import com.geekhalo.relation.domain.relation.RelationKey;
+import com.geekhalo.relation.domain.relation.RelationStatus;
+import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestCommand;
+import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestCommand;
+import com.geekhalo.relation.domain.relation.sendRequest.SendRequestCommand;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

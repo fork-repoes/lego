@@ -1,9 +1,9 @@
 package com.geekhalo.relation.app;
 
 import com.geekhalo.lego.core.query.QueryServiceDefinition;
-import com.geekhalo.relation.domain.Relation;
-import com.geekhalo.relation.domain.RelationQueryRepository;
-import com.geekhalo.relation.domain.RelationStatus;
+import com.geekhalo.relation.domain.relation.Relation;
+import com.geekhalo.relation.domain.relation.RelationQueryRepository;
+import com.geekhalo.relation.domain.relation.RelationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
