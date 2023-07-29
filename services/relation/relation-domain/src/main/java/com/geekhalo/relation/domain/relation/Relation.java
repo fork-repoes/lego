@@ -4,10 +4,18 @@ import com.geekhalo.lego.core.command.support.AbstractAggRoot;
 import com.geekhalo.relation.domain.group.RelationGroup;
 import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestContext;
 import com.geekhalo.relation.domain.relation.acceptRequest.RequestAcceptedEvent;
+import com.geekhalo.relation.domain.relation.addToBlackList.AddToBlackListCommand;
+import com.geekhalo.relation.domain.relation.addToBlackList.AddToBlackListContext;
+import com.geekhalo.relation.domain.relation.addToBlackList.AddToBlackListContext;
+import com.geekhalo.relation.domain.relation.addToBlackList.BlackListAddedEvent;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestContext;
 import com.geekhalo.relation.domain.relation.cancelRequest.RequestCancelledEvent;
 import com.geekhalo.relation.domain.relation.receiveRequest.ReceiveRequestContext;
 import com.geekhalo.relation.domain.relation.receiveRequest.RequestReceivedEvent;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.BlackListRemovedEvent;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListCommand;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListContext;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListContext;
 import com.geekhalo.relation.domain.relation.sendRequest.RequestSentEvent;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestContext;
 import com.geekhalo.relation.domain.relation.updateGroup.GroupUpdatedEvent;
@@ -41,6 +49,9 @@ public class Relation extends AbstractAggRoot {
     @Setter(AccessLevel.PRIVATE)
     private Long groupId;
 
+    @Setter(AccessLevel.PRIVATE)
+    private Boolean inBlackList;
+
     public static Relation applySendRequest(SendRequestContext context){
         RelationKey relationKey = context.getCommand().getKey();
         return createRelation(relationKey, context.getRelationGroup());
@@ -56,6 +67,7 @@ public class Relation extends AbstractAggRoot {
 
     private void init() {
         setStatus(RelationStatus.NONE);
+        setInBlackList(false);
     }
 
     public static Relation applyReceiveRequest(ReceiveRequestContext context){
@@ -153,6 +165,20 @@ public class Relation extends AbstractAggRoot {
         if (nGroupId != getGroupId()) {
             setGroupId(nGroupId);
             addEvent(new GroupUpdatedEvent(this));
+        }
+    }
+
+    public void addToBlackList(AddToBlackListContext context) {
+        if (!getInBlackList()) {
+            setInBlackList(true);
+            addEvent(new BlackListAddedEvent(this));
+        }
+    }
+
+    public void removeFromBlackList(RemoveFromBlackListContext context) {
+        if (getInBlackList()) {
+            setInBlackList(false);
+            addEvent(new BlackListRemovedEvent(this));
         }
     }
 }

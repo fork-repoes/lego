@@ -4,8 +4,10 @@ import com.geekhalo.lego.core.command.CommandServiceDefinition;
 import com.geekhalo.relation.domain.relation.Relation;
 import com.geekhalo.relation.domain.relation.RelationCommandRepository;
 import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestCommand;
+import com.geekhalo.relation.domain.relation.addToBlackList.AddToBlackListCommand;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestCommand;
 import com.geekhalo.relation.domain.relation.receiveRequest.ReceiveRequestCommand;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListCommand;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestCommand;
 import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 
@@ -25,4 +27,8 @@ public interface RelationCommandApplication {
     void cancelRequest(CancelRequestCommand command);
 
     void updateGroup(UpdateGroupCommand command);
+
+    void addToBlackList(AddToBlackListCommand command);
+
+    void removeFromBlackList(RemoveFromBlackListCommand command);
 }

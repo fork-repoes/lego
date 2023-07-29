@@ -15,6 +15,9 @@ public class QueryRelationByOwner {
     @FieldEqualTo("key.owner")
     private Long owner;
 
+    @FieldEqualTo("inBlackList")
+    private Boolean inBlackList;
+
     @FieldIn(value = "status", fieldType = RelationStatus.class)
     private List<RelationStatus> statuses;
 

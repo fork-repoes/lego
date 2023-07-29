@@ -11,7 +11,9 @@ import com.geekhalo.relation.domain.relation.RelationCommandRepository;
 import com.geekhalo.relation.domain.relation.RelationKey;
 import com.geekhalo.relation.domain.relation.RelationStatus;
 import com.geekhalo.relation.domain.relation.acceptRequest.AcceptRequestCommand;
+import com.geekhalo.relation.domain.relation.addToBlackList.AddToBlackListCommand;
 import com.geekhalo.relation.domain.relation.cancelRequest.CancelRequestCommand;
+import com.geekhalo.relation.domain.relation.removeFromBlackList.RemoveFromBlackListCommand;
 import com.geekhalo.relation.domain.relation.sendRequest.SendRequestCommand;
 import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
 import org.apache.commons.lang3.RandomUtils;
@@ -337,6 +339,138 @@ public class RelationCommandApplicationTest {
             Assertions.assertEquals(RelationStatus.REQUEST_SENT, relation.getStatus());
             Assertions.assertEquals(group.getId(), relation.getGroupId());
         }
+    }
+
+
+    @Test
+    public void blackList() throws InterruptedException {
+        SendRequestCommand sendRequestCommand = new SendRequestCommand(this.ownerKey);
+        this.commandApplication.sendRequest(sendRequestCommand);
+
+        AcceptRequestCommand acceptRequestCommand = new AcceptRequestCommand(this.recipientKey);
+        acceptRequestCommand.setGroupId(this.recipientGroup.getId());
+        this.commandApplication.acceptRequest(acceptRequestCommand);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertFalse(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.ownerKey.getOwner());
+            queryRelationByOwner.setInBlackList(false);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertEquals(this.recipientGroup.getId(), relation.getGroupId());
+            Assertions.assertFalse(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.recipientKey.getOwner());
+            queryRelationByOwner.setInBlackList(false);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+        }
+
+        AddToBlackListCommand ownerAddToBlackListCommand = new AddToBlackListCommand();
+        ownerAddToBlackListCommand.setKey(this.ownerKey);
+        this.commandApplication.addToBlackList(ownerAddToBlackListCommand);
+
+        AddToBlackListCommand recipientAddToBlackListCommand = new AddToBlackListCommand();
+        recipientAddToBlackListCommand.setKey(this.recipientKey);
+        this.commandApplication.addToBlackList(recipientAddToBlackListCommand);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertTrue(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.ownerKey.getOwner());
+            queryRelationByOwner.setInBlackList(true);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertEquals(this.recipientGroup.getId(), relation.getGroupId());
+            Assertions.assertTrue(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.recipientKey.getOwner());
+            queryRelationByOwner.setInBlackList(true);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+        }
+
+        RemoveFromBlackListCommand ownerRemoveFromBlackListCommand = new RemoveFromBlackListCommand();
+        ownerRemoveFromBlackListCommand.setKey(this.ownerKey);
+        this.commandApplication.removeFromBlackList(ownerRemoveFromBlackListCommand);
+
+        RemoveFromBlackListCommand recipientRemoveFromBlackListCommand = new RemoveFromBlackListCommand();
+        recipientRemoveFromBlackListCommand.setKey(this.recipientKey);
+        this.commandApplication.removeFromBlackList(recipientRemoveFromBlackListCommand);
+
+        {
+            Optional<Relation> ownerRelation = this.commandRepository.findByKey(this.ownerKey);
+            Assertions.assertTrue(ownerRelation.isPresent());
+            Relation relation = ownerRelation.get();
+            Assertions.assertEquals(this.ownerKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertFalse(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.ownerKey.getOwner());
+            queryRelationByOwner.setInBlackList(false);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+
+        }
+
+        {
+            Optional<Relation> recipientRelation = this.commandRepository.findByKey(this.recipientKey);
+            Assertions.assertTrue(recipientRelation.isPresent());
+            Relation relation = recipientRelation.get();
+            Assertions.assertEquals(this.recipientKey, relation.getKey());
+            Assertions.assertEquals(RelationStatus.REQUEST_ACCEPTED, relation.getStatus());
+            Assertions.assertEquals(this.recipientGroup.getId(), relation.getGroupId());
+            Assertions.assertFalse(relation.getInBlackList());
+
+            QueryRelationByOwner queryRelationByOwner = new QueryRelationByOwner();
+            queryRelationByOwner.setOwner(this.recipientKey.getOwner());
+            queryRelationByOwner.setInBlackList(false);
+            queryRelationByOwner.setPageable(new Pageable(0, 10));
+            com.geekhalo.lego.core.singlequery.Page<Relation> relationPage = this.queryApplication.pageOf(queryRelationByOwner);
+            Assertions.assertTrue(relationPage.hasContent());
+        }
+
     }
 
 }
