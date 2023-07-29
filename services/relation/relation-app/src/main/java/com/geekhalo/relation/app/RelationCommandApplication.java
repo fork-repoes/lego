@@ -1,5 +1,6 @@
 package com.geekhalo.relation.app;
 
+import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.command.CommandServiceDefinition;
 import com.geekhalo.relation.domain.relation.Relation;
 import com.geekhalo.relation.domain.relation.RelationCommandRepository;
@@ -15,6 +16,7 @@ import com.geekhalo.relation.domain.relation.updateGroup.UpdateGroupCommand;
         domainClass = Relation.class,
         repositoryClass = RelationCommandRepository.class
 )
+@AutoRegisterWebController(name = "relation")
 public interface RelationCommandApplication {
 
     void sendRequest(SendRequestCommand command);

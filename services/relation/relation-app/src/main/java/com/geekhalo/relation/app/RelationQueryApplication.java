@@ -1,5 +1,6 @@
 package com.geekhalo.relation.app;
 
+import com.geekhalo.lego.annotation.web.AutoRegisterWebController;
 import com.geekhalo.lego.core.query.QueryServiceDefinition;
 import com.geekhalo.relation.domain.relation.Relation;
 import com.geekhalo.relation.domain.relation.RelationQueryRepository;
@@ -14,6 +15,7 @@ import java.util.List;
         repositoryClass = RelationQueryRepository.class,
         domainClass = Relation.class
 )
+@AutoRegisterWebController(name = "relation")
 public interface RelationQueryApplication {
 
     Page<Relation> getByKeyOwner(Long owner, Pageable pageable);
