@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>lego-services-module</artifactId>
+    <groupId>com.geekhalo.lego</groupId>
+    <version>0.1.25-relation-SNAPSHOT</version>
+  </parent>
+
+    <groupId>com.geekhalo</groupId>
+    <artifactId>relation</artifactId>
+    <name>relation</name>
+    <version>0.1.25-relation-SNAPSHOT</version>
+    <packaging>pom</packaging>
+<modules>  <module>relation-app</module>
+    <module>relation-domain</module>
+    <module>relation-infrastructure</module>
+    <module>relation-api</module>
+    <module>relation-feign-service</module>
+    <module>relation-feign-client</module>
+    <module>relation-bootstrap</module>
+  </modules>
+</project>
