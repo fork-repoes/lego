@@ -28,7 +28,7 @@ public class CommandServicesProvider implements RequestHandlerProvider {
     @Override
     public List<RequestHandler> requestHandlers() {
         List<RequestHandler> requestHandlers = Lists.newArrayList();
-        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.commandMethodRegistry.getSingleQueryServiceMap().entrySet()){
+        for (Map.Entry<String, Map<String, SingleParamMethod>> entry : this.commandMethodRegistry.getSingleServiceMap().entrySet()){
             String serviceName = entry.getKey();
             for (Map.Entry<String, SingleParamMethod> methodEntry : entry.getValue().entrySet()){
                 String methodName = methodEntry.getKey();
@@ -39,7 +39,7 @@ public class CommandServicesProvider implements RequestHandlerProvider {
                         methodEntry.getValue()));
             }
         }
-        for (Map.Entry<String, Map<String, MultiParamMethod>> entry : this.commandMethodRegistry.getMultiQueryServiceMap().entrySet()){
+        for (Map.Entry<String, Map<String, MultiParamMethod>> entry : this.commandMethodRegistry.getMultiServiceMap().entrySet()){
             String serviceName = entry.getKey();
             for (Map.Entry<String, MultiParamMethod> methodEntry : entry.getValue().entrySet()){
                 String method = methodEntry.getKey();
