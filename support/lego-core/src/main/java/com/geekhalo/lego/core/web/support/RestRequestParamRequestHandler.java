@@ -134,34 +134,36 @@ public class RestRequestParamRequestHandler implements RequestHandler {
         for (Type paramType: parameterTypes){
             String paramName = parameterNames[index];
             List<Annotation> annotations = Lists.newArrayList();
-            if (((Class) paramType).isPrimitive()) {
-                RequestParam requestParam = new RequestParam() {
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return RequestParam.class;
-                    }
+            if (paramType instanceof  Class) {
+                if (((Class) paramType).isPrimitive()) {
+                    RequestParam requestParam = new RequestParam() {
+                        @Override
+                        public Class<? extends Annotation> annotationType() {
+                            return RequestParam.class;
+                        }
 
-                    @Override
-                    public String value() {
-                        return "";
-                    }
+                        @Override
+                        public String value() {
+                            return "";
+                        }
 
-                    @Override
-                    public String name() {
-                        return paramName;
-                    }
+                        @Override
+                        public String name() {
+                            return paramName;
+                        }
 
-                    @Override
-                    public boolean required() {
-                        return false;
-                    }
+                        @Override
+                        public boolean required() {
+                            return false;
+                        }
 
-                    @Override
-                    public String defaultValue() {
-                        return "";
-                    }
-                };
-                annotations.add(requestParam);
+                        @Override
+                        public String defaultValue() {
+                            return "";
+                        }
+                    };
+                    annotations.add(requestParam);
+                }
             }
 
             ResolvedMethodParameter methodParameter = new ResolvedMethodParameter(

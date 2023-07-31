@@ -122,22 +122,26 @@ public abstract class AbstractAggCommandHandler<
             // 如有必要，开启事务保护
             if (this.transactionTemplate != null) {
                 this.transactionTemplate.execute(status -> {
-
+                    LOGGER.debug("Begin to Run In Transaction Template");
                     // 9. 保存至数据库
                     syncToRepository(agg, contextProxy);
 
                     // 10. 发布领域事件
                     publishEvent(agg, contextProxy);
+                    LOGGER.debug("End to Run In Transaction Template");
                     return null;
 
                 });
             }else {
 
+                LOGGER.debug("Begin to Run Without Transaction Template");
                 // 9. 保存至数据库
                 syncToRepository(agg, contextProxy);
 
                 // 10. 发布领域事件
                 publishEvent(agg, contextProxy);
+
+                LOGGER.debug("End to Run Without Transaction Template");
             }
 
             RESULT result = convertToResult(agg, contextProxy);

@@ -20,10 +20,10 @@ import java.util.Map;
  */
 public abstract class WebMethodRegistry {
     @Getter
-    private Map<String, Map<String, SingleParamMethod>> singleQueryServiceMap = Maps.newHashMap();
+    private Map<String, Map<String, SingleParamMethod>> singleServiceMap = Maps.newHashMap();
 
     @Getter
-    private Map<String, Map<String, MultiParamMethod>> multiQueryServiceMap = Maps.newHashMap();
+    private Map<String, Map<String, MultiParamMethod>> multiServiceMap = Maps.newHashMap();
 
     protected abstract List<Object> getServices();
 
@@ -50,12 +50,12 @@ public abstract class WebMethodRegistry {
     }
 
     private void buildMultiParamMethods(Object queryService, Class itf, String name) {
-        Map<String, MultiParamMethod> methodMap = this.multiQueryServiceMap.get(name);
+        Map<String, MultiParamMethod> methodMap = this.multiServiceMap.get(name);
         if (methodMap != null){
             throw new RuntimeException("Find More Than One Service " + name);
         }
         methodMap = Maps.newHashMap();
-        this.multiQueryServiceMap.put(name, methodMap);
+        this.multiServiceMap.put(name, methodMap);
         for (Method method : ReflectionUtils.getAllDeclaredMethods(itf)){
             String methodName = method.getName();
             MultiParamMethod methodInMap = methodMap.get(methodName);
@@ -67,12 +67,12 @@ public abstract class WebMethodRegistry {
     }
 
     private void buildSingleParamMethods(Object queryService, Class itf, String name) {
-        Map<String, SingleParamMethod> methodMap = this.singleQueryServiceMap.get(name);
+        Map<String, SingleParamMethod> methodMap = this.singleServiceMap.get(name);
         if (methodMap != null){
             throw new RuntimeException("Find More Than One Service " + name);
         }
         methodMap = Maps.newHashMap();
-        this.singleQueryServiceMap.put(name, methodMap);
+        this.singleServiceMap.put(name, methodMap);
         for (Method method : ReflectionUtils.getAllDeclaredMethods(itf)){
             if (method.getParameterCount() == 1){
                 String methodName = method.getName();
