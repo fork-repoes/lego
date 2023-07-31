@@ -47,7 +47,11 @@ public final class JavaFileCreator {
         for (String dir : packageName.split("\\.")){
             PsiDirectory cDirectory = tmp.findSubdirectory(dir);
             if (cDirectory == null){
-                tmp = tmp.createSubdirectory(dir);
+                final PsiDirectory cDirectoryTuUse = tmp;
+                WriteCommandAction.runWriteCommandAction(project, () ->{
+                    cDirectoryTuUse.createSubdirectory(dir);
+                });
+                tmp = tmp.findSubdirectory(dir);
             }else {
                 tmp = cDirectory;
             }
