@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-api-parent</artifactId>
-        <version>0.1.26-SNAPSHOT</version>
+        <version>0.1.27-SNAPSHOT</version>
         <relativePath>../../parent/api-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-api</artifactId>
     <name>lego-like-api</name>
-    <version>0.1.26-SNAPSHOT</version>
+    <version>0.1.27-SNAPSHOT</version>
 
     <dependencies>
 
