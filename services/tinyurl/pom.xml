@@ -4,13 +4,13 @@
     <parent>
     <artifactId>lego-services-module</artifactId>
     <groupId>com.geekhalo.lego</groupId>
-    <version>0.1.27-SNAPSHOT</version>
+    <version>0.1.26</version>
   </parent>
 
     <groupId>com.geekhalo</groupId>
     <artifactId>tinyurl</artifactId>
     <name>tinyurl</name>
-    <version>0.1.27-SNAPSHOT</version>
+    <version>0.1.26</version>
     <packaging>pom</packaging>
 <modules>  <module>tinyurl-app</module>
     <module>tinyurl-domain</module>
