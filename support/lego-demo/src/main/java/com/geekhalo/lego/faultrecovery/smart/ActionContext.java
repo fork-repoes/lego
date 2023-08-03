@@ -1,5 +1,6 @@
 package com.geekhalo.lego.faultrecovery.smart;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.geekhalo.lego.core.faultrecovery.smart.ActionType;
 
 /**
@@ -9,7 +10,7 @@ import com.geekhalo.lego.core.faultrecovery.smart.ActionType;
  */
 
 public class ActionContext {
-    private static final ThreadLocal<ActionType> ACTION_TYPE_THREAD_LOCAL = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<ActionType> ACTION_TYPE_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
     public static void set(ActionType actionType){
         ACTION_TYPE_THREAD_LOCAL.set(actionType);
