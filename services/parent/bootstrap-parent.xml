@@ -5,13 +5,13 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-base-parent</artifactId>
-        <version>0.1.27-SNAPSHOT</version>
+        <version>0.1.27-thread_pool-SNAPSHOT</version>
         <relativePath>base-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-bootstrap-parent</artifactId>
-    <version>0.1.27-SNAPSHOT</version>
+    <version>0.1.27-thread_pool-SNAPSHOT</version>
     <name>lego-bootstrap-parent</name>
 
     <dependencies>

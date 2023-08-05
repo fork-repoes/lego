@@ -1,7 +1,6 @@
 package com.geekhalo.lego.plugin.action;
 
 import com.geekhalo.lego.plugin.creator.JavaFileCreator;
-import com.geekhalo.lego.plugin.template.EnumTemplate;
 import com.geekhalo.lego.plugin.template.LazyLoaderTemplate;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;

@@ -2,17 +2,16 @@ package com.geekhalo.tinyurl;
 
 import com.geekhalo.tinyurl.app.TinyUrlCommandApplicationService;
 import com.geekhalo.tinyurl.app.TinyUrlQueryApplicationService;
-import com.geekhalo.tinyurl.domain.*;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import com.geekhalo.tinyurl.domain.CreateTinyUrlCommand;
+import com.geekhalo.tinyurl.domain.TinyUrl;
+import com.geekhalo.tinyurl.domain.TinyUrlStatus;
+import com.geekhalo.tinyurl.domain.TinyUrlType;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = Application.class)
 public class ApplicationForCacheTest {

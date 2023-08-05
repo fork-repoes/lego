@@ -17,7 +17,12 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include:  '*' #metrics,info,health
+    enabled-by-default: true
 rocketmq:
   name-server: http://127.0.0.1:9876
   producer:
