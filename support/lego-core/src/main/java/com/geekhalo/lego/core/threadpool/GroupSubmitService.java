@@ -9,22 +9,22 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 @Slf4j
-public class SubmitGroupService<T> {
+public class GroupSubmitService<T> {
     private final String name;
     private final BlockingQueue<T> blockingQueue;
     private final Thread dispatcherThread;
     private final ExecutorService executorService;
     private final int maxWaitTime = 5;
     private final int maxSizePreTask = 1000;
-    private final Function<List<T>, Runnable> taskBuilder;
+    private final Function<List<T>, Void> taskRunner;
 
-    public SubmitGroupService(String name,
-                             ExecutorService executorService,
-                             Function<List<T>, Runnable> taskBuilder){
+    public GroupSubmitService(String name,
+                              ExecutorService executorService,
+                              Function<List<T>, Void> taskBuilder){
         this.name = name;
         this.executorService = executorService;
 
-        this.taskBuilder = taskBuilder;
+        this.taskRunner = taskBuilder;
         this.blockingQueue = new LinkedBlockingQueue<>(10000);
         this.dispatcherThread = new Thread(new DispatcherTask(), name + "DispatchThread");
         this.dispatcherThread.setDaemon(true);
@@ -78,7 +78,9 @@ public class SubmitGroupService<T> {
     }
 
     private Runnable buildTask(List<T> tasks) {
-        return this.taskBuilder.apply(tasks);
+        return () -> {
+            this.taskRunner.apply(tasks);
+        };
     }
 
     public void shutdown() {
