@@ -4,7 +4,6 @@ import com.geekhalo.tinyurl.TestApplication;
 import com.geekhalo.tinyurl.domain.*;
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import org.apache.commons.lang3.RandomUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TestApplication.class)
 @Import(RedisBasedTinyUrlCache.class)

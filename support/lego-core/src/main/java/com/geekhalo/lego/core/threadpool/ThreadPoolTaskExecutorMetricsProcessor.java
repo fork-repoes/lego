@@ -4,8 +4,6 @@ package com.geekhalo.lego.core.threadpool;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 
 public class ThreadPoolTaskExecutorMetricsProcessor
         extends AbstractMetricsProcessor

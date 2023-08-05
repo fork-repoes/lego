@@ -2,14 +2,12 @@ package com.geekhalo.tinyurl.infra.generator.redis;
 
 import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import com.geekhalo.tinyurl.infra.generator.AbstractBatchNumberGenerator;
-import com.geekhalo.tinyurl.infra.generator.db.DBBasedBatchNumberGenerator;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 public class RedisBasedBatchNumberGenerator

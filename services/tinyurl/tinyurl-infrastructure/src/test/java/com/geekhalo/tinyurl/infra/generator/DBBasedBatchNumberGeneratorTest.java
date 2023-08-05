@@ -1,7 +1,7 @@
 package com.geekhalo.tinyurl.infra.generator;
 
-import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import com.geekhalo.tinyurl.TestApplication;
+import com.geekhalo.tinyurl.domain.generator.NumberGenerator;
 import com.geekhalo.tinyurl.infra.generator.db.DBBasedBatchNumberGenerator;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;

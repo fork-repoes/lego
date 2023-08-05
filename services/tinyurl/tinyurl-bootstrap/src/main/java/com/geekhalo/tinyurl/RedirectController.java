@@ -1,7 +1,6 @@
 package com.geekhalo.tinyurl;
 
 import com.geekhalo.tinyurl.app.TinyUrlQueryApplicationService;
-import com.geekhalo.tinyurl.domain.TinyUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
