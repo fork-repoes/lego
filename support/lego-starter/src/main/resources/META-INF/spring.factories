@@ -15,4 +15,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.geekhalo.lego.starter.msg.consumer.TabBasedDispatcherMessageConsumerAutoConfiguration,\
   com.geekhalo.lego.starter.faultrecovery.smart.SmartFaultAutoConfiguration,\
   com.geekhalo.lego.starter.threadpool.ThreadPoolExecutorMetricsAutoConfiguration,\
-  com.geekhalo.lego.starter.threadpool.ThreadPoolExecutorValidatorAutoConfiguration
+  com.geekhalo.lego.starter.threadpool.ThreadPoolExecutorValidatorAutoConfiguration,\
+  com.geekhalo.lego.starter.threadpool.ThreadPoolExecutorUpdaterAutoConfiguration
