@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Import;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-@Import(ThreadPoolExecutorUpdater.class)
-
 public class ThreadPoolExecutorUpdaterProcessor implements BeanPostProcessor {
     @Autowired
     private ThreadPoolExecutorUpdater threadPoolExecutorUpdater;
