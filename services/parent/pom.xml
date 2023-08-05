@@ -4,7 +4,7 @@
     <packaging>pom</packaging>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-services-parent</artifactId>
-    <version>0.1.27-SNAPSHOT</version>
+    <version>0.1.27</version>
     <name>lego-services-parent</name>
 
     <modules>
