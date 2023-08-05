@@ -5,29 +5,29 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-app-parent</artifactId>
-        <version>0.1.28-SNAPSHOT</version>
+        <version>0.1.27</version>
         <relativePath>../../parent/app-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>tinyurl-app</artifactId>
     <name>tinyurl-app</name>
-    <version>0.1.28-SNAPSHOT</version>
+    <version>0.1.27</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>tinyurl-api</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.27</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>tinyurl-domain</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.27</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>tinyurl-infrastructure</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.27</version>
         </dependency>
     </dependencies>
 </project>
