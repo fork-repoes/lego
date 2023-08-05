@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-base-parent</artifactId>
-        <version>0.1.26</version>
+        <version>0.1.27</version>
         <relativePath>base-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-app-parent</artifactId>
-    <version>0.1.26</version>
+    <version>0.1.27</version>
     <name>lego-app-parent</name>
 
     <dependencies>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-starter</artifactId>
-            <version>0.1.26</version>
+            <version>0.1.27</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

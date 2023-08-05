@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
 
 public class CreateAggregationMethodAction extends BaseAnAction {
