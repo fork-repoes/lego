@@ -12,5 +12,6 @@
         <module>archetype</module>
         <module>like</module>
     <module>tinyurl</module>
+    <module>feed</module>
   </modules>
 </project>
