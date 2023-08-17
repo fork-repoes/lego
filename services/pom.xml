@@ -11,7 +11,8 @@
         <module>parent</module>
         <module>archetype</module>
         <module>like</module>
-    <module>tinyurl</module>
-    <module>feed</module>
+        <module>tinyurl</module>
+        <module>feed</module>
+        <module>relation</module>
   </modules>
 </project>
