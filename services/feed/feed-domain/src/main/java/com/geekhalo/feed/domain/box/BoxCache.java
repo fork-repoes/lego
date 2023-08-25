@@ -5,8 +5,9 @@ import com.geekhalo.feed.domain.feed.FeedOwner;
 
 import java.util.List;
 
-public interface BoxService {
+public interface BoxCache {
+
     void append(FeedOwner feedOwner, BoxType boxType, FeedIndex feedIndex);
 
-    List<FeedIndex> queryInboxByScore(FeedOwner feedOwner, BoxType boxType, Long score, Integer size);
+    List<FeedIndex> load(FeedOwner feedOwner, BoxType boxType, Long score, Integer size);
 }

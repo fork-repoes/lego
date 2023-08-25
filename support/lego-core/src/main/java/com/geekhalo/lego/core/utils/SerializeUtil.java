@@ -2,7 +2,10 @@ package com.geekhalo.lego.core.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
@@ -24,6 +27,15 @@ public class SerializeUtil {
     }
 
     public static <T> T deserialize(String jsonText, Class<T> beanClass) {
+        try {
+            return MAPPER.readValue(jsonText, beanClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> List<T> deserialize(String jsonText, TypeReference<List<T>> beanClass) {
         try {
             return MAPPER.readValue(jsonText, beanClass);
         } catch (Exception e) {
