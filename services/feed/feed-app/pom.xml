@@ -5,29 +5,29 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-app-parent</artifactId>
-        <version>0.1.28-SNAPSHOT</version>
+        <version>0.1.28</version>
         <relativePath>../../parent/app-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>feed-app</artifactId>
     <name>feed-app</name>
-    <version>0.1.28-SNAPSHOT</version>
+    <version>0.1.28</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>feed-api</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.28</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>feed-domain</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.28</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>feed-infrastructure</artifactId>
-            <version>0.1.28-SNAPSHOT</version>
+            <version>0.1.28</version>
         </dependency>
     </dependencies>
 </project>
