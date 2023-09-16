@@ -65,7 +65,7 @@ public class Feed extends AbstractAggRoot {
     }
 
 
-    public FeedIndex getIndex(){
+    public FeedIndex createIndex(){
         return new FeedIndex(getId(), getCreateAt().getTime());
     }
 

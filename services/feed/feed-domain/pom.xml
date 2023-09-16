@@ -11,4 +11,10 @@
     <artifactId>feed-domain</artifactId>
     <name>feed-domain</name>
     <version>0.1.28-feed-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
 </project>

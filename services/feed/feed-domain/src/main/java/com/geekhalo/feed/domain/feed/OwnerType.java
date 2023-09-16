@@ -3,7 +3,8 @@ package com.geekhalo.feed.domain.feed;
 import com.geekhalo.lego.common.enums.CommonEnum;
 
 public enum OwnerType implements CommonEnum {
-    USER(1, "User");
+    USER(1, "User"),
+    TEST(0, "Test");
     private final int code;
     private final String descr;
 

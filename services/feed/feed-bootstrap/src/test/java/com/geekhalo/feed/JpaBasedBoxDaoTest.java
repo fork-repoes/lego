@@ -1,4 +1,4 @@
-package com.geekhalo;
+package com.geekhalo.feed;
 
 
 import com.geekhalo.feed.Application;

@@ -9,7 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedIndex {
+public class FeedIndex implements Comparable{
     private Long feedId;
     private Long score;
+
+    @Override
+    public int compareTo(Object o) {
+        FeedIndex feedIndex = (FeedIndex) o;
+        return  (int) (this.getScore() - feedIndex.getScore());
+    }
 }

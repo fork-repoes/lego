@@ -10,6 +10,6 @@ import java.util.Optional;
         repositoryClass = FeedQueryRepository.class,
         domainClass = Feed.class
 )
-public interface FeedQueryApplication {
+public interface FeedQueryApplication extends CustomFeedQueryApplication{
     Optional<Feed> findById(Long id);
 }

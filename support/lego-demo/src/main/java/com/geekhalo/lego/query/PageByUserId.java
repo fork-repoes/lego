@@ -17,5 +17,8 @@ public class PageByUserId {
     @FieldEqualTo("userId")
     private Long userId;
 
+    @FieldEqualTo("status")
+    private OrderStatus status;
+
     private Pageable pageable;
 }

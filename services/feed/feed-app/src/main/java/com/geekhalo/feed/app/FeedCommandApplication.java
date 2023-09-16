@@ -17,5 +17,5 @@ public interface FeedCommandApplication {
 
     Feed enable(EnableFeedCommand command);
 
-    Feed diable(DisableFeedCommand command);
+    Feed disable(DisableFeedCommand command);
 }
