@@ -1,6 +1,5 @@
 package com.geekhalo.feed;
 
-import com.geekhalo.feed.Application;
 import com.geekhalo.feed.app.FeedCommandApplication;
 import com.geekhalo.feed.app.FeedQueryApplication;
 import com.geekhalo.feed.domain.QueryType;

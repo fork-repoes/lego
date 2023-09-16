@@ -1,8 +1,8 @@
 package com.geekhalo.feed.app;
 
-import com.geekhalo.lego.core.query.QueryServiceDefinition;
-import com.geekhalo.feed.domain.feed.FeedQueryRepository;
 import com.geekhalo.feed.domain.feed.Feed;
+import com.geekhalo.feed.domain.feed.FeedQueryRepository;
+import com.geekhalo.lego.core.query.QueryServiceDefinition;
 
 import java.util.Optional;
 

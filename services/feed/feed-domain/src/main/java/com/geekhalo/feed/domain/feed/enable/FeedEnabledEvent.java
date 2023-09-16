@@ -1,8 +1,8 @@
 package com.geekhalo.feed.domain.feed.enable;
 
-import lombok.Value;
 import com.geekhalo.feed.domain.feed.AbstractFeedEvent;
 import com.geekhalo.feed.domain.feed.Feed;
+import lombok.Value;
 
 @Value
 public class FeedEnabledEvent

@@ -2,7 +2,6 @@ package com.geekhalo.feed.domain.box;
 
 import com.geekhalo.feed.domain.feed.FeedIndex;
 import com.geekhalo.feed.domain.feed.FeedOwner;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

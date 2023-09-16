@@ -1,7 +1,6 @@
 package com.geekhalo.feed;
 
 
-import com.geekhalo.feed.Application;
 import com.geekhalo.feed.domain.box.BoxCache;
 import com.geekhalo.feed.domain.box.BoxType;
 import com.geekhalo.feed.domain.feed.FeedIndex;

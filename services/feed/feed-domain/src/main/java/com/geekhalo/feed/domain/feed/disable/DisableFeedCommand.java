@@ -1,8 +1,8 @@
 package com.geekhalo.feed.domain.feed.disable;
 
 import com.geekhalo.lego.core.command.CommandForUpdateById;
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
