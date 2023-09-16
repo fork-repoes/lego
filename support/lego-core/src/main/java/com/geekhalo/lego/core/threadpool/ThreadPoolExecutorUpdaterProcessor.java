@@ -3,7 +3,6 @@ package com.geekhalo.lego.core.threadpool;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Import;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
