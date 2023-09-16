@@ -5,20 +5,20 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-infrastructure-parent</artifactId>
-        <version>0.1.28-feed-SNAPSHOT</version>
+        <version>0.1.29-SNAPSHOT</version>
         <relativePath>../../parent/infrastructure-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo</groupId>
     <artifactId>relation-infrastructure</artifactId>
     <name>relation-infrastructure</name>
-    <version>0.1.28-feed-SNAPSHOT</version>
+    <version>0.1.29-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>relation-domain</artifactId>
-            <version>0.1.28-feed-SNAPSHOT</version>
+            <version>0.1.29-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
