@@ -5,29 +5,29 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-app-parent</artifactId>
-        <version>0.1.28</version>
+        <version>0.1.29</version>
         <relativePath>../../parent/app-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-app</artifactId>
     <name>lego-like-app</name>
-    <version>0.1.28</version>
+    <version>0.1.29</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-api</artifactId>
-            <version>0.1.28</version>
+            <version>0.1.29</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-domain</artifactId>
-            <version>0.1.28</version>
+            <version>0.1.29</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-infrastructure</artifactId>
-            <version>0.1.28</version>
+            <version>0.1.29</version>
         </dependency>
         <dependency>
             <groupId>org.apache.rocketmq</groupId>

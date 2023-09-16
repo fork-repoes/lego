@@ -4,19 +4,19 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-feignclient-parent</artifactId>
-        <version>0.1.28</version>
+        <version>0.1.29</version>
         <relativePath>../../parent/feignclient-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>relation-feign-client</artifactId>
     <name>relation-feign-client</name>
-    <version>0.1.28</version>
+    <version>0.1.29</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>relation-api</artifactId>
-            <version>0.1.28</version>
+            <version>0.1.29</version>
         </dependency>
     </dependencies>
 </project>
