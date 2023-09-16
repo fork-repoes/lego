@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-base-parent</artifactId>
-    <version>0.1.31-SNAPSHOT</version>
+    <version>0.1.32-SNAPSHOT</version>
     <name>lego-base-parent</name>
 
 
@@ -46,7 +46,7 @@
         <rocketmq.version>2.2.1</rocketmq.version>
         <shardingSphere.version>4.1.1</shardingSphere.version>
         <springfox.version>3.0.0</springfox.version>
-        <lego.version>0.1.31-SNAPSHOT</lego.version>
+        <lego.version>0.1.32-SNAPSHOT</lego.version>
     </properties>
     <developers>
         <developer>
