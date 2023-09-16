@@ -4,24 +4,24 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-bootstrap-parent</artifactId>
-        <version>0.1.31-SNAPSHOT</version>
+        <version>0.1.31</version>
         <relativePath>../../parent/bootstrap-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>relation-bootstrap</artifactId>
     <name>relation-bootstrap</name>
-    <version>0.1.31-SNAPSHOT</version>
+    <version>0.1.31</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>relation-feign-service</artifactId>
-            <version>0.1.31-SNAPSHOT</version>
+            <version>0.1.31</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-core</artifactId>
-            <version>0.1.31-SNAPSHOT</version>
+            <version>0.1.31</version>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
