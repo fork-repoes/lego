@@ -5,13 +5,13 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-base-parent</artifactId>
-        <version>0.1.32-SNAPSHOT</version>
+        <version>0.1.31</version>
         <relativePath>base-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-api-parent</artifactId>
-    <version>0.1.32-SNAPSHOT</version>
+    <version>0.1.31</version>
     <name>lego-api-parent</name>
 
     <dependencies>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-common</artifactId>
-            <version>0.1.32-SNAPSHOT</version>
+            <version>0.1.31</version>
         </dependency>
     </dependencies>
 
