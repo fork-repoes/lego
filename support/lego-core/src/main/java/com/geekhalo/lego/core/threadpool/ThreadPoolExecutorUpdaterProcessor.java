@@ -1,5 +1,6 @@
 package com.geekhalo.lego.core.threadpool;
 
+import com.alibaba.ttl.spi.TtlWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -12,7 +13,11 @@ public class ThreadPoolExecutorUpdaterProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        registryForBean(beanName, bean);
+        Object realBean = bean;
+        if (bean instanceof TtlWrapper){
+            realBean = ((TtlWrapper) bean).unwrap();
+        }
+        registryForBean(beanName, realBean);
         return bean;
     }
 
