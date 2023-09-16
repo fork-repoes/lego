@@ -1,1 +1,1 @@
-mvn archetype:generate  -DarchetypeGroupId=com.geekhalo.lego -DarchetypeArtifactId=services-archetype -DarchetypeVersion=0.1.24  -DgroupId=com.geekhalo -DartifactId=relation -Dversion=0.1.25-relation-SNAPSHOT
+mvn archetype:generate  -DarchetypeGroupId=com.geekhalo.lego -DarchetypeArtifactId=services-archetype -DarchetypeVersion=0.1.24  -DgroupId=com.geekhalo -DartifactId=relation -Dversion=0.1.28-feed-SNAPSHOT
