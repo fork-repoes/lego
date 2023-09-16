@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.geekhalo.lego</groupId>
+        <artifactId>lego-infrastructure-parent</artifactId>
+        <version>0.1.28</version>
+        <relativePath>../../parent/infrastructure-parent.xml</relativePath>
+    </parent>
+
+    <groupId>com.geekhalo</groupId>
+    <artifactId>feed-infrastructure</artifactId>
+    <name>feed-infrastructure</name>
+    <version>0.1.28</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.geekhalo</groupId>
+            <artifactId>feed-domain</artifactId>
+            <version>0.1.28</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.geekhalo.lego</groupId>
+            <artifactId>lego-starter</artifactId>
+            <version>0.1.28</version>
+        </dependency>
+    </dependencies>
+</project>
