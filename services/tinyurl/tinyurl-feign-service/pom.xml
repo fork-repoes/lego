@@ -4,24 +4,24 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-feignservice-parent</artifactId>
-        <version>0.1.32-feed_sharding-SNAPSHOT</version>
+        <version>0.1.32-SNAPSHOT</version>
         <relativePath>../../parent/feignservice-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>tinyurl-feign-service</artifactId>
     <name>tinyurl-feign-service</name>
-    <version>0.1.32-feed_sharding-SNAPSHOT</version>
+    <version>0.1.32-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>tinyurl-api</artifactId>
-            <version>0.1.32-feed_sharding-SNAPSHOT</version>
+            <version>0.1.32-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>tinyurl-app</artifactId>
-            <version>0.1.32-feed_sharding-SNAPSHOT</version>
+            <version>0.1.32-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

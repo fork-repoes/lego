@@ -4,7 +4,7 @@
 
   <groupId>com.geekhalo.lego</groupId>
   <artifactId>services-archetype</artifactId>
-  <version>0.1.32-feed_sharding-SNAPSHOT</version>
+  <version>0.1.32-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
   <name>services-archetype</name>
