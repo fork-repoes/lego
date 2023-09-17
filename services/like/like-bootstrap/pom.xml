@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-bootstrap-parent</artifactId>
-        <version>0.1.32</version>
+        <version>0.1.33-SNAPSHOT</version>
         <relativePath>../../parent/bootstrap-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-bootstrap</artifactId>
     <name>lego-like-bootstrap</name>
-    <version>0.1.32</version>
+    <version>0.1.33-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-feignservice</artifactId>
-            <version>0.1.32</version>
+            <version>0.1.33-SNAPSHOT</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.rocketmq</groupId>-->
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-starter</artifactId>
-            <version>0.1.32</version>
+            <version>0.1.33-SNAPSHOT</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.shardingsphere</groupId>-->

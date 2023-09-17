@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-domain-parent</artifactId>
-        <version>0.1.32</version>
+        <version>0.1.33-SNAPSHOT</version>
         <relativePath>../../parent/domain-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>relation-domain</artifactId>
     <name>relation-domain</name>
-    <version>0.1.32</version>
+    <version>0.1.33-SNAPSHOT</version>
 </project>
