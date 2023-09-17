@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class FeedIndex implements Comparable{
     private Long feedId;
     private Long score;
+    private Long ownerId;
 
     @Override
     public int compareTo(Object o) {
