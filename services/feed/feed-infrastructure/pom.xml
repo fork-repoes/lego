@@ -5,20 +5,20 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-infrastructure-parent</artifactId>
-        <version>0.1.32-SNAPSHOT</version>
+        <version>0.1.32</version>
         <relativePath>../../parent/infrastructure-parent.xml</relativePath>
     </parent>
 
     <groupId>com.geekhalo</groupId>
     <artifactId>feed-infrastructure</artifactId>
     <name>feed-infrastructure</name>
-    <version>0.1.32-SNAPSHOT</version>
+    <version>0.1.32</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>feed-domain</artifactId>
-            <version>0.1.32-SNAPSHOT</version>
+            <version>0.1.32</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-starter</artifactId>
-            <version>0.1.32-SNAPSHOT</version>
+            <version>0.1.32</version>
         </dependency>
     </dependencies>
 </project>

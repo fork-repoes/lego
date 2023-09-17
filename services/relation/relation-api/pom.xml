@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-api-parent</artifactId>
-        <version>0.1.32-SNAPSHOT</version>
+        <version>0.1.32</version>
         <relativePath>../../parent/api-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>relation-api</artifactId>
     <name>relation-api</name>
-    <version>0.1.32-SNAPSHOT</version>
+    <version>0.1.32</version>
 </project>
