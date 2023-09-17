@@ -4,13 +4,13 @@
     <parent>
     <artifactId>lego-services-module</artifactId>
     <groupId>com.geekhalo.lego</groupId>
-    <version>0.1.32-feed_sharding-SNAPSHOT</version>
+    <version>0.1.33-SNAPSHOT</version>
   </parent>
 
     <groupId>com.geekhalo</groupId>
     <artifactId>relation</artifactId>
     <name>relation</name>
-    <version>0.1.32-feed_sharding-SNAPSHOT</version>
+    <version>0.1.33-SNAPSHOT</version>
     <packaging>pom</packaging>
 <modules>  <module>relation-app</module>
     <module>relation-domain</module>
