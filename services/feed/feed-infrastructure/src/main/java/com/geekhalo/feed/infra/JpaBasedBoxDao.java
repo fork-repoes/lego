@@ -18,7 +18,7 @@ public class JpaBasedBoxDao implements BoxDao {
     @Override
     public void append(FeedOwner feedOwner, BoxType boxType, FeedIndex feedIndex) {
         Optional<BoxItemsWrapper> itemsWrapperOpt = boxItemsWrapperRepository
-                .getFirstByFeedOwnerAndTypeAndMinScoreLessThanOrderByMinScoreDesc(
+                .getFirstMatch(
                 feedOwner, boxType, feedIndex.getScore());
         if (itemsWrapperOpt.isPresent()) {
             BoxItemsWrapper boxItemsWrapper = itemsWrapperOpt.get();
@@ -46,7 +46,7 @@ public class JpaBasedBoxDao implements BoxDao {
                 .orElse(Long.MIN_VALUE);
 
         Optional<BoxItemsWrapper> itemsWrapperOpt = boxItemsWrapperRepository
-                .getFirstByFeedOwnerAndTypeAndMinScoreLessThanOrderByMinScoreDesc(
+                .getFirstMatch(
                         feedOwner, boxType, minScore);
         if (itemsWrapperOpt.isPresent()) {
             BoxItemsWrapper boxItemsWrapper = itemsWrapperOpt.get();
@@ -77,7 +77,7 @@ public class JpaBasedBoxDao implements BoxDao {
     @Override
     public List<FeedIndex> load(FeedOwner feedOwner, BoxType boxType, Long score, Integer size) {
         Optional<BoxItemsWrapper> itemsWrapperOpt = boxItemsWrapperRepository
-                .getFirstByFeedOwnerAndTypeAndMinScoreLessThanOrderByMinScoreDesc(
+                .getFirstMatch(
                         feedOwner, boxType, score);
         if (!itemsWrapperOpt.isPresent()){
             return Collections.emptyList();
@@ -92,7 +92,7 @@ public class JpaBasedBoxDao implements BoxDao {
         Long minScore = boxItemsWrapper.getMinScore();
 
         Optional<BoxItemsWrapper> itemsWrapperOpt2 = boxItemsWrapperRepository
-                .getFirstByFeedOwnerAndTypeAndMinScoreLessThanOrderByMinScoreDesc(
+                .getFirstMatch(
                         feedOwner, boxType, minScore);
         if (itemsWrapperOpt2.isPresent()){
             List<FeedIndex> feedIndexList = itemsWrapperOpt2.get().take(minScore, lost);

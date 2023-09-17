@@ -5,7 +5,7 @@
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-modules</artifactId>
     <name>lego-like-modules</name>
-    <version>0.1.31</version>
+    <version>0.1.32</version>
     <packaging>pom</packaging>
     <modules>
         <module>like-app</module>
