@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Entity(name = "CommandOrder")
 @Table(name = "command_order")
 @Setter(AccessLevel.PRIVATE)
+@EntityListeners(OrderListener.class)
 public class Order implements AggRoot<Long> {
 
     @Transient
@@ -97,10 +98,14 @@ public class Order implements AggRoot<Long> {
     }
 
     public void paySuccess(PayByIdSuccessCommand paySuccessCommand){
-        PayRecord payRecord = PayRecord.create(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
-        this.payRecords.add(payRecord);
+        if (getStatus() != OrderStatus.CREATED){
+            throw new OrderStatusNotMatch();
+        }
 
         this.setStatus(OrderStatus.PAID);
+
+        PayRecord payRecord = PayRecord.create(paySuccessCommand.getChanel(), paySuccessCommand.getPrice());
+        this.payRecords.add(payRecord);
 
         OrderPaySuccessEvent event = new OrderPaySuccessEvent(this);
         this.events.add(event);
@@ -118,5 +123,11 @@ public class Order implements AggRoot<Long> {
 
     public void applySync(SyncOrderByIdContext context) {
         setStatus(OrderStatus.SYNC);
+    }
+
+    @PreUpdate
+    @PrePersist
+    public void checkBiz(){
+        // 进行业务校验
     }
 }

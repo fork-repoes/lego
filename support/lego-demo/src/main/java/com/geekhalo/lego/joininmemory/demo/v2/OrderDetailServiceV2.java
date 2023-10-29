@@ -37,6 +37,7 @@ public class OrderDetailServiceV2 implements OrderDetailService {
 
     @Override
     public List<? extends OrderDetailVO> getByUserId(Long userId) {
+        // 查询订单
         List<Order> orders = this.orderRepository.getByUserId(userId);
 
         List<OrderDetailVOV2> orderDetailVOS = orders.stream()

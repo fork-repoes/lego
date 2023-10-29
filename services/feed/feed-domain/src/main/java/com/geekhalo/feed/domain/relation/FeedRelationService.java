@@ -15,5 +15,11 @@ public interface FeedRelationService {
      */
     List<FeedIndexBoxId> getDispatcher(FeedOwner owner, FeedDataType type);
 
+    /**
+     * 获取待合并的 Box 信息
+     * @param owner
+     * @param queryType
+     * @return
+     */
     List<FeedIndexBoxId> getMerger(FeedOwner owner, QueryType queryType);
 }
