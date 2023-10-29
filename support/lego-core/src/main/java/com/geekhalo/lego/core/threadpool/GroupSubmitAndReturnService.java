@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -36,17 +37,20 @@ public class GroupSubmitAndReturnService<T,R>
 
     @Override
     protected Runnable buildTask(List<FutureAndTask<T, R>> tasks) {
-        Map<T, FutureAndTask> futureAndTaskMap = tasks.stream()
-                .collect(Collectors.toMap(futureAndTask -> futureAndTask.getTask(), Function.identity()));
-        List<T> ts = new ArrayList<>(futureAndTaskMap.keySet());
+        Map<T, List<FutureAndTask>> futureAndTaskListMap = new HashMap<>();
+
+        tasks.stream().forEach(trFutureAndTask -> futureAndTaskListMap
+                .computeIfAbsent(trFutureAndTask.task,(key)->new ArrayList<>()).add(trFutureAndTask));
+
+        List<T> ts = new ArrayList<>(futureAndTaskListMap.keySet());
         return () ->{
             List<Pair<T, R>> results = this.taskRunner.apply(ts);
             for (Pair<T, R> result : results){
-                FutureAndTask futureAndTask = futureAndTaskMap.remove(result.getKey());
-                futureAndTask.getFuture().setResult(result.getRight());
+                List<FutureAndTask> futureAndTasks = futureAndTaskListMap.remove(result.getKey());
+                futureAndTasks.stream().forEach(futureAndTask->futureAndTask.getFuture().setResult(result.getRight()));
             }
-            for (FutureAndTask futureAndTask : futureAndTaskMap.values()){
-                futureAndTask.getFuture().setResult(null);
+            for (List<FutureAndTask> futureAndTasks : futureAndTaskListMap.values()){
+                futureAndTasks.stream().forEach(futureAndTask->futureAndTask.getFuture().setResult(null));
             }
         };
     }
