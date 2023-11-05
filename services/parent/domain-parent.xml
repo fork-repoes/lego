@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-base-parent</artifactId>
-        <version>0.1.33-SNAPSHOT</version>
+        <version>0.1.33</version>
         <relativePath>base-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-domain-parent</artifactId>
-    <version>0.1.33-SNAPSHOT</version>
+    <version>0.1.33</version>
     <name>lego-domain-parent</name>
 
     <dependencies>
