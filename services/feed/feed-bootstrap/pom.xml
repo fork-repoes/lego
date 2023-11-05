@@ -4,19 +4,19 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-bootstrap-parent</artifactId>
-        <version>0.1.33-feed_demo-SNAPSHOT</version>
+        <version>0.1.33-SNAPSHOT</version>
         <relativePath>../../parent/bootstrap-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo</groupId>
     <artifactId>feed-bootstrap</artifactId>
     <name>feed-bootstrap</name>
-    <version>0.1.33-feed_demo-SNAPSHOT</version>
+    <version>0.1.33-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo</groupId>
             <artifactId>feed-feign-service</artifactId>
-            <version>0.1.33-feed_demo-SNAPSHOT</version>
+            <version>0.1.33-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>

@@ -4,19 +4,19 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-feignclient-parent</artifactId>
-        <version>0.1.33-feed_demo-SNAPSHOT</version>
+        <version>0.1.33-SNAPSHOT</version>
         <relativePath>../../parent/feignclient-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-like-feignclient</artifactId>
     <name>lego-like-feignclient</name>
-    <version>0.1.33-feed_demo-SNAPSHOT</version>
+    <version>0.1.33-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.geekhalo.lego</groupId>
             <artifactId>lego-like-api</artifactId>
-            <version>0.1.33-feed_demo-SNAPSHOT</version>
+            <version>0.1.33-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
