@@ -12,7 +12,6 @@ import javax.persistence.EntityNotFoundException;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Component
 public class DefaultRestResultFactory implements RestResultFactory {
     @Override
     public <T> RestResult<T> success(T t) {

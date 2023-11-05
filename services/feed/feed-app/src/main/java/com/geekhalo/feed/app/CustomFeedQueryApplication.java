@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CustomFeedQueryApplication {
 
-    default List<Feed> queryFeeds(FeedOwner owner, QueryType queryType, Integer size){
+    default List<Feed> queryFeeds1(FeedOwner owner, QueryType queryType, Integer size){
         return queryFeeds(owner, queryType, Long.MAX_VALUE, size);
     }
 

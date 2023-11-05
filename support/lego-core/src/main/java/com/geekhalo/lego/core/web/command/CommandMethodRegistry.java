@@ -12,7 +12,6 @@ import java.util.List;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Component
 public class CommandMethodRegistry extends WebMethodRegistry {
     @Autowired
     private CommandServicesRegistry commandServicesRegistry;

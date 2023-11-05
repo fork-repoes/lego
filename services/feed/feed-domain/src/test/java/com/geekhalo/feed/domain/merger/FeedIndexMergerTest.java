@@ -44,7 +44,7 @@ public class FeedIndexMergerTest {
     private List<FeedIndex> createFeedIndices(int startId, int maxSize) {
         List<FeedIndex> feedIndices = Lists.newArrayListWithCapacity(maxSize);
         for (int i = 0; i < maxSize; i++) {
-            feedIndices.add(new FeedIndex(startId + i + 1L, (startId + i) * 10L));
+            feedIndices.add(new FeedIndex(startId + i + 1L, (startId + i) * 10L, 3L));
         }
         return feedIndices;
     }

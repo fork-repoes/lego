@@ -15,7 +15,6 @@ import java.util.Map;
  * gitee : https://gitee.com/litao851025/lego
  * 编程就像玩 Lego
  */
-@Component
 public class QueryServicesRegistry {
     @Autowired
     private ApplicationContext applicationContext;

@@ -4,6 +4,7 @@ import com.geekhalo.lego.common.enums.CommonEnum;
 
 public enum OwnerType implements CommonEnum {
     USER(1, "User"),
+    COMPANY(2, "公司"),
     TEST(0, "Test");
     private final int code;
     private final String descr;
