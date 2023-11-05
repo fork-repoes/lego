@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.geekhalo.lego</groupId>
         <artifactId>lego-base-parent</artifactId>
-        <version>0.1.33-SNAPSHOT</version>
+        <version>0.1.33-feed_demo-SNAPSHOT</version>
         <relativePath>base-parent.xml</relativePath>
     </parent>
     <groupId>com.geekhalo.lego</groupId>
     <artifactId>lego-feignclient-parent</artifactId>
-    <version>0.1.33-SNAPSHOT</version>
+    <version>0.1.33-feed_demo-SNAPSHOT</version>
     <name>lego-feignclient-parent</name>
 
     <dependencies>

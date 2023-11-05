@@ -73,7 +73,7 @@ class FeedCommandApplicationTest {
     @Test
     public void merge(){
         FeedOwner feedOwner = new FeedOwner(OwnerType.USER, this.feedOwner.getOwnerId() - 5);
-        List<Feed> feeds = this.queryApplication.queryFeeds(feedOwner, QueryType.TEST, 10);
+        List<Feed> feeds = this.queryApplication.queryFeeds1(feedOwner, QueryType.TEST, 10);
         Assertions.assertNotNull(feeds);
         Feed feed = feeds.get(0);
         Assertions.assertEquals(this.feed.getData(), feed.getData());

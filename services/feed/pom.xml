@@ -4,15 +4,16 @@
     <parent>
     <artifactId>lego-services-module</artifactId>
     <groupId>com.geekhalo.lego</groupId>
-    <version>0.1.33-SNAPSHOT</version>
+    <version>0.1.33-feed_demo-SNAPSHOT</version>
   </parent>
 
     <groupId>com.geekhalo</groupId>
     <artifactId>feed</artifactId>
     <name>feed</name>
-    <version>0.1.33-SNAPSHOT</version>
+    <version>0.1.33-feed_demo-SNAPSHOT</version>
     <packaging>pom</packaging>
-<modules>  <module>feed-app</module>
+<modules>
+    <module>feed-app</module>
     <module>feed-domain</module>
     <module>feed-infrastructure</module>
     <module>feed-api</module>

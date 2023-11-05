@@ -4,8 +4,10 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Value;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.KotlinReflectionParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +24,12 @@ import java.util.Set;
  */
 @Value
 public class MultiParamMethod {
-    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER;
+    static {
+        DefaultParameterNameDiscoverer defaultParameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+        PARAMETER_NAME_DISCOVERER =  defaultParameterNameDiscoverer;
+        defaultParameterNameDiscoverer.addDiscoverer(new KotlinReflectionParameterNameDiscoverer());
+    }
     private final Object bean;
     private final Method method;
     @Getter
@@ -40,7 +47,15 @@ public class MultiParamMethod {
         this.bean = bean;
         this.method = method;
         this.paramTypes = method.getParameterTypes();
-        this.paramNames = PARAMETER_NAME_DISCOVERER.getParameterNames(this.method);
+        String[] pNames = PARAMETER_NAME_DISCOVERER.getParameterNames(this.method);
+        if (pNames == null){
+            this.paramNames = new String[this.paramTypes.length];
+            for (int i = 0; i< this.paramNames.length; i++){
+                this.paramNames[i] = "arg" + i;
+            }
+        }else {
+            this.paramNames = pNames;
+        }
         this.namedMethodParameters = buildParameters();
         this.handlerMethod = new HandlerMethod(bean, method);
     }

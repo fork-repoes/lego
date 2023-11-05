@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.geekhalo.lego</groupId>
 	<artifactId>lego-parent</artifactId>
-	<version>0.1.33-SNAPSHOT</version>
+	<version>0.1.33-feed_demo-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>lego-parent</name>
 
