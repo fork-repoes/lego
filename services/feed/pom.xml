@@ -12,7 +12,8 @@
     <name>feed</name>
     <version>0.1.33-feed_demo-SNAPSHOT</version>
     <packaging>pom</packaging>
-<modules>  <module>feed-app</module>
+<modules>
+    <module>feed-app</module>
     <module>feed-domain</module>
     <module>feed-infrastructure</module>
     <module>feed-api</module>

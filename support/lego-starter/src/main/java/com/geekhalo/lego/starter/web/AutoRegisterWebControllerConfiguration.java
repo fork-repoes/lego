@@ -2,8 +2,12 @@ package com.geekhalo.lego.starter.web;
 
 //import com.geekhalo.lego.core.web.WebMethodHandlerMapping;
 
+import com.geekhalo.lego.core.web.support.DefaultRestResultFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * Created by taoli on 2022/10/6.
@@ -12,11 +16,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnWebApplication
+@Import({CommandWebConfiguration.class, QueryWebConfiguration.class})
 public class AutoRegisterWebControllerConfiguration {
-//    @Bean
-//    public WebMethodHandlerMapping webMethodHandlerMapping(){
-//        WebMethodHandlerMapping handlerMapping = new WebMethodHandlerMapping();
-//        handlerMapping.setOrder(0);
-//        return handlerMapping;
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public DefaultRestResultFactory defaultRestResultFactory(){
+        return new DefaultRestResultFactory();
+    }
+
 }
